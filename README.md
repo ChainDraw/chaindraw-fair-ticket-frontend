@@ -32,3 +32,22 @@ ChainDraw 是一个去中心化的演唱会门票抽选系统，旨在提供一�
 - zustand
 - swr
 - clsx
+
+## 开发
+
+```bash
+npm i
+npm run dev
+```
+
+## 构建
+
+```bash
+npm run build
+```
+
+## 预览
+
+```bash
+npm run start
+```
