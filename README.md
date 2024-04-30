@@ -31,7 +31,7 @@ ChainDraw 是一个去中心化的演唱会门票抽选系统，旨在提供一�
 - TailwindCSS + shadcn/ui
 - zustand
 - swr
-- clsx
+- RainbowKit(w/ wagmi, viem)
 
 ## 开发
 
