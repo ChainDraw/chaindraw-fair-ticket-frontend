@@ -30,24 +30,28 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) throw new Error("Project ID is not defined");
 const isDev = process.env.NODE_ENV === "development";
 // const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: "Recommended",
-      wallets: [
-        rainbowWallet,
-        metaMaskWallet,
-        coinbaseWallet,
-        walletConnectWallet,
+const isClient = typeof window === "undefined" ? true : false;
+console.log(isClient);
+const connectors = !isClient
+  ? connectorsForWallets(
+      [
+        {
+          groupName: "Recommended",
+          wallets: [
+            rainbowWallet,
+            metaMaskWallet,
+            coinbaseWallet,
+            walletConnectWallet,
+          ],
+        },
+        {
+          groupName: "Other",
+          wallets: [argentWallet, trustWallet, ledgerWallet],
+        },
       ],
-    },
-    {
-      groupName: "Other",
-      wallets: [argentWallet, trustWallet, ledgerWallet],
-    },
-  ],
-  { appName: "Ticket", projectId: projectId }
-);
+      { appName: "Ticket", projectId: projectId }
+    )
+  : [];
 export const config = createConfig({
   chains: [mainnet /**........ */],
   connectors,
