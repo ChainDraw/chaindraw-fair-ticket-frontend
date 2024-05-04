@@ -18,7 +18,7 @@ const Header = memo(function Header() {
   return (
     <header
       className={cn(
-        "bg-white sticky z-50 top-0 inset-x-0 h-16",
+        "bg-white sticky z-50 top-0 h-16",
         isScrolledDown ? "border-b border-gray-200" : ""
       )}
     >
