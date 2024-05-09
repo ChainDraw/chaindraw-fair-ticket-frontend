@@ -1,46 +1,45 @@
+'use client';
+
 import Link from 'next/link';
-import { Calendar, LucideIcon, Settings } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
+import { usePathname } from 'next/navigation';
+import { Calendar, Settings } from 'lucide-react';
 
-interface NavProps {
-  title: string;
-  label?: string;
-  icon: LucideIcon;
-  variant?: 'default' | 'ghost';
-  href: string;
-}
-
-const links: NavProps[] = [
+// 左侧导航栏
+const links = [
   {
     title: 'Events',
     label: '活动',
     icon: Calendar,
-    variant: 'default',
     href: '/events',
   },
   {
     title: 'Settings',
     label: '主办方设置',
     icon: Settings,
-    variant: 'ghost',
     href: '/settings',
   },
 ];
 
 export function AdminNav() {
+  const pathname = usePathname();
+
   return (
     <div className="w-[--admin-sidebar-width] p-4 border-r border-[#ddd]">
-      <div className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
-        <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+      <div className="flex flex-col gap-4 py-2">
+        <nav className="grid gap-1 px-2">
           {links.map((link, index) => (
             <Link
               key={index}
               href={link.href}
               className={cn(
-                buttonVariants({ variant: link.variant, size: 'sm' }),
-                link.variant === 'default' &&
+                buttonVariants({
+                  variant: link.href === pathname ? 'default' : 'ghost',
+                  size: 'sm',
+                }),
+                link.href === pathname &&
                   'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white',
                 'justify-start'
               )}
