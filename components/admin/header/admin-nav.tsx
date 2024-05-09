@@ -47,15 +47,7 @@ export function AdminNav() {
               <link.icon className="mr-2 h-4 w-4" />
               {link.title}
               {link.label && (
-                <span
-                  className={cn(
-                    'ml-auto',
-                    link.variant === 'default' &&
-                      'text-background dark:text-white'
-                  )}
-                >
-                  {link.label}
-                </span>
+                <span className={cn('ml-auto')}>{link.label}</span>
               )}
             </Link>
           ))}
