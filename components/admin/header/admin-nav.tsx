@@ -1,7 +1,5 @@
-'use client';
-
 import Link from 'next/link';
-import { LucideIcon } from 'lucide-react';
+import { Calendar, LucideIcon, Settings } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
@@ -9,22 +7,25 @@ import { buttonVariants } from '@/components/ui/button';
 interface NavProps {
   title: string;
   label?: string;
-  icon?: LucideIcon;
+  icon: LucideIcon;
   variant?: 'default' | 'ghost';
+  href: string;
 }
 
 const links: NavProps[] = [
   {
     title: 'Events',
     label: '活动',
-    // icon: Calendar,
+    icon: Calendar,
     variant: 'default',
+    href: '/events',
   },
   {
     title: 'Settings',
     label: '主办方设置',
-    // icon: Settings,
+    icon: Settings,
     variant: 'ghost',
+    href: '/settings',
   },
 ];
 
@@ -36,7 +37,7 @@ export function AdminNav() {
           {links.map((link, index) => (
             <Link
               key={index}
-              href="#"
+              href={link.href}
               className={cn(
                 buttonVariants({ variant: link.variant, size: 'sm' }),
                 link.variant === 'default' &&
@@ -44,7 +45,7 @@ export function AdminNav() {
                 'justify-start'
               )}
             >
-              {/* <link.icon className="mr-2 h-4 w-4" /> */}
+              <link.icon className="mr-2 h-4 w-4" />
               {link.title}
               {link.label && (
                 <span
