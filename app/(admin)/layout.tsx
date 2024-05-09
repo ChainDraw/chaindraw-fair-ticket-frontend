@@ -1,3 +1,5 @@
+import AdminHeader from '@/components/admin/header/admin-header';
+import { AdminNav } from '@/components/admin/header/admin-nav';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <div>
+      <AdminHeader />
+      <div className="flex h-[--admin-main-height]">
+        <AdminNav />
+        <main className="p-4">{children}</main>
+      </div>
+    </div>
+  );
 }

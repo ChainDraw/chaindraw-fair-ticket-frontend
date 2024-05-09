@@ -1,7 +1,3 @@
-export default function Page() {
-  return (
-    <div>
-      <div>events</div>
-    </div>
-  );
+export default async function Page() {
+  return <div>events</div>;
 }
