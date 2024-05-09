@@ -36,10 +36,10 @@ export function AdminNav() {
               href={link.href}
               className={cn(
                 buttonVariants({
-                  variant: link.href === pathname ? 'default' : 'ghost',
+                  variant: pathname.includes(link.href) ? 'default' : 'ghost',
                   size: 'sm',
                 }),
-                link.href === pathname &&
+                pathname.includes(link.href) &&
                   'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white',
                 'justify-start'
               )}
