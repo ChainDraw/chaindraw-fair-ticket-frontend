@@ -6,11 +6,14 @@ interface IMaxWidthWrapper {
 }
 const MaxWidthWrapper = ({ children, className }: IMaxWidthWrapper) => {
   return (
-    <div
-      className={cn("mx-auto w-full max-w-screen-2xl px-5 md:px-20", className)}
+    <section
+      className={cn(
+        "mx-auto w-full max-w-screen-2xl px-5 lg:px-10 ",
+        className
+      )}
     >
       {children}
-    </div>
+    </section>
   );
 };
 export default MaxWidthWrapper;

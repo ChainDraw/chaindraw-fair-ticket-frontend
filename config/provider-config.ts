@@ -31,7 +31,6 @@ if (!projectId) throw new Error("Project ID is not defined");
 const isDev = process.env.NODE_ENV === "development";
 // const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
 const isClient = typeof window === "undefined" ? true : false;
-console.log(isClient);
 const connectors = !isClient
   ? connectorsForWallets(
       [

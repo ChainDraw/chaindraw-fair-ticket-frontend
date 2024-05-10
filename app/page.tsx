@@ -1,8 +1,16 @@
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import Hero from "@/components/client/hero/Hero";
 import Header from "@/components/header/Header";
+
 export default function Home() {
   return (
-    <div>
-      <Header />
-    </div>
+    <>
+      <Hero />
+      <MaxWidthWrapper className="mx-auto text-white">
+        <Hero />
+        <Hero />
+        <Hero />
+      </MaxWidthWrapper>
+    </>
   );
 }
