@@ -5,7 +5,26 @@ import Title from "../title/Title";
 import { icons, Rocket } from "lucide-react";
 import HomeEventList from "./HomeEventList";
 
-type Props = {};
+type Props = {
+  id: string;
+  name: string;
+  address: string;
+  date: string;
+  time: string;
+  cover: string;
+  description: string;
+  status: string;
+  review_status: string;
+  ticket: {
+    ticket_name: string;
+    ticket_type: string;
+    ticket_price: 100;
+    ticket_cover: string;
+    ticket_max_num: 1000;
+    ticket_status: string;
+    allowSecondHandTrade: true; // 二手交易开关
+  };
+};
 
 const ExploreEvents = (props: Props) => {
   return (

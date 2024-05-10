@@ -17,6 +17,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "ethers": "^6.12.1",
+    "iron-session": "^8.0.1",
     "lucide-react": "^0.376.0",
     "next": "14.2.3",
     "react": "^18",

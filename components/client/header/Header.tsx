@@ -7,6 +7,7 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 
 import { cn } from "@/lib/utils";
 import { paths } from "@/utils/paths";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 const Header = memo(function Header() {
   const navList = [
     {
@@ -35,7 +36,6 @@ const Header = memo(function Header() {
       className={cn(
         "w-full sticky top-0 inset-x-0 z-50  py-4 px-6 lg:px-18 mb-3 lg:h-auto duration-300 backdrop-blur-md"
       )}
-      id="scroll-bar"
     >
       <MaxWidthWrapper className="flex-1 relative px-0 md:px-0 lg:px-0">
         <div className="flex justify-between items-center ">

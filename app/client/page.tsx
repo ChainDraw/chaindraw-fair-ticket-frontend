@@ -10,7 +10,7 @@ const Home = (props: Props) => {
   return (
     <main className="bg-main-bgi bg-top bg-no-repeat min-h-screen">
       <Hero />
-      <ExploreEvents />
+      {/* <ExploreEvents /> */}
     </main>
   );
 };
