@@ -24,8 +24,14 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: "#5c6ac4",
-        secondary: "#ecc94b",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -54,9 +60,6 @@ const config = {
       },
       backgroundImage: {
         "main-bgi": "url('/images/mainbg3.jpg')",
-        // "main-bgi": "url('/images/mainbg2.webp')",
-        // "main-bgi": "url('/images/mainbg4.jpg')",
-        // "main-bgi": "url('/images/test2.webp')",
       },
       keyframes: {
         "accordion-down": {

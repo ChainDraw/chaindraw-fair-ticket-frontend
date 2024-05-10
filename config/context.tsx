@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import {
   AuthenticationStatus,
   RainbowKitAuthenticationProvider,
@@ -11,21 +11,14 @@ import { WagmiProvider, cookieToInitialState } from "wagmi";
 import { config } from "./provider-config";
 import { SiweMessage } from "siwe";
 const queryClient = new QueryClient();
-// fake signature  use JWT or Session cookie
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<AuthenticationStatus>("unauthenticated");
-  async function signIn() {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    setStatus("authenticated");
-  }
-  useEffect(() => {
-    signIn();
-  }, []);
   const authenticationAdapter = useMemo(
     () =>
       createAuthenticationAdapter({
         getNonce: async () => {
+          // const res = await fetch("/api/nonce");
+          // return res.text()
           await new Promise((r) => setTimeout(r, 100));
           const nonce = "mockNonce";
           return nonce;
@@ -35,7 +28,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           return new SiweMessage({
             domain: window.location.host,
             address,
-            statement: "Disclaimer",
+            statement: `Welcome to ChainDraw`,
             uri: window.location.origin,
             version: "1",
             chainId,
@@ -49,25 +42,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         verify: async ({ message, signature }) => {
           setStatus("loading");
-          const verifyResult = {
-            data: {
-              status: "SUCCESS",
-              token: `${Math.random()}token`,
-            },
-          };
-          if (verifyResult.data.status === "SUCCESS") {
-            setStatus("authenticated");
-            localStorage.setItem("token", verifyResult.data.token);
-            return true;
-          }
-          setStatus("unauthenticated");
-          return false;
+          // const verifyRes = await fetch("/api/verify", {
+          //   method: "POST",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify({ message, signature }),
+          // });
+          // return Boolean(verifyRes.ok);\
+          setStatus("authenticated");
+          return true;
         },
 
-        signOut: async () => {
-          localStorage.removeItem("token");
-          setStatus("unauthenticated");
-        },
+        signOut: async () => {},
       }),
     []
   );
