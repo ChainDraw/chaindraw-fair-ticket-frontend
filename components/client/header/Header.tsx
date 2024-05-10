@@ -41,7 +41,7 @@ const Header = memo(function Header() {
         <div className="flex justify-between items-center ">
           <Link
             href="/"
-            className="text-orange-500 mb-2 flex items-center gap-2 text-2xl lg:text-3xl font-bold italic"
+            className="text-white mb-2 flex items-center gap-2 text-2xl lg:text-3xl font-bold italic"
           >
             <Webhook size={40} />
             ChainDraw

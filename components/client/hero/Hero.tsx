@@ -10,7 +10,7 @@ type Props = {};
 
 const Hero = (props: Props) => {
   return (
-    <section>
+    <section className="py-10 md:py-20">
       <MaxWidthWrapper>
         <div className="flex flex-col justify-center text-center md:text-start md:grid md:grid-cols-[40%_60%] ">
           <div className="flex-1 flex flex-col text-white px-4 md:pr-10">
