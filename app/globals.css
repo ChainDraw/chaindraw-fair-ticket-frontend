@@ -79,3 +79,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  :root {
+    --admin-header-height: 4rem;
+    --admin-sidebar-width: 18rem;
+    --admin-main-height: calc(100vh - var(--admin-header-height));
+  }
+}
