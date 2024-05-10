@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       colors: {
+        buttonBg: "#A259FF",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -59,7 +60,7 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       backgroundImage: {
-        "main-bgi": "url('/images/mainbg3.jpg')",
+        "main-bgi": "url('/images/herobg.png')",
       },
       keyframes: {
         "accordion-down": {

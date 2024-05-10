@@ -8,7 +8,7 @@ const MaxWidthWrapper = ({ children, className }: IMaxWidthWrapper) => {
   return (
     <section
       className={cn(
-        "mx-auto w-full max-w-screen-2xl px-5 md:px-10 lg:px-20 ",
+        "mx-auto w-full max-w-screen-xl px-5 md:px-10 lg:px-20",
         className
       )}
     >
