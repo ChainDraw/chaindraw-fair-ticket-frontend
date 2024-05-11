@@ -82,3 +82,9 @@
     --admin-main-height: calc(100vh - var(--admin-header-height));
   }
 }
+
+@layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+}
