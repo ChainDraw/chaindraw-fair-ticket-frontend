@@ -8,7 +8,7 @@ import { paths } from "@/utils/paths";
 
 const ExploreEvents = () => {
   return (
-    <MaxWidthWrapper className="py-10 lg:py-20">
+    <MaxWidthWrapper className="py-10 md:pt-24 lg:py-32 border-b border-gray-500">
       <Title
         title="Trending Collection"
         description="Checkout our weekly updated trending collection."
