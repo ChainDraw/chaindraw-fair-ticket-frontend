@@ -7,9 +7,9 @@ type Props = {};
 
 const Feature = (props: Props) => {
   return (
-    <MaxWidthWrapper className="pt-32 text-white">
+    <MaxWidthWrapper className="pt-4 md:pt-40 text-white">
       <header className="text-center">
-        <h1 className="font-bold text-4xl text-white mb-9">
+        <h1 className=" font-bold text-4xl text-white mb-9">
           Unlock the Future with NFT Tickets
         </h1>
         <p className="text-xl text-white">
@@ -58,14 +58,16 @@ const Feature = (props: Props) => {
               <Group size={60} />
             </div>
             <header className="text-xl font-bold mt-8 text-white">
-              Collectible Value
+              Win Exclusive NFTs with Lottery Draws
             </header>
             <p className="text-[#C0C0C0] text-base mt-4 whitespace-pre-line opacity-70 leading-8">
-              Our NFT tickets are more than just entry passes—they're
-              collectible assets. Each ticket is uniquely designed and becomes a
-              valuable piece of memorabilia, especially for landmark events.
-              Over time, these tickets can appreciate in value, appealing to
-              collectors who value the art and history captured in each NFT.
+              Engage in thrilling lottery events hosted directly on our
+              platform, where you can win exclusive NFTs. Our smart
+              contract-based lottery system ensures a transparent and fair
+              drawing process, giving every participant an equal chance to win.
+              By entering our NFT lotteries, you not only get the chance to win
+              unique digital assets but also contribute to the vibrancy and
+              excitement of the event community.
             </p>
           </article>
         </div>

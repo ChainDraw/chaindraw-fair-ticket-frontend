@@ -1,3 +1,4 @@
+import Footer from "@/components/client/footer/Footer";
 import Header from "@/components/client/header/Header";
 import { Metadata } from "next";
 
@@ -12,6 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <main className="bg-[#040001]">
       <Header />
       {children}
+      <Footer />
     </main>
   );
 }

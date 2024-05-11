@@ -6,6 +6,7 @@ import ExploreEvents from "@/components/client/exploreEvents/ExploreEvents";
 import Feature from "@/components/client/Feature/Feature";
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import Image from "next/image";
+import Create from "@/components/client/create/Create";
 
 type Props = {};
 
@@ -14,7 +15,7 @@ const Home = (props: Props) => {
     <main className="w-full pb-10 relative md:pb-20">
       <Hero />
       <MaxWidthWrapper className="pt-14 md:pt-32">
-        <div className="flex md:text-center justify-center ">
+        <div className="hidden  md:flex md:text-center justify-center ">
           <h1 className="py-1 text-3xl font-bold md:text-4xl lg:text-5xl text-white">
             Revolutionise your ticketing with NFTs
           </h1>
@@ -29,9 +30,9 @@ const Home = (props: Props) => {
           className="animate-bounce"
         />
       </div>
-
       <Feature />
       <ExploreEvents />
+      <Create />
     </main>
   );
 };

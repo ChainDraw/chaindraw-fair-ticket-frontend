@@ -10,7 +10,7 @@ const EventItem = (props: EventItemProps) => {
       href={paths.client.ticketInfo(props.id)}
       className="text-white w-full  overflow-hidden rounded-3xl"
     >
-      <div className="bg-blue-400 w-auto pb-5 flex flex-col h-auto">
+      <div className="bg-[#001f50] w-auto pb-5 flex flex-col h-auto">
         <div className="cursor-pointer ">
           <div className="overflow-hidden relative max-h-[224px] group">
             <span className="absolute bg-gradient-to-t from-black top-0 left-0 w-full h-full z-10 opacity-70 "></span>
