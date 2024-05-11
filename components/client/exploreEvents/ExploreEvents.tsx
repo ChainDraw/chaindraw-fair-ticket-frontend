@@ -4,6 +4,7 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 import Title from "../title/Title";
 import { icons, Rocket } from "lucide-react";
 import HomeEventList from "./HomeEventList";
+import { paths } from "@/utils/paths";
 
 const ExploreEvents = () => {
   return (
@@ -11,7 +12,11 @@ const ExploreEvents = () => {
       <Title
         title="Trending Collection"
         description="Checkout our weekly updated trending collection."
-        button={{ icon: <Rocket />, buttonContent: "Collection" }}
+        button={{
+          icon: <Rocket />,
+          buttonContent: "Collection",
+          link: paths.client.market,
+        }}
       />
 
       <article className="flex justify-center items-center">

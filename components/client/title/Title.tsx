@@ -1,4 +1,3 @@
-import { paths } from "@/utils/paths";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 
@@ -9,6 +8,7 @@ type Props = {
   button?: {
     icon: any;
     buttonContent: string;
+    link: string;
   };
 };
 
@@ -31,7 +31,7 @@ const Title = (props: Props) => {
 
       {props.button && (
         <Link
-          href={paths.client.market}
+          href={props.button.link}
           className="hidden px-12 py-2.5 border border-buttonBg rounded-lg bg-orange-500 text-white hover:border-white md:flex justify-center items-center gap-2"
         >
           {props.button?.icon}
