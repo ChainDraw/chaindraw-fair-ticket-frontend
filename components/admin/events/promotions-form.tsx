@@ -14,29 +14,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Input } from '@/components/ui/input';
-
 import { Button } from '@/components/ui/button';
 
-// {
-//     id: 'asdasdasd123123',
-//     name: '演唱会01',
-//     address: '上海市新天地',
-//     date: '2023-01-01',
-//     time: '12:00',
-//     cover: 'https://picsum.photos/200/300',
-//     description: '上海市新天地有一场演唱会。',
-//     status: '已结束',
-//     review_status: '已审核',
-//     ticket: {
-//       ticket_name: '演唱会01门票',
-//       ticket_type: '普通票',
-//       ticket_price: 100,
-//       ticket_cover: 'https://picsum.photos/200/300',
-//       ticket_max_num: 1000,
-//       ticket_status: '已售罄',
-//       allowSecondHandTrade: true, // 二手交易开关
-//     },
-//   },
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   description: z.string(),
@@ -52,16 +32,11 @@ const formSchema = z.object({
   cover: z.instanceof(File).refine((file) => file.size < 5 * 1024 * 1024, {
     message: 'Your resume must be less than 7MB.',
   }),
-  // ticket_name: z.string(),
-  // ticket_type: z.string(),
-  // ticket_price: z.number(),
-  // ticket_cover: z.string(),
-  // ticket_max_num: z.number(),
-  // ticket_status: z.string(),
-  // allowSecondHandTrade: z.boolean(),
 });
 
 export default function PromotionsForm() {
+  const router = useRouter();
+
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,6 +47,7 @@ export default function PromotionsForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
+    router.push('/events/create/tickets');
   }
 
   return (
