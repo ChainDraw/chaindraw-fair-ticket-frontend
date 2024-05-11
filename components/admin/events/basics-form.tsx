@@ -18,11 +18,11 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  address: z.string().min(1),
-  start_time: z.string().min(1),
-  end_time: z.string().min(1),
-  entry_time: z.string().min(1),
+  name: z.string(),
+  address: z.string(),
+  start_time: z.string(),
+  end_time: z.string(),
+  entry_time: z.string(),
 });
 
 export default function BasicsForm() {
@@ -30,13 +30,6 @@ export default function BasicsForm() {
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      address: '',
-      start_time: '',
-      end_time: '',
-      entry_time: '',
-    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
