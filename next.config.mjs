@@ -5,6 +5,9 @@ const nextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
+  images: {
+    domains: ["picsum.photos", " images.seatlabnft.com"],
+  },
 };
 
 export default nextConfig;

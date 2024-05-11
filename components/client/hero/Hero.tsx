@@ -10,14 +10,14 @@ type Props = {};
 
 const Hero = (props: Props) => {
   return (
-    <section className="py-10 md:py-20">
-      <MaxWidthWrapper>
-        <div className="flex flex-col justify-center text-center md:text-start md:grid md:grid-cols-[40%_60%] ">
+    <section className="mx-auto max-w-screen-xl md:pt-32  flex md:justify-center md:items-center px-6">
+      <MaxWidthWrapper className="md:bg-main-bgi md:bg-cover md:bg-no-repeat rounded-[2%] md:py-10 lg:py-20 md:shadow-xl md:bg-opacity-90 transform md:rotate-2 hover:rotate-0 duration-500">
+        <div className="flex flex-col justify-center text-center md:text-start md:grid md:grid-cols-[40%_60%] transform ">
           <div className="flex-1 flex flex-col text-white px-4 md:pr-10">
-            <h1 className="text-3xl leading-tight md:text-4xl lg:text-5xl">
+            <h1 className="bg-clip-text text-transparent bg-gradient-to-br from-[#F83A3A] to-[#7000FF] font-bold text-4xl leading-tight  lg:text-5xl">
               Discover and Own Exclusive Event Tickets
             </h1>
-            <p className="text-sm text-gray-300 mb-3 px-3 md:px-0 md:text-lg lg:mb-6 lg:text-xl">
+            <p className="text-base text-gray-300 opacity-90 my-3 px-3 md:px-0 md:text-lg lg:mb-6 lg:text-xl">
               Transform your tickets into unique digital assets on the
               blockchain.
             </p>

@@ -15,26 +15,26 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authStatus, setAuthStatus] =
     useState<AuthenticationStatus>("unauthenticated");
   console.log(authStatus);
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       // const response = await fetch("http://localhost:3000/me");
-  //       // const { address } = await response.json();
-  //       // console.log("address: ", address);
-  //       setAuthStatus(false ? "authenticated" : "unauthenticated");
-  //     } catch (error) {
-  //       console.log("error: ", error);
-  //       setAuthStatus("unauthenticated");
-  //     }
-  //   };
-  //   fetchUser();
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // const response = await fetch("http://localhost:3000/me");
+        // const { address } = await response.json();
+        // console.log("address: ", address);
+        setAuthStatus(true ? "authenticated" : "unauthenticated");
+      } catch (error) {
+        console.log("error: ", error);
+        setAuthStatus("unauthenticated");
+      }
+    };
+    fetchUser();
 
-  //   window.addEventListener("focus", fetchUser);
+    window.addEventListener("focus", fetchUser);
 
-  //   return () => {
-  //     window.removeEventListener("focus", fetchUser);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener("focus", fetchUser);
+    };
+  }, []);
   const authAdapter = useMemo(() => {
     return createAuthenticationAdapter({
       getNonce: async () => {

@@ -7,7 +7,6 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 
 import { cn } from "@/lib/utils";
 import { paths } from "@/utils/paths";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 const Header = memo(function Header() {
   const navList = [
     {
@@ -34,7 +33,7 @@ const Header = memo(function Header() {
   return (
     <header
       className={cn(
-        "w-full sticky top-0 inset-x-0 z-50  py-4 px-6 lg:px-18 mb-3 lg:h-auto duration-300 backdrop-blur-md"
+        "bg-black bg-opacity-10 w-full sticky md:fixed top-0 inset-x-0 z-50  py-4 px-6 lg:px-18 mb-3 lg:h-auto duration-300 backdrop-blur-md"
       )}
     >
       <MaxWidthWrapper className="flex-1 relative px-0 md:px-0 lg:px-0">
@@ -43,11 +42,11 @@ const Header = memo(function Header() {
             href="/"
             className="text-white mb-2 flex items-center gap-2 text-2xl lg:text-3xl font-bold italic"
           >
-            <Webhook size={40} />
+            <Webhook size={40} className="text-[#f8cf15]" />
             ChainDraw
           </Link>
           {/* Mobile */}
-          <div className="hover:cursor-pointer h-full flex lg:hidden text-orange-500">
+          <div className="hover:cursor-pointer h-full flex lg:hidden text-[#f8cf15]">
             <Menu size={40} color="#fff" />
           </div>
         </div>
