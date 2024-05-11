@@ -70,6 +70,7 @@ const DateTimePicker = React.forwardRef<
             <Calendar {...calendarProps} />
             {!!state.hasTime && (
               <TimeField
+                label="time"
                 value={state.timeValue}
                 onChange={state.setTimeValue}
               />

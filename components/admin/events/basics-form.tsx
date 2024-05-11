@@ -1,7 +1,5 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-
 import {
   Form,
   FormControl,
@@ -13,8 +11,10 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { toast } from '@/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
+
+import { Input } from '@/components/ui/input';
+
+import { Button } from '@/components/ui/button';
 
 // {
 //     id: 'asdasdasd123123',
@@ -38,12 +38,12 @@ import { useRouter } from 'next/navigation';
 //   },
 
 const formSchema = z.object({
-  name: z.string(),
-  address: z.string(),
-  description: z.string(),
-  start_time: z.string().datetime(),
-  end_time: z.string().datetime(),
-  entry_time: z.string().datetime(),
+  name: z.string().min(1),
+  address: z.string().min(1),
+  description: z.string().min(1),
+  start_time: z.string().min(1),
+  end_time: z.string().min(1),
+  entry_time: z.string().min(1),
   // ticket_type: z.string(),
   // ticket_price: z.number(),
   // ticket_cover: z.string(),
@@ -65,13 +65,13 @@ export default function BasicsForm() {
     },
   });
 
-  function onLogin(values: z.infer<typeof formSchema>) {
-    console.log('123');
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('values', values);
   }
 
   return (
     <Form {...form1}>
-      <form onSubmit={form1.handleSubmit(onLogin)} className="space-y-8">
+      <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form1.control}
           name="name"
@@ -118,7 +118,7 @@ export default function BasicsForm() {
             <FormItem>
               <FormLabel>开始时间</FormLabel>
               <FormControl>
-                <Input placeholder="请选择开始时间" {...field} />
+                <Input placeholder="请输入开始时间" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -131,7 +131,7 @@ export default function BasicsForm() {
             <FormItem>
               <FormLabel>入场时间</FormLabel>
               <FormControl>
-                <Input placeholder="请选择入场时间" {...field} />
+                <Input placeholder="请输入入场时间" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,15 +144,15 @@ export default function BasicsForm() {
             <FormItem>
               <FormLabel>结束时间</FormLabel>
               <FormControl>
-                <Input placeholder="请选择结束时间" {...field} />
+                <Input placeholder="请输入结束时间" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* <div className="text-center">
-          <Button type="submit">登 录</Button>
-        </div> */}
+        <div className="text-center">
+          <Button type="submit">下一步</Button>
+        </div>
       </form>
     </Form>
   );

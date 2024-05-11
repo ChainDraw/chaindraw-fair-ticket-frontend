@@ -23,7 +23,6 @@ export default function Page() {
           <Progress value={progress} />
           <div className="mt-4 flex justify-between items-center">
             <div>当前进度：{map[progress]}</div>
-            <Button onClick={() => {}}>下一步</Button>
           </div>
         </CardHeader>
         <CardContent>
