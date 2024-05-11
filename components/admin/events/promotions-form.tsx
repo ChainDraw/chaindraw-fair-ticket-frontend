@@ -19,7 +19,9 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
-  description: z.string(),
+  description: z.string().min(1, {
+    message: 'required',
+  }),
   // cover: z
   //   .instanceof(File)
   //   .refine((file) => file, 'File is required.')
