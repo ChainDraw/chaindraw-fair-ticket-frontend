@@ -1,8 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 import { useState } from 'react';
 import BasicsForm from '@/components/admin/events/basics-form';
