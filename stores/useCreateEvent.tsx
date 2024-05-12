@@ -14,7 +14,7 @@ interface FormStepsState {
   progress: number;
   updateStep: (step: number, formData: StepData) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
-  getCurrentFormState: () => string;
+  getCurrentFormName: () => string;
 }
 
 const stepMap: { [key: number]: number } = {
@@ -59,7 +59,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     });
     return response;
   },
-  getCurrentFormState: () => {
+  getCurrentFormName: () => {
     const { progress } = get();
     return formStateMap[progress];
   },

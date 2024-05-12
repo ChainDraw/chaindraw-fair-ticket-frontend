@@ -15,7 +15,6 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-import { useRouter } from 'next/navigation';
 import {
   Popover,
   PopoverContent,
@@ -28,6 +27,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { DateTimePicker } from '../../ui/time-picker/date-time-picker';
 
 import { useToast } from '@/components/ui/use-toast';
+import useCreateEvent from '@/stores/useCreateEvent';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: '请输入活动名称' }),
@@ -44,7 +44,7 @@ const formSchema = z.object({
 });
 
 export default function BasicsForm() {
-  const router = useRouter();
+  const { updateStep } = useCreateEvent();
 
   const { toast } = useToast();
 
@@ -60,7 +60,6 @@ export default function BasicsForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values', values);
     const { start_time, entry_time, end_time } = values;
     const isOrderCorrect = checkTimeOrder(start_time, entry_time, end_time);
     if (!isOrderCorrect) {
@@ -69,8 +68,9 @@ export default function BasicsForm() {
         description: '请检查活动时间顺序',
         variant: 'destructive',
       });
+    } else {
+      updateStep(1, values);
     }
-    // router.push('/events/create/promotions');
   }
 
   return (
