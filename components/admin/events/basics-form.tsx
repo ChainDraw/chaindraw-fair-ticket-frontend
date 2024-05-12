@@ -21,11 +21,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { checkTimeOrder, cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { DateTimePicker } from '../../ui/time-picker/date-time-picker';
+
+import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: '请输入活动名称' }),
@@ -44,6 +46,8 @@ const formSchema = z.object({
 export default function BasicsForm() {
   const router = useRouter();
 
+  const { toast } = useToast();
+
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,6 +61,15 @@ export default function BasicsForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
+    const { start_time, entry_time, end_time } = values;
+    const isOrderCorrect = checkTimeOrder(start_time, entry_time, end_time);
+    if (!isOrderCorrect) {
+      toast({
+        title: '时间顺序错误',
+        description: '请检查活动时间顺序',
+        variant: 'destructive',
+      });
+    }
     // router.push('/events/create/promotions');
   }
 
