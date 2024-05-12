@@ -25,14 +25,20 @@ import { cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
-import { TimePickerDemo } from '@/components/admin/events/time-picker-demo';
+import { DateTimePicker } from '../../ui/time-picker/date-time-picker';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: '请输入活动名称' }),
   address: z.string().min(1, { message: '请输入活动地点' }),
-  start_time: z.date(),
-  end_time: z.string().min(1),
-  entry_time: z.string().min(1),
+  start_time: z.date({
+    required_error: '请选择活动开始时间',
+  }),
+  end_time: z.date({
+    required_error: '请选择活动结束时间',
+  }),
+  entry_time: z.date({
+    required_error: '请选择活动入场时间',
+  }),
 });
 
 export default function BasicsForm() {
@@ -44,8 +50,8 @@ export default function BasicsForm() {
       name: '',
       address: '',
       start_time: undefined,
-      end_time: '',
-      entry_time: '',
+      end_time: undefined,
+      entry_time: undefined,
     },
   });
 
@@ -105,7 +111,7 @@ export default function BasicsForm() {
                           {field.value ? (
                             format(field.value, 'PPP HH:mm:ss')
                           ) : (
-                            <span>Pick a date</span>
+                            <span>开始时间</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -118,13 +124,14 @@ export default function BasicsForm() {
                         initialFocus
                       />
                       <div className="p-3 border-t border-border">
-                        <TimePickerDemo
+                        <DateTimePicker
                           setDate={field.onChange}
                           date={field.value}
                         />
                       </div>
                     </PopoverContent>
                   </Popover>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -136,9 +143,40 @@ export default function BasicsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>入场时间</FormLabel>
-                  <FormControl>
-                    <Input placeholder="请输入入场时间" {...field} />
-                  </FormControl>
+                  <Popover>
+                    <FormControl>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'w-[280px] justify-start text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? (
+                            format(field.value, 'PPP HH:mm:ss')
+                          ) : (
+                            <span>入场时间</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                    </FormControl>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                      <div className="p-3 border-t border-border">
+                        <DateTimePicker
+                          setDate={field.onChange}
+                          date={field.value}
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -151,9 +189,40 @@ export default function BasicsForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>结束时间</FormLabel>
-                  <FormControl>
-                    <Input placeholder="请输入结束时间" {...field} />
-                  </FormControl>
+                  <Popover>
+                    <FormControl>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'w-[280px] justify-start text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? (
+                            format(field.value, 'PPP HH:mm:ss')
+                          ) : (
+                            <span>结束时间</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                    </FormControl>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                      <div className="p-3 border-t border-border">
+                        <DateTimePicker
+                          setDate={field.onChange}
+                          date={field.value}
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

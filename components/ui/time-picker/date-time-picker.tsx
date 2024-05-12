@@ -5,12 +5,12 @@ import { Clock } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { TimePickerInput } from '@/components/ui/time-picker/time-picker-input';
 
-interface TimePickerDemoProps {
+interface DateTimePickerProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
 }
 
-export function TimePickerDemo({ date, setDate }: TimePickerDemoProps) {
+export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
   const minuteRef = React.useRef<HTMLInputElement>(null);
   const hourRef = React.useRef<HTMLInputElement>(null);
   const secondRef = React.useRef<HTMLInputElement>(null);
