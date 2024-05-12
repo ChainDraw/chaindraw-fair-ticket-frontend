@@ -1,10 +1,15 @@
-// api v1  路由路径控制
-const paths = {
-  home() {
-    return "/";
+// api v1
+export const paths = {
+  client: {
+    home: "/client",
+    profile: "/client/profile",
+    market: "/client/market",
+    lottery: "/client/lottery",
+    ticketInfo: (id: string) => {
+      return `client/shows/${id}`;
+    },
   },
-  // eg: /:id
-  // ticketShow(ticketId: string) {
-  //   return `/tickets/${ticketId}`;
-  // },
+  admin: {
+    events: "admin/events",
+  },
 };

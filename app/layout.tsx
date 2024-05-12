@@ -4,6 +4,7 @@ import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { ContextProvider } from "@/config/context";
 import { headers } from "next/headers";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
   const cookie = headers().get("cookie");
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className)}>
         <ContextProvider cookie={cookie}>{children}</ContextProvider>
       </body>
     </html>

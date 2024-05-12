@@ -11,72 +11,79 @@ import { WagmiProvider, cookieToInitialState } from "wagmi";
 import { config } from "./provider-config";
 import { SiweMessage } from "siwe";
 const queryClient = new QueryClient();
-// fake signature  use JWT or Session cookie
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [status, setStatus] = useState<AuthenticationStatus>("unauthenticated");
-  async function signIn() {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    setStatus("authenticated");
-  }
+  const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("loading");
+  console.log(authStatus);
   useEffect(() => {
-    signIn();
+    const fetchUser = async () => {
+      try {
+        // const response = await fetch("http://localhost:3000/me");
+        // const { address } = await response.json();
+        // console.log("address: ", address);
+        const address = await new Promise((r) =>
+          setTimeout(() => r(false), 3000)
+        );
+        console.log("test", address);
+        setAuthStatus(address ? "authenticated" : "unauthenticated");
+      } catch (error) {
+        console.log("error: ", error);
+        setAuthStatus("unauthenticated");
+      }
+    };
+    fetchUser();
   }, []);
-  const authenticationAdapter = useMemo(
-    () =>
-      createAuthenticationAdapter({
-        getNonce: async () => {
-          await new Promise((r) => setTimeout(r, 100));
-          const nonce = "mockNonce";
-          return nonce;
-        },
+  const authAdapter = useMemo(() => {
+    return createAuthenticationAdapter({
+      getNonce: async () => {
+        const response = await fetch(
+          "http://localhost:3000/api/signMessage/nonce"
+        );
+        const { data } = await response.json();
+        return data.nonce;
+      },
 
-        createMessage: ({ nonce, address, chainId }) => {
-          return new SiweMessage({
-            domain: window.location.host,
-            address,
-            statement: "Disclaimer",
-            uri: window.location.origin,
-            version: "1",
-            chainId,
-            nonce,
-          });
-        },
+      createMessage: ({ nonce, address, chainId }) => {
+        console.log(nonce, address, chainId);
+        return new SiweMessage({
+          domain: window.location.host,
+          address,
+          statement: "Sign in with Ethereum to the app.",
+          uri: window.location.origin,
+          version: "1",
+          chainId,
+          nonce,
+        });
+      },
 
-        getMessageBody: ({ message }) => {
-          return message.prepareMessage();
-        },
+      getMessageBody: ({ message }) => {
+        return message.prepareMessage();
+      },
 
-        verify: async ({ message, signature }) => {
-          setStatus("loading");
-          const verifyResult = {
-            data: {
-              status: "SUCCESS",
-              token: `${Math.random()}token`,
-            },
-          };
-          if (verifyResult.data.status === "SUCCESS") {
-            setStatus("authenticated");
-            localStorage.setItem("token", verifyResult.data.token);
-            return true;
-          }
-          setStatus("unauthenticated");
+      verify: async ({ message, signature }) => {
+        try {
+          setAuthStatus("loading");
+          const verifyRes = await fetch(
+            "http://localhost:3000/api/signMessage/verify",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message, signature }),
+            }
+          );
+          setAuthStatus("authenticated");
+          return !!verifyRes.ok;
+        } catch (error) {
+          setAuthStatus("unauthenticated");
           return false;
-        },
+        }
+      },
 
-        signOut: async () => {
-          localStorage.removeItem("token");
-          setStatus("unauthenticated");
-        },
-      }),
-    []
-  );
+      signOut: async () => {},
+    });
+  }, []);
 
   return (
-    <RainbowKitAuthenticationProvider
-      adapter={authenticationAdapter}
-      status={status}
-    >
+    <RainbowKitAuthenticationProvider adapter={authAdapter} status={authStatus}>
       <RainbowKitProvider>{children}</RainbowKitProvider>
     </RainbowKitAuthenticationProvider>
   );
@@ -88,14 +95,11 @@ export function ContextProvider({
   children: ReactNode;
   cookie?: string | null;
 }) {
-  // cookie 缓存 连接状态 ssr
   const initialState = cookieToInitialState(config, cookie);
   return (
     <WagmiProvider config={config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RainbowKitProvider locale="zh-CN">{children}</RainbowKitProvider>
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

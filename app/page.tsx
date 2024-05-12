@@ -1,8 +1,4 @@
-import Header from "@/components/header/Header";
+import { redirect } from "next/navigation";
 export default function Home() {
-  return (
-    <div>
-      <Header />
-    </div>
-  );
+  return redirect("/client");
 }
