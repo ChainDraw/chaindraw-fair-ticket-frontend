@@ -48,7 +48,16 @@ const formSchema = z.object({
 });
 
 export default function TicketsForm() {
-  const { updateStep, submitData } = useCreateEvent();
+  const { updateStep, submitData, goBack, data } = useCreateEvent();
+  const {
+    max_per_wallet,
+    ticket_max_num,
+    ticket_price,
+    ticket_name,
+    ticket_description,
+    ticket_cover,
+    allow_transfer,
+  } = data.step3;
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
@@ -66,20 +75,20 @@ export default function TicketsForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      max_per_wallet: 0,
-      ticket_max_num: 0,
-      ticket_price: 0,
-      ticket_name: '',
-      ticket_description: '',
-      ticket_cover: undefined,
-      allow_transfer: false,
+      max_per_wallet: max_per_wallet ?? 0,
+      ticket_max_num: ticket_max_num ?? 0,
+      ticket_price: ticket_price ?? 0,
+      ticket_name: ticket_name ?? '',
+      ticket_description: ticket_description ?? '',
+      ticket_cover: ticket_cover ?? undefined,
+      allow_transfer: allow_transfer ?? false,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
-    updateStep(3, values);
-    submitData();
+    // updateStep(3, values);
+    // submitData();
   }
 
   return (
@@ -164,7 +173,6 @@ export default function TicketsForm() {
                   )}
                 </>
               </FormControl>
-              <FormDescription />
               <FormMessage />
             </FormItem>
           )}
@@ -186,8 +194,9 @@ export default function TicketsForm() {
             </FormItem>
           )}
         />
-        <div className="text-center">
-          <Button type="submit">发布</Button>
+        <div className="text-center space-x-8">
+          <Button onClick={goBack}>上一步</Button>
+          <Button type="submit">发 布</Button>
         </div>
       </form>
     </Form>

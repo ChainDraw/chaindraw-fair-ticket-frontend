@@ -34,7 +34,8 @@ const formSchema = z.object({
 });
 
 export default function PromotionsForm() {
-  const { updateStep } = useCreateEvent();
+  const { updateStep, goBack, data } = useCreateEvent();
+  const { description, cover } = data.step2;
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
@@ -52,12 +53,13 @@ export default function PromotionsForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: '',
-      cover: undefined,
+      description: description ?? '',
+      cover: cover ?? undefined,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('values', values);
     updateStep(2, values);
   }
 
@@ -109,7 +111,8 @@ export default function PromotionsForm() {
             </FormItem>
           )}
         />
-        <div className="text-center">
+        <div className="text-center space-x-8">
+          <Button onClick={goBack}>上一步</Button>
           <Button type="submit">下一步</Button>
         </div>
       </form>

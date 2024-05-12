@@ -44,18 +44,19 @@ const formSchema = z.object({
 });
 
 export default function BasicsForm() {
-  const { updateStep } = useCreateEvent();
+  const { updateStep, data } = useCreateEvent();
+  const { name, address, start_time, end_time, entry_time } = data.step1;
 
   const { toast } = useToast();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      address: '',
-      start_time: undefined,
-      end_time: undefined,
-      entry_time: undefined,
+      name: name ?? '',
+      address: address ?? '',
+      start_time: start_time ?? undefined,
+      entry_time: entry_time ?? undefined,
+      end_time: end_time ?? undefined,
     },
   });
 
@@ -69,6 +70,7 @@ export default function BasicsForm() {
         variant: 'destructive',
       });
     } else {
+      console.log('values', values);
       updateStep(1, values);
     }
   }
