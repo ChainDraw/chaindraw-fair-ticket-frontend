@@ -15,6 +15,8 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ACCEPTED_IMAGE_MIME_TYPES, MAX_FILE_SIZE, cn } from '@/lib/utils';
+import { useState } from 'react';
+import Image from 'next/image';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -50,6 +52,18 @@ const formSchema = z.object({
 });
 
 export default function SettingsForm() {
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(
+    undefined
+  );
+
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    } else {
+      setSelectedImage(undefined);
+    }
+  };
+
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -127,14 +141,24 @@ export default function SettingsForm() {
             <FormItem>
               <FormLabel>门票封面</FormLabel>
               <FormControl>
-                <Input
-                  {...fieldProps}
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) =>
-                    onChange(event.target.files && event.target.files[0])
-                  }
-                />
+                <>
+                  <Input
+                    {...fieldProps}
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => onImageChange(event)}
+                  />
+                  {selectedImage && (
+                    <div className="flex-center h-[200px]">
+                      <Image
+                        width={300}
+                        height={300}
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="Selected"
+                      />
+                    </div>
+                  )}
+                </>
               </FormControl>
               <FormMessage />
             </FormItem>
