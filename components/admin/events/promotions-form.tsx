@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const formSchema = z.object({
@@ -36,6 +36,7 @@ const formSchema = z.object({
 export default function PromotionsForm() {
   const { updateStep, goBack, data } = useCreateEvent();
   const { description, cover } = data.step2;
+  console.log('cover', cover);
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
@@ -49,6 +50,10 @@ export default function PromotionsForm() {
       setSelectedImage(undefined);
     }
   };
+
+  useEffect(() => {
+    setSelectedImage(cover);
+  }, []);
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
