@@ -6,6 +6,7 @@ const map: { [key: string]: string } = {
   '/events': '活动',
   '/settings': '主办方设置',
   '/events/create': '新建活动',
+  '/mint': '铸造NFT',
 };
 
 export default function AdminHeader() {
