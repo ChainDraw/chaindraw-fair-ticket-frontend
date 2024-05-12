@@ -9,11 +9,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -35,10 +36,17 @@ const formSchema = z.object({
       message: '图片大小不能超过 5MB',
     }),
   // social links
-  facebook: z.string().url().optional(),
-  instagram: z.string().url().optional(),
-  twitter: z.string().url().optional(),
-  website: z.string().url().optional(),
+  urls: z
+    .array(
+      z.object({
+        value: z.string().url({ message: '请输入一个有效的链接' }),
+      })
+    )
+    .optional(),
+  // facebook: z.string().url().optional(),
+  // instagram: z.string().url().optional(),
+  // twitter: z.string().url().optional(),
+  // website: z.string().url().optional(),
 });
 
 export default function SettingsForm() {
@@ -49,12 +57,16 @@ export default function SettingsForm() {
       email: '',
       phone: '',
       cover: undefined,
-      facebook: '',
-      instagram: '',
-      twitter: '',
-      website: '',
+      urls: [{ value: '' }, { value: '' }, { value: '' }, { value: '' }],
     },
   });
+
+  const { fields } = useFieldArray({
+    name: 'urls',
+    control: form1.control,
+  });
+
+  const placeholders = ['Website', 'X', 'Facebook', 'Telegram'];
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
@@ -128,6 +140,25 @@ export default function SettingsForm() {
             </FormItem>
           )}
         />
+        <div className="w-full">
+          {fields.map((field, index) => (
+            <FormField
+              key={field.id}
+              control={form1.control}
+              name={`urls.${index}.value`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn(index !== 0 && 'sr-only')}>
+                    URLs
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder={placeholders[index]} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
         <div className="text-center">
           <Button type="submit">保存</Button>
         </div>
