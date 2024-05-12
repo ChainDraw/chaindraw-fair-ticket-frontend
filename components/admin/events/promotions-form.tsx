@@ -15,8 +15,7 @@ import { z } from 'zod';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-import { useRouter } from 'next/navigation';
+import useCreateEvent from '@/stores/useCreateEvent';
 
 const formSchema = z.object({
   description: z.string().min(1, {
@@ -37,7 +36,7 @@ const formSchema = z.object({
 });
 
 export default function PromotionsForm() {
-  const router = useRouter();
+  const { updateStep } = useCreateEvent();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,8 +47,7 @@ export default function PromotionsForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values', values);
-    router.push('/events/create/tickets');
+    updateStep(2, values);
   }
 
   return (
