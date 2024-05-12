@@ -12,7 +12,7 @@ type Props = {};
 
 const Home = (props: Props) => {
   return (
-    <main className="w-full pb-10 relative md:pb-20">
+    <main className="bg-[#040001] w-full pb-10 relative md:pb-20">
       <Hero />
       <MaxWidthWrapper className="pt-14 md:pt-32">
         <div className="hidden  md:flex md:text-center justify-center ">

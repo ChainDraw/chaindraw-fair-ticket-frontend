@@ -18,7 +18,7 @@ const Create = (props: Props) => {
         </p>
       </header>
       <Link
-        href="#"
+        href={paths.admin.events}
         className="cursor-pointer bg-[#8cbdb6] mt-36  flex-1 hidden md:flex gap-x-4 justify-between items-center relative  rounded-full shadow-inner shadow-[#8cbdb8]"
       >
         <Image
@@ -31,7 +31,7 @@ const Create = (props: Props) => {
       </Link>
       <div className="w-full flex justify-center mt-5 md:hidden">
         <Link
-          href="#"
+          href={paths.admin.events}
           className="px-6 py-2 rounded-md bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white font-bold text-base"
         >
           Create -&gt;

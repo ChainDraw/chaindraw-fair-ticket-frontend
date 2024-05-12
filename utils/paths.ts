@@ -2,12 +2,14 @@
 export const paths = {
   client: {
     home: "/client",
-    market: "client/market",
-    tickets: "client/tickets",
+    profile: "/client/profile",
+    market: "/client/market",
+    lottery: "/client/lottery",
     ticketInfo: (id: string) => {
-      return `client/ticket/${id}`;
+      return `client/shows/${id}`;
     },
-    create: "client/create",
   },
-  admin: {},
+  admin: {
+    events: "admin/events",
+  },
 };

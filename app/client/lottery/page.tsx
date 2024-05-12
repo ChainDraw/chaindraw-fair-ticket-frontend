@@ -3,7 +3,7 @@ import React from "react";
 type Props = {};
 
 const page = (props: Props) => {
-  return <main className="min-h-screen">page</main>;
+  return <div>page</div>;
 };
 
 export default page;

@@ -14,7 +14,7 @@ const ExploreEvents = () => {
         description="Checkout our weekly updated trending collection."
         button={{
           icon: <Rocket />,
-          buttonContent: "Collection",
+          buttonContent: "Buy",
           link: paths.client.market,
         }}
       />

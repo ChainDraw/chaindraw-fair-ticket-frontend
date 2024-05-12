@@ -32,7 +32,7 @@ const Hero = (props: Props) => {
                   Browse Marketplace
                 </Button>
               </Link>
-              <Link href={paths.client.create}>
+              <Link href={paths.admin.events}>
                 <Button
                   className={buttonVariants({
                     variant: "default",

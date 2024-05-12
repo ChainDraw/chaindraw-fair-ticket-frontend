@@ -1,11 +1,18 @@
+"use client";
 import React from "react";
 import MaxWidthWrapper from "../MaxWidthWrapper";
 import { MailCheck, Twitter, Webhook } from "lucide-react";
 import Link from "next/link";
-
+import { usePathname } from "next/navigation";
+import { paths } from "@/utils/paths";
 type Props = {};
 
 const Footer = (props: Props) => {
+  const path = usePathname();
+  console.log(path);
+  if (path === paths.client.profile) {
+    return null;
+  }
   return (
     <footer className="w-full h-auto bg-[#181818] text-white py-5 md:py-10">
       <MaxWidthWrapper>

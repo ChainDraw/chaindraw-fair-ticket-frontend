@@ -30,8 +30,12 @@ import {
 } from "lucide-react";
 import { useDisconnect } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { paths } from "@/utils/paths";
+
 export const CustomConnectButton = () => {
   const { disconnect } = useDisconnect();
+
   return (
     <ConnectButton.Custom>
       {({
@@ -85,21 +89,27 @@ export const CustomConnectButton = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Plus className="mr-2 h-4 w-4" />
-                    <span>Create</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    <span>Buy</span>
-                  </DropdownMenuItem>
+                  <Link href={paths.client.profile}>
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href={paths.admin.events}>
+                    <DropdownMenuItem>
+                      <Plus className="mr-2 h-4 w-4" />
+                      <span>Create</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href={paths.client.market}>
+                    <DropdownMenuItem>
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      <span>Buy</span>
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
+                {/* <DropdownMenuGroup>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
                       <UserPlus className="mr-2 h-4 w-4" />
@@ -123,7 +133,7 @@ export const CustomConnectButton = () => {
                       </DropdownMenuSubContent>
                     </DropdownMenuPortal>
                   </DropdownMenuSub>
-                </DropdownMenuGroup>
+                </DropdownMenuGroup> */}
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
@@ -136,7 +146,8 @@ export const CustomConnectButton = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => {
+                  onClick={async () => {
+                    await fetch("http://localhost:3000/logout");
                     disconnect();
                   }}
                 >

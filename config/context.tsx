@@ -12,8 +12,7 @@ import { config } from "./provider-config";
 import { SiweMessage } from "siwe";
 const queryClient = new QueryClient();
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [authStatus, setAuthStatus] =
-    useState<AuthenticationStatus>("unauthenticated");
+  const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("loading");
   console.log(authStatus);
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,19 +20,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         // const response = await fetch("http://localhost:3000/me");
         // const { address } = await response.json();
         // console.log("address: ", address);
-        setAuthStatus(true ? "authenticated" : "unauthenticated");
+        const address = await new Promise((r) =>
+          setTimeout(() => r(false), 3000)
+        );
+        console.log("test", address);
+        setAuthStatus(address ? "authenticated" : "unauthenticated");
       } catch (error) {
         console.log("error: ", error);
         setAuthStatus("unauthenticated");
       }
     };
     fetchUser();
-
-    window.addEventListener("focus", fetchUser);
-
-    return () => {
-      window.removeEventListener("focus", fetchUser);
-    };
   }, []);
   const authAdapter = useMemo(() => {
     return createAuthenticationAdapter({
@@ -81,10 +78,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       },
 
-      signOut: async () => {
-        await fetch("http://localhost:3000/logout");
-        setAuthStatus("unauthenticated");
-      },
+      signOut: async () => {},
     });
   }, []);
 
