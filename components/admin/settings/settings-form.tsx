@@ -14,7 +14,7 @@ import { z } from 'zod';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { ACCEPTED_IMAGE_MIME_TYPES, MAX_FILE_SIZE, cn } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -32,7 +32,11 @@ const formSchema = z.object({
     .instanceof(File, {
       message: '请选择一张图片',
     })
-    .refine((file) => file.size < 5 * 1024 * 1024, {
+    // .refine(
+    //   (file) => ACCEPTED_IMAGE_MIME_TYPES.includes(file?.type),
+    //   '只支持 .jpg, .jpeg, .png and .webp 格式的图片'
+    // )
+    .refine((file) => file.size < MAX_FILE_SIZE, {
       message: '图片大小不能超过 5MB',
     }),
   // social links
@@ -126,7 +130,7 @@ export default function SettingsForm() {
                 <Input
                   {...fieldProps}
                   type="file"
-                  accept="application/pdf"
+                  accept="image/*"
                   onChange={(event) =>
                     onChange(event.target.files && event.target.files[0])
                   }
