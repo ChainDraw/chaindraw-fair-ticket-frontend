@@ -152,10 +152,11 @@ export default function TicketsForm() {
                     onChange={(event) => onImageChange(event, onChange)}
                   />
                   {selectedImage && (
-                    <div className="flex-center h-[200px]">
+                    <div className="flex-center h-[auto]">
                       <Image
-                        width={300}
-                        height={300}
+                        width="0"
+                        height="0"
+                        className="w-1/2 max-w-[280px] h-auto"
                         src={URL.createObjectURL(selectedImage)}
                         alt="Selected"
                       />
