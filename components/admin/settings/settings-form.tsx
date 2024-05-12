@@ -43,10 +43,6 @@ const formSchema = z.object({
       })
     )
     .optional(),
-  // facebook: z.string().url().optional(),
-  // instagram: z.string().url().optional(),
-  // twitter: z.string().url().optional(),
-  // website: z.string().url().optional(),
 });
 
 export default function SettingsForm() {
@@ -154,6 +150,7 @@ export default function SettingsForm() {
                   <FormControl>
                     <Input {...field} placeholder={placeholders[index]} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
