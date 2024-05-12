@@ -5,9 +5,7 @@ import { usePathname } from 'next/navigation';
 const map: { [key: string]: string } = {
   '/events': '活动',
   '/settings': '主办方设置',
-  '/events/create/basics': '新建活动',
-  '/events/create/promotions': '新建活动',
-  '/events/create/tickets': '新建活动',
+  '/events/create': '新建活动',
 };
 
 export default function AdminHeader() {

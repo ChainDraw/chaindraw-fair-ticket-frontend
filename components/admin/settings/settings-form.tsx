@@ -56,7 +56,8 @@ export default function SettingsForm() {
     undefined
   );
 
-  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
+    fn(e.target.files?.[0]);
     if (e.target.files && e.target.files.length > 0) {
       setSelectedImage(e.target.files[0]);
     } else {
@@ -146,7 +147,7 @@ export default function SettingsForm() {
                     {...fieldProps}
                     type="file"
                     accept="image/*"
-                    onChange={(event) => onImageChange(event)}
+                    onChange={(event) => onImageChange(event, onChange)}
                   />
                   {selectedImage && (
                     <div className="flex-center h-[200px]">

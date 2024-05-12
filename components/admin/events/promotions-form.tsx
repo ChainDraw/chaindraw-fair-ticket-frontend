@@ -16,27 +16,38 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
+import { MAX_FILE_SIZE } from '@/lib/utils';
+import { useState } from 'react';
+import Image from 'next/image';
 
 const formSchema = z.object({
   description: z.string().min(1, {
-    message: 'required',
+    message: '请输入活动描述',
   }),
-  // cover: z
-  //   .instanceof(File)
-  //   .refine((file) => file, 'File is required.')
-  //   .refine((file) => !file || (!!file && file.size <= 5 * 1024 * 1024), {
-  //     message: 'The cover picture must be a maximum of 5MB.',
-  //   })
-  //   .refine((file) => !file || (!!file && file.type?.startsWith('image')), {
-  //     message: 'Only images are allowed to be sent.',
-  //   }),
-  cover: z.instanceof(File).refine((file) => file.size < 5 * 1024 * 1024, {
-    message: 'Your resume must be less than 7MB.',
-  }),
+  cover: z
+    .instanceof(File, {
+      message: '请选择一张图片',
+    })
+    .refine((file) => file.size < MAX_FILE_SIZE, {
+      message: '图片大小不能超过 5MB',
+    }),
 });
 
 export default function PromotionsForm() {
   const { updateStep } = useCreateEvent();
+
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(
+    undefined
+  );
+
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
+    fn(e.target.files?.[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    } else {
+      setSelectedImage(undefined);
+    }
+  };
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,14 +84,24 @@ export default function PromotionsForm() {
             <FormItem>
               <FormLabel>活动封面</FormLabel>
               <FormControl>
-                <Input
-                  {...fieldProps}
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(event) =>
-                    onChange(event.target.files && event.target.files[0])
-                  }
-                />
+                <>
+                  <Input
+                    {...fieldProps}
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => onImageChange(event, onChange)}
+                  />
+                  {selectedImage && (
+                    <div className="flex-center h-[200px]">
+                      <Image
+                        width={300}
+                        height={300}
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="Selected"
+                      />
+                    </div>
+                  )}
+                </>
               </FormControl>
               <FormDescription />
               <FormMessage />
