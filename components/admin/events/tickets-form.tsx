@@ -19,27 +19,6 @@ import { Switch } from '@/components/ui/switch';
 
 import { useRouter } from 'next/navigation';
 
-// {
-//     id: 'asdasdasd123123',
-//     name: '演唱会01',
-//     address: '上海市新天地',
-//     date: '2023-01-01',
-//     time: '12:00',
-//     cover: 'https://picsum.photos/200/300',
-//     description: '上海市新天地有一场演唱会。',
-//     status: '已结束',
-//     review_status: '已审核',
-//     ticket: {
-//       ticket_name: '演唱会01门票',
-//       ticket_type: '普通票',
-//       ticket_price: 100,
-//       ticket_cover: 'https://picsum.photos/200/300',
-//       ticket_max_num: 1000,
-//       ticket_status: '已售罄',
-//       allowSecondHandTrade: true, // 二手交易开关
-//     },
-//   },
-
 const formSchema = z.object({
   max_per_wallet: z.number().min(1, {
     message: 'required',
@@ -65,8 +44,6 @@ const formSchema = z.object({
 });
 
 export default function TicketsForm() {
-  const router = useRouter();
-
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
