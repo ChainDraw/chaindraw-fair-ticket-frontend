@@ -18,8 +18,8 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  address: z.string().min(1),
+  name: z.string().min(1, { message: '请输入活动名称' }),
+  address: z.string().min(1, { message: '请输入活动地点' }),
   start_time: z.string().min(1),
   end_time: z.string().min(1),
   entry_time: z.string().min(1),
@@ -73,45 +73,54 @@ export default function BasicsForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form1.control}
-          name="start_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>开始时间</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入开始时间" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="entry_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>入场时间</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入入场时间" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="end_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>结束时间</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入结束时间" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="w-full flex justify-between items-center space-x-4">
+          <div className="flex-1">
+            <FormField
+              control={form1.control}
+              name="start_time"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>开始时间</FormLabel>
+                  <FormControl>
+                    <Input placeholder="请输入开始时间" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex-1">
+            <FormField
+              control={form1.control}
+              name="entry_time"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>入场时间</FormLabel>
+                  <FormControl>
+                    <Input placeholder="请输入入场时间" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex-1">
+            <FormField
+              control={form1.control}
+              name="end_time"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>结束时间</FormLabel>
+                  <FormControl>
+                    <Input placeholder="请输入结束时间" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
         <div className="text-center">
           <Button type="submit">下一步</Button>
         </div>
