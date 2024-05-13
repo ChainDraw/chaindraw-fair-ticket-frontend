@@ -10,10 +10,18 @@ type Props = {};
 const Footer = (props: Props) => {
   const path = usePathname();
 
-  if (
-    path === paths.client.profile ||
-    path.startsWith(paths.client.allLottery)
-  ) {
+  const [showFooter, setShowFooter] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      path !== paths.client.profile &&
+      !path.startsWith(paths.client.allLottery)
+    ) {
+      setShowFooter(true);
+    }
+  }, [path]);
+
+  if (!showFooter) {
     return null;
   }
 
