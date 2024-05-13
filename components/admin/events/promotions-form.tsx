@@ -83,7 +83,8 @@ export default function PromotionsForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { lottery_start_date, lottery_end_date } = values;
-    const isOrderCorrect = !compareDates(lottery_start_date, lottery_end_date);
+    const isOrderCorrect =
+      compareDates(lottery_start_date, lottery_end_date) === -1;
     if (isPastDate(lottery_start_date)) {
       toast({
         title: '时间错误',
