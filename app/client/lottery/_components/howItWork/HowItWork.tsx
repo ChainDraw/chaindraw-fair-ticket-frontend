@@ -54,7 +54,7 @@ const HowItWork = (props: Props) => {
           <h2 className="font-semibold py-2">Enter Lottery</h2>
           <p className="opacity-75">
             Your ticket automatically enters you into a lottery draw, powered by
-            Chainlink's VRF to ensure fairness.
+            Chainlink VRF to ensure fairness.
           </p>
         </div>
         <ArrowUp size={80} className="hidden md:block mx-auto md:rotate-90" />
