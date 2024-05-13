@@ -16,6 +16,18 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 
 /**
+ * 检查给定的日期字符串是否表示过去的时间
+ * @param {string} dateStr 日期字符串
+ * @return {boolean} 如果给定的时间是过去的时间，则返回 true，否则返回 false
+ */
+function isPastDate(dateStr: Date) {
+  const currentDate = new Date();
+  const compareDate = new Date(dateStr);
+
+  return compareDate < currentDate;
+}
+
+/**
  * 比较两个日期字符串
  * @param {string} dateStr1 第一个日期字符串
  * @param {string} dateStr2 第二个日期字符串
@@ -49,6 +61,7 @@ export {
   cn,
   ACCEPTED_IMAGE_MIME_TYPES,
   MAX_FILE_SIZE,
+  isPastDate,
   compareDates,
   checkTimeOrder,
 };

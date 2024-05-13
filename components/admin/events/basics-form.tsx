@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { checkTimeOrder, cn } from '@/lib/utils';
+import { checkTimeOrder, cn, isPastDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -62,6 +62,14 @@ export default function BasicsForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
+    if (isPastDate(start_time)) {
+      toast({
+        title: '时间错误',
+        description: '不能选择过去的时间',
+        variant: 'destructive',
+      });
+      return;
+    }
     const isOrderCorrect = checkTimeOrder(start_time, entry_time, end_time);
     if (!isOrderCorrect) {
       toast({

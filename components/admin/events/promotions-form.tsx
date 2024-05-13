@@ -16,7 +16,7 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
-import { MAX_FILE_SIZE, cn, compareDates } from '@/lib/utils';
+import { MAX_FILE_SIZE, cn, compareDates, isPastDate } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
@@ -84,7 +84,14 @@ export default function PromotionsForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { lottery_start_date, lottery_end_date } = values;
     const isOrderCorrect = !compareDates(lottery_start_date, lottery_end_date);
-
+    if (isPastDate(lottery_start_date)) {
+      toast({
+        title: '时间错误',
+        description: '不能选择过去的时间',
+        variant: 'destructive',
+      });
+      return;
+    }
     if (!isOrderCorrect) {
       toast({
         title: '时间顺序错误',
