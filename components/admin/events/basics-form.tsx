@@ -70,7 +70,6 @@ export default function BasicsForm() {
         variant: 'destructive',
       });
     } else {
-      console.log('values', values);
       updateStep(1, values);
     }
   }

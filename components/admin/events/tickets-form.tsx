@@ -86,7 +86,6 @@ export default function TicketsForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values', values);
     updateFinalStep(values);
     const response = await submitData();
     console.log(await response);
