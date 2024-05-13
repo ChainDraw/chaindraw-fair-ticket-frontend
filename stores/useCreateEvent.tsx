@@ -13,6 +13,7 @@ interface FormStepsState {
   currentStep: number;
   progress: number;
   updateStep: (step: number, formData: StepData) => void;
+  updateFinalStep: (formData: StepData) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
   getCurrentFormName: () => string;
   goBack: () => void;
@@ -46,19 +47,24 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
       progress: stepMap[step + 1] || state.progress,
     }));
   },
+  updateFinalStep: (formData) => {
+    set((state) => ({
+      data: { ...state.data, step3: formData },
+    }));
+  },
   submitData: async () => {
     const { data } = get();
-    console.log('提交信息', data);
+    console.log('data', data);
     // 向后端发送数据
     // 这里我们只是模拟了一个 submitFormData 的函数调用
     const response = await submitFormData(data);
 
     // 将表单数据重置为初始状态
-    set({
-      data: { step1: {}, step2: {}, step3: {} },
-      currentStep: 1,
-      progress: stepMap[1],
-    });
+    // set({
+    //   data: { step1: {}, step2: {}, step3: {} },
+    //   currentStep: 1,
+    //   progress: stepMap[1],
+    // });
     return response;
   },
   getCurrentFormName: () => {

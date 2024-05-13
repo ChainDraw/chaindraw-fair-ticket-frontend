@@ -3,7 +3,6 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +19,7 @@ import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE } from '@/lib/utils';
 import { useState } from 'react';
 import Image from 'next/image';
+import { toast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   max_per_wallet: z.coerce.number().min(1, {
@@ -44,11 +44,11 @@ const formSchema = z.object({
     .refine((file) => file.size < MAX_FILE_SIZE, {
       message: '图片大小不能超过 5MB',
     }),
-  allow_transfer: z.boolean(),
+  allow_transfer: z.boolean().optional(),
 });
 
 export default function TicketsForm() {
-  const { updateStep, submitData, goBack, data } = useCreateEvent();
+  const { submitData, goBack, data, updateFinalStep } = useCreateEvent();
   const {
     max_per_wallet,
     ticket_max_num,
@@ -85,10 +85,14 @@ export default function TicketsForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
-    // updateStep(3, values);
-    // submitData();
+    updateFinalStep(values);
+    const response = await submitData();
+    console.log(await response);
+    toast({
+      title: '提交成功',
+    });
   }
 
   return (
@@ -196,7 +200,9 @@ export default function TicketsForm() {
         />
         <div className="text-center space-x-8">
           <Button onClick={goBack}>上一步</Button>
-          <Button type="submit">发 布</Button>
+          <Button type="submit" onClick={() => onSubmit(form1.getValues())}>
+            提交信息
+          </Button>
         </div>
       </form>
     </Form>
