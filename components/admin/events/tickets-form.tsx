@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
+
 import {
   Form,
   FormControl,
@@ -16,8 +18,13 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE } from '@/lib/utils';
-import Image from 'next/image';
 import { toast } from '@/components/ui/use-toast';
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
@@ -115,135 +122,148 @@ export default function TicketsForm() {
     });
   }
 
+  const handleRemove = (index: number) => {
+    remove(index);
+    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
   return (
     <Form {...form1}>
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         {fields.map((field, index) => (
-          <div key={field.id}>
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.ticket_name`)}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>门票名称</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="请输入门票名称"
-                      {...field}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.max_per_wallet`)}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>单个钱包最大购买数量</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="请输入单个钱包最大购买数量"
-                      {...field}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.ticket_max_num`)}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>门票最大可购买数量</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="请输入门票最大可购买数量"
-                      {...field}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.ticket_description`)}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>门票描述</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="请输入门票描述"
-                      {...field}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.ticket_cover`)}
-              render={({ field: { value, onChange, ...fieldProps } }) => (
-                <FormItem>
-                  <FormLabel>门票封面</FormLabel>
-                  <FormControl>
-                    <>
+          <Collapsible key={field.id} className="border-2 p-4">
+            <CollapsibleTrigger className="w-full flex justify-between items-center">
+              <div>
+                {form1.getValues(`tickets.${index}.ticket_name`) ||
+                  '新增门票 ' + (index + 1)}
+              </div>
+              <Button type="button" onClick={() => handleRemove(index)}>
+                删除
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.ticket_name`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>门票名称</FormLabel>
+                    <FormControl>
                       <Input
-                        {...fieldProps}
-                        // ref={field.ref}
-                        type="file"
-                        accept="image/*"
-                        onChange={(event) =>
-                          onImageChange(event, onChange, index)
-                        }
+                        placeholder="请输入门票名称"
+                        {...field}
+                        ref={field.ref}
                       />
-                      {selectedImages[index] && (
-                        <div className="flex-center h-[auto]">
-                          <Image
-                            width="0"
-                            height="0"
-                            className="w-1/2 max-w-[280px] h-auto"
-                            src={URL.createObjectURL(selectedImages[index])}
-                            alt="Selected"
-                          />
-                        </div>
-                      )}
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form1.control}
-              {...form1.register(`tickets.${index}.allow_transfer`)}
-              render={({ field }) => (
-                <FormItem>
-                  <div className="space-y-0.5">
-                    <FormLabel>是否运行二手交易</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button type="button" onClick={() => remove(index)}>
-              删除
-            </Button>
-          </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.max_per_wallet`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>单个钱包最大购买数量</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="请输入单个钱包最大购买数量"
+                        {...field}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.ticket_max_num`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>门票最大可购买数量</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="请输入门票最大可购买数量"
+                        {...field}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.ticket_description`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>门票描述</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="请输入门票描述"
+                        {...field}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.ticket_cover`)}
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
+                    <FormLabel>门票封面</FormLabel>
+                    <FormControl>
+                      <>
+                        <Input
+                          {...fieldProps}
+                          // ref={field.ref}
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) =>
+                            onImageChange(event, onChange, index)
+                          }
+                        />
+                        {selectedImages[index] && (
+                          <div className="flex-center h-[auto]">
+                            <Image
+                              width="0"
+                              height="0"
+                              className="w-1/2 max-w-[280px] h-auto"
+                              src={URL.createObjectURL(selectedImages[index])}
+                              alt="Selected"
+                            />
+                          </div>
+                        )}
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form1.control}
+                {...form1.register(`tickets.${index}.allow_transfer`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="space-y-0.5">
+                      <FormLabel>是否运行二手交易</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CollapsibleContent>
+          </Collapsible>
         ))}
         <div className="text-center space-x-8">
           <Button onClick={goBack}>上一步</Button>
