@@ -1,5 +1,4 @@
-'use client';
-
+import React, { useState } from 'react';
 import {
   Form,
   FormControl,
@@ -9,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Input } from '@/components/ui/input';
@@ -17,11 +16,11 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE } from '@/lib/utils';
-import { useState } from 'react';
 import Image from 'next/image';
 import { toast } from '@/components/ui/use-toast';
 
-const formSchema = z.object({
+// 定义一个门票对象的模式
+const ticketSchema = z.object({
   max_per_wallet: z.coerce.number().min(1, {
     message: '请输入单个钱包最大购买数量',
   }),
@@ -47,6 +46,11 @@ const formSchema = z.object({
   allow_transfer: z.boolean().optional(),
 });
 
+// 更新模式以处理门票的数组
+const formSchema = z.object({
+  tickets: z.array(ticketSchema),
+});
+
 export default function TicketsForm() {
   const { submitData, goBack, data, updateFinalStep } = useCreateEvent();
   const {
@@ -59,30 +63,47 @@ export default function TicketsForm() {
     allow_transfer,
   } = data.step3;
 
-  const [selectedImage, setSelectedImage] = useState<File | undefined>(
-    undefined
-  );
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
-  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
-    fn(e.target.files?.[0]);
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]);
-    } else {
-      setSelectedImage(undefined);
+  const onImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    fn: any,
+    index: number
+  ) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      fn(file);
+      setSelectedImages((prevImages) => {
+        const newImages = [...prevImages];
+        newImages[index] = file;
+        console.log('newImages', newImages);
+        return newImages;
+      });
     }
   };
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      max_per_wallet: max_per_wallet ?? 0,
-      ticket_max_num: ticket_max_num ?? 0,
-      ticket_price: ticket_price ?? 0,
-      ticket_name: ticket_name ?? '',
-      ticket_description: ticket_description ?? '',
-      ticket_cover: ticket_cover ?? undefined,
-      allow_transfer: allow_transfer ?? false,
+      tickets: [
+        {
+          max_per_wallet: max_per_wallet ?? 0,
+          ticket_max_num: ticket_max_num ?? 0,
+          ticket_price: ticket_price ?? 0,
+          ticket_name: ticket_name ?? '',
+          ticket_description: ticket_description ?? '',
+          ticket_cover: ticket_cover ?? undefined,
+          allow_transfer: allow_transfer ?? false,
+        },
+      ],
     },
+  });
+
+  // 使用 react-hook-form 的 useFieldArray 来管理动态字段数组
+  const { fields, append, remove } = useFieldArray({
+    control: form1.control,
+    name: 'tickets',
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -97,108 +118,151 @@ export default function TicketsForm() {
   return (
     <Form {...form1}>
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form1.control}
-          name="ticket_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>门票名称</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入门票名称" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="max_per_wallet"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>单个钱包最大购买数量</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入单个钱包最大购买数量" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="ticket_max_num"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>门票最大可购买数量</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入门票最大可购买数量" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="ticket_description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>门票描述</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入门票描述" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="ticket_cover"
-          render={({ field: { value, onChange, ...fieldProps } }) => (
-            <FormItem>
-              <FormLabel>门票封面</FormLabel>
-              <FormControl>
-                <>
-                  <Input
-                    {...fieldProps}
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => onImageChange(event, onChange)}
-                  />
-                  {selectedImage && (
-                    <div className="flex-center h-[auto]">
-                      <Image
-                        width="0"
-                        height="0"
-                        className="w-1/2 max-w-[280px] h-auto"
-                        src={URL.createObjectURL(selectedImage)}
-                        alt="Selected"
+        {fields.map((field, index) => (
+          <div key={field.id}>
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.ticket_name`)}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>门票名称</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="请输入门票名称"
+                      {...field}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.max_per_wallet`)}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>单个钱包最大购买数量</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="请输入单个钱包最大购买数量"
+                      {...field}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.ticket_max_num`)}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>门票最大可购买数量</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="请输入门票最大可购买数量"
+                      {...field}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.ticket_description`)}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>门票描述</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="请输入门票描述"
+                      {...field}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.ticket_cover`)}
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>门票封面</FormLabel>
+                  <FormControl>
+                    <>
+                      <Input
+                        {...fieldProps}
+                        // ref={field.ref}
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) =>
+                          onImageChange(event, onChange, index)
+                        }
                       />
-                    </div>
-                  )}
-                </>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form1.control}
-          name="allow_transfer"
-          render={({ field }) => (
-            <FormItem>
-              <div className="space-y-0.5">
-                <FormLabel>是否运行二手交易</FormLabel>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+                      {selectedImages[index] && (
+                        <div className="flex-center h-[auto]">
+                          <Image
+                            width="0"
+                            height="0"
+                            className="w-1/2 max-w-[280px] h-auto"
+                            src={URL.createObjectURL(selectedImages[index])}
+                            alt="Selected"
+                          />
+                        </div>
+                      )}
+                    </>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form1.control}
+              {...form1.register(`tickets.${index}.allow_transfer`)}
+              render={({ field }) => (
+                <FormItem>
+                  <div className="space-y-0.5">
+                    <FormLabel>是否运行二手交易</FormLabel>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button type="button" onClick={() => remove(index)}>
+              删除
+            </Button>
+          </div>
+        ))}
         <div className="text-center space-x-8">
           <Button onClick={goBack}>上一步</Button>
+          <Button
+            type="button"
+            onClick={() =>
+              append({
+                max_per_wallet: 0,
+                ticket_max_num: 0,
+                ticket_price: 0,
+                ticket_name: '',
+                ticket_description: '',
+                ticket_cover: undefined!,
+                allow_transfer: false,
+              })
+            }
+          >
+            添加
+          </Button>
           <Button type="submit" onClick={() => onSubmit(form1.getValues())}>
             提交信息
           </Button>
