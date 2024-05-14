@@ -7,8 +7,8 @@ type Props = {};
 
 const HowItWork = (props: Props) => {
   return (
-    <MaxWidthWrapper className="py-10 md:py-20 border-b border-gray-400">
-      <h1 className="text-red-500 text-center font-bold text-3xl md:text-4xl lg:text-5xl ">
+    <MaxWidthWrapper className="text-white py-10 md:py-20 border-b border-gray-400">
+      <h1 className="text-red-500 text-center font-bold text-3xl md:mb-10 md:text-4xl lg:text-5xl ">
         How It Work
       </h1>
       <div className="flex flex-col md:flex-row py-6 md:py-10 text-center items-center gap-10">

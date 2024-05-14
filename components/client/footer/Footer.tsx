@@ -8,22 +8,22 @@ import { paths } from "@/utils/paths";
 type Props = {};
 
 const Footer = (props: Props) => {
-  // const path = usePathname();
+  const path = usePathname();
 
-  // const [showFooter, setShowFooter] = React.useState(false);
+  const [showFooter, setShowFooter] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   if (
-  //     path !== paths.client.profile &&
-  //     !path.startsWith(paths.client.allLottery)
-  //   ) {
-  //     setShowFooter(true);
-  //   }
-  // }, [path]);
+  React.useEffect(() => {
+    if (
+      path !== paths.client.profile &&
+      !path.startsWith(paths.client.allLottery)
+    ) {
+      setShowFooter(true);
+    }
+  }, [path]);
 
-  // if (!showFooter) {
-  //   return null;
-  // }
+  if (!showFooter) {
+    return null;
+  }
 
   return (
     <footer className="w-full h-auto bg-[#181818] text-white py-5 md:py-10">

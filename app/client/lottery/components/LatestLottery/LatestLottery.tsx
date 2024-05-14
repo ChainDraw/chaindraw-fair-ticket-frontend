@@ -15,7 +15,7 @@ const LatestLottery = (props: Props) => {
         description="test"
         button={{
           icon: <Rocket />,
-          buttonContent: "SeeMore",
+          buttonContent: "View All",
           link: paths.client.allLottery,
         }}
       />
