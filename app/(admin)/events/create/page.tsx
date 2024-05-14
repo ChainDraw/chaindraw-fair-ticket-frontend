@@ -3,17 +3,13 @@
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-import { useState } from 'react';
 import BasicsForm from '@/components/admin/events/basics-form';
+import PromotionsForm from '@/components/admin/events/promotions-form';
+import TicketsForm from '@/components/admin/events/tickets-form';
+import useCreateEvent from '@/stores/useCreateEvent';
 
 export default function Page() {
-  const [progress, setProgress] = useState(33);
-
-  const map: { [key: number]: string } = {
-    33: '基本信息',
-    66: '促销信息',
-    100: '门票信息',
-  };
+  const { progress, getCurrentFormName } = useCreateEvent();
 
   return (
     <>
@@ -21,11 +17,13 @@ export default function Page() {
         <CardHeader className="sticky top-0 bg-white">
           <Progress value={progress} />
           <div className="mt-4 flex justify-between items-center">
-            <div>当前进度：{map[progress]}</div>
+            <div>当前进度：{getCurrentFormName()}</div>
           </div>
         </CardHeader>
         <CardContent>
-          <BasicsForm />
+          <div>{progress === 33 && <BasicsForm />}</div>
+          <div>{progress === 66 && <PromotionsForm />}</div>
+          <div>{progress === 100 && <TicketsForm />}</div>
         </CardContent>
       </Card>
     </>

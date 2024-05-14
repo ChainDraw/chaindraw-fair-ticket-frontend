@@ -19,7 +19,7 @@ export default async function Page() {
         <p className="mb-4">暂无活动</p>
         <div>
           <Button>
-            <Link href="/events/create/basics">新建活动</Link>
+            <Link href="/events/create">新建活动</Link>
           </Button>
         </div>
       </div>
