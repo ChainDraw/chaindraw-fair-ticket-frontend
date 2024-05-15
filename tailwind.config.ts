@@ -17,7 +17,11 @@ const config = {
         "2xl": "1400px",
       },
     },
+
     extend: {
+      fontFamily: {
+        selima: ["Selima"],
+      },
       colors: {
         buttonBg: "#001e4f",
         border: "hsl(var(--border))",
@@ -61,6 +65,7 @@ const config = {
       },
       backgroundImage: {
         "main-bgi": "url('/images/test8.png')",
+        "profile-bgi": "url('/images/profile.jpg')",
       },
       keyframes: {
         "accordion-down": {
