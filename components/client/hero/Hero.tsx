@@ -17,6 +17,7 @@ const Hero = (props: Props) => {
             <h1 className="bg-clip-text text-transparent bg-gradient-to-br from-[#F83A3A] to-[#7000FF] font-bold text-4xl leading-tight  lg:text-5xl">
               Discover and Own Exclusive Event Tickets
             </h1>
+
             <p className="text-base text-gray-300 opacity-90 my-3 px-3 md:px-0 md:text-lg lg:mb-6 lg:text-xl">
               Transform your tickets into unique digital assets on the
               blockchain.

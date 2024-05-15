@@ -60,7 +60,6 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       backgroundImage: {
-        // "main-bgi": "url('/images/herobg.png')",
         "main-bgi": "url('/images/test8.png')",
       },
       keyframes: {

@@ -13,8 +13,10 @@ interface FormStepsState {
   currentStep: number;
   progress: number;
   updateStep: (step: number, formData: StepData) => void;
+  updateFinalStep: (formData: StepData) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
   getCurrentFormName: () => string;
+  goBack: () => void;
 }
 
 const stepMap: { [key: number]: number } = {
@@ -45,23 +47,36 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
       progress: stepMap[step + 1] || state.progress,
     }));
   },
+  updateFinalStep: (formData) => {
+    set((state) => ({
+      data: { ...state.data, step3: formData },
+    }));
+  },
   submitData: async () => {
     const { data } = get();
+    console.log('data', data);
     // 向后端发送数据
     // 这里我们只是模拟了一个 submitFormData 的函数调用
     const response = await submitFormData(data);
 
     // 将表单数据重置为初始状态
-    set({
-      data: { step1: {}, step2: {}, step3: {} },
-      currentStep: 1,
-      progress: stepMap[1],
-    });
+    // set({
+    //   data: { step1: {}, step2: {}, step3: {} },
+    //   currentStep: 1,
+    //   progress: stepMap[1],
+    // });
     return response;
   },
   getCurrentFormName: () => {
     const { progress } = get();
     return formStateMap[progress];
+  },
+  goBack: () => {
+    set((state) => ({
+      // 确保 currentStep 不会小于 1
+      currentStep: Math.max(state.currentStep - 1, 1),
+      progress: stepMap[Math.max(state.currentStep - 1, 1)],
+    }));
   },
 }));
 

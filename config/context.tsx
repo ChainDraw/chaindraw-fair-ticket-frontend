@@ -13,7 +13,6 @@ import { SiweMessage } from "siwe";
 const queryClient = new QueryClient();
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("loading");
-  console.log(authStatus);
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -23,7 +22,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         const address = await new Promise((r) =>
           setTimeout(() => r(false), 3000)
         );
-        console.log("test", address);
+
         setAuthStatus(address ? "authenticated" : "unauthenticated");
       } catch (error) {
         console.log("error: ", error);

@@ -1,17 +1,17 @@
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page() {
-  const res = await fetch('http://localhost:3000/api/admin/events', {
-    cache: 'no-store',
+  const res = await fetch("http://localhost:3000/api/admin/events", {
+    cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error('Failed to fetch data');
+    throw new Error("Failed to fetch data");
   }
   const responseData = await res.json();
 
   const { data } = responseData;
-  console.log('data', data);
+  console.log("data", data);
 
   if (!data.length) {
     return (

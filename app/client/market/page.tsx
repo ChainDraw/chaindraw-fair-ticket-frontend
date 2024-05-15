@@ -2,8 +2,8 @@ import React from "react";
 
 type Props = {};
 
-const Page = (props: Props) => {
-  return <main className="min-h-screen">page</main>;
+const page = (props: Props) => {
+  return <div>page</div>;
 };
 
-export default Page;
+export default page;

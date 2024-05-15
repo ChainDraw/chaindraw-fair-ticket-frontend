@@ -33,7 +33,7 @@ const Header = memo(function Header() {
   return (
     <header
       className={cn(
-        "bg-black w-full sticky md:fixed top-0 inset-x-0 z-50  py-4 px-6 lg:px-18 mb-3 lg:h-auto duration-300 backdrop-blur-md"
+        "bg-black w-full sticky md:fixed top-0 inset-x-0 z-50  py-4 px-6 lg:px-18  lg:h-auto duration-300 backdrop-blur-md"
       )}
     >
       <MaxWidthWrapper className="flex-1 relative px-0 md:px-0 lg:px-0">

@@ -6,7 +6,14 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["picsum.photos", " images.seatlabnft.com"],
+    remotePatterns: [
+      {
+        hostname: "picsum.photos",
+      },
+      {
+        hostname: "images.seatlabnft.com",
+      },
+    ],
   },
 };
 

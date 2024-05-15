@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { checkTimeOrder, cn } from '@/lib/utils';
+import { checkTimeOrder, cn, isPastDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -44,23 +44,32 @@ const formSchema = z.object({
 });
 
 export default function BasicsForm() {
-  const { updateStep } = useCreateEvent();
+  const { updateStep, data } = useCreateEvent();
+  const { name, address, start_time, end_time, entry_time } = data.step1;
 
   const { toast } = useToast();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      address: '',
-      start_time: undefined,
-      end_time: undefined,
-      entry_time: undefined,
+      name: name ?? '',
+      address: address ?? '',
+      start_time: start_time ?? undefined,
+      entry_time: entry_time ?? undefined,
+      end_time: end_time ?? undefined,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
+    if (isPastDate(start_time)) {
+      toast({
+        title: '时间错误',
+        description: '不能选择过去的时间',
+        variant: 'destructive',
+      });
+      return;
+    }
     const isOrderCorrect = checkTimeOrder(start_time, entry_time, end_time);
     if (!isOrderCorrect) {
       toast({
