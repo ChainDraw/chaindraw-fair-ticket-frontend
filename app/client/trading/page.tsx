@@ -54,7 +54,7 @@ export default async function Home() {
       <main className="bg-slate-100 p-10 shadow-xl shadow-rose-400/20 ">
         <div className="grid space-x-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {collections.map((collection, index) => (
-            <Link key={index} href={`/client/shows/${collection.slug.current}`}>
+            <Link key={index} href={`/client/trading/${collection.slug.current}`}>
               <div className="flex cursor-pointer flex-col items-center transition-all duration-200 hover:scale-105">
                 <img
                   className="h-96 w-60 rounded-2xl object-cover"

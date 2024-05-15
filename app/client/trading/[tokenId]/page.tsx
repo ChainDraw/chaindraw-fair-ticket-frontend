@@ -65,12 +65,12 @@ const NFTDropPage = () => {
             {collection.title}
           </h1>
           <p className="pt-2 text-xl text-green-500">
-            13 / 21 NFT&apos;s claimed
+            seller: 123123123123123123
           </p>
         </div>
         {/* Mint Button */}
         <button className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white">
-          Mint NFT (0.01 ETH)
+          Buy Now (0.01 ETH)
         </button>
       </div>
     </div>
