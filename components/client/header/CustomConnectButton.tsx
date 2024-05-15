@@ -1,6 +1,5 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -32,10 +31,8 @@ import { useDisconnect } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { paths } from "@/utils/paths";
-
 export const CustomConnectButton = () => {
-  const { disconnect } = useDisconnect();
-
+  // const { disconnect } = useDisconnect();
   return (
     <ConnectButton.Custom>
       {({
@@ -135,7 +132,6 @@ export const CustomConnectButton = () => {
                   </DropdownMenuSub>
                 </DropdownMenuGroup> */}
                 <DropdownMenuSeparator />
-
                 <DropdownMenuItem>
                   <LifeBuoy className="mr-2 h-4 w-4" />
                   <span>Support</span>
@@ -145,7 +141,7 @@ export const CustomConnectButton = () => {
                   <span>API</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   onClick={async () => {
                     await fetch("http://localhost:3000/logout");
                     disconnect();
@@ -153,7 +149,7 @@ export const CustomConnectButton = () => {
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

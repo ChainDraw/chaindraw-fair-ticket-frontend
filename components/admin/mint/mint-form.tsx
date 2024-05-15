@@ -14,9 +14,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 const formSchema = z.object({
   name: z.string().min(1),
-  price: z.string().min(1),
+  price: z.number().min(1),
   session: z.string().min(1),
-  seat: z.string().min(1),
+  quantity: z.number().min(1),
   date: z.string().min(1),
 });
 export default function MintForm() {
@@ -24,12 +24,28 @@ export default function MintForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      price: '',
+      price: 1,
       session: '',
-      seat: '',
+      quantity: 1,
       date: '',
     },
   });
+
+  const priceOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const price = parseFloat(e.target.value)
+    if (isNaN(price)) {
+      return
+    }
+    form1.setValue('price', price)
+  };
+  const quantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const quantity = parseFloat(e.target.value)
+    if (isNaN(quantity)) {
+      return
+    }
+    form1.setValue('quantity', quantity)
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
   }
@@ -56,7 +72,11 @@ export default function MintForm() {
             <FormItem>
               <FormLabel>价格</FormLabel>
               <FormControl>
-                <Input placeholder="请输入价格" {...field} />
+                <Input
+                  placeholder="请输入价格"
+                  {...field}
+                  onChange={priceOnChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -77,12 +97,16 @@ export default function MintForm() {
         />
         <FormField
           control={form1.control}
-          name="seat"
+          name="quantity"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>座位</FormLabel>
+              <FormLabel>数量</FormLabel>
               <FormControl>
-                <Input placeholder="请输入座位" {...field} />
+                <Input
+                  placeholder="请输入数量"
+                  {...field}
+                  onChange={quantityOnChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,7 +126,12 @@ export default function MintForm() {
           )}
         />
         <div className="text-center">
-          <Button type="submit">铸造</Button>
+          <Button type="reset" className="mx-5" onClick={() => form1.reset()}>
+            重置
+          </Button>
+          <Button type="submit" className="mx-5">
+            铸造
+          </Button>
         </div>
       </form>
     </Form>
