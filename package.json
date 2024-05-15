@@ -36,6 +36,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-stately": "^3.31.0",
     "sharp": "^0.33.3",
     "siwe": "^2.3.2",
