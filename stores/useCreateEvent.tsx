@@ -46,16 +46,27 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   progress: stepMap[1],
   isEditMode: false,
   updateStep: (step, formData) => {
-    set((state) => ({
-      data: { ...state.data, [`step${step}`]: formData },
-      currentStep: step + 1,
-      progress: stepMap[step + 1] || state.progress,
-    }));
+    const { isEditMode } = get();
+    if (isEditMode) {
+      set((state) => ({
+        data: { ...state.data, [`step${step}`]: formData },
+        currentStep: step + 1,
+        progress: stepMap[step + 1] || state.progress,
+      }));
+    } else {
+      set((state) => ({
+        currentStep: step + 1,
+        progress: stepMap[step + 1] || state.progress,
+      }));
+    }
   },
   updateFinalStep: (formData) => {
-    set((state) => ({
-      data: { ...state.data, step3: formData },
-    }));
+    const { isEditMode } = get();
+    if (isEditMode) {
+      set((state) => ({
+        data: { ...state.data, step3: formData },
+      }));
+    }
   },
   submitData: async () => {
     const { data } = get();
