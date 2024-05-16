@@ -65,7 +65,6 @@ export interface EventBasics {
   start_time: Date;
   end_time: Date;
   entry_time: Date;
-  cover: string;
   description: string;
   status: number;
 }

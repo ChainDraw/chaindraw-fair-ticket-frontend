@@ -5,6 +5,8 @@ interface StepData {
   [key: string]: any; // 可以根据你的表单数据需求自定义类型
 }
 
+type EventMode = 'create' | 'edit' | 'readonly';
+
 interface FormStepsState {
   data: {
     step1: StepData;
@@ -13,7 +15,8 @@ interface FormStepsState {
   };
   currentStep: number;
   progress: number;
-  isEditMode: boolean;
+  mode: EventMode;
+  updateMode: (mode: EventMode) => void;
   updateStep: (step: number, formData: StepData) => void;
   updateFinalStep: (formData: StepData) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
@@ -44,10 +47,13 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   },
   currentStep: 1,
   progress: stepMap[1],
-  isEditMode: false,
+  mode: 'create',
+  updateMode: (mode) => {
+    set({ mode });
+  },
   updateStep: (step, formData) => {
-    const { isEditMode } = get();
-    if (isEditMode) {
+    const { mode } = get();
+    if (mode === 'create' || mode === 'edit') {
       set((state) => ({
         data: { ...state.data, [`step${step}`]: formData },
         currentStep: step + 1,
@@ -61,8 +67,8 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     }
   },
   updateFinalStep: (formData) => {
-    const { isEditMode } = get();
-    if (isEditMode) {
+    const { mode } = get();
+    if (mode === 'create' || mode === 'edit') {
       set((state) => ({
         data: { ...state.data, step3: formData },
       }));
@@ -98,7 +104,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     const eventData = await fetchEventData(id);
     set({
       data: eventData,
-      isEditMode: true,
+      mode: 'edit',
       currentStep: 1,
       progress: stepMap[1],
     });
@@ -107,7 +113,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     const eventData = await fetchEventData(id);
     set({
       data: eventData,
-      isEditMode: false,
+      mode: 'readonly',
       currentStep: 1,
       progress: stepMap[1],
     });
@@ -131,7 +137,6 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     start_time: new Date('2024-06-01T10:00:00Z'),
     end_time: new Date('2024-06-01T18:00:00Z'),
     entry_time: new Date('2024-06-01T09:00:00Z'),
-    cover: 'https://example.com/cover.jpg',
     description: 'This is an example event.',
     status: 1,
   };
@@ -141,7 +146,8 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     lottery_start_date: new Date('2024-05-01T00:00:00Z'),
     lottery_end_date: new Date('2024-05-31T23:59:59Z'),
     description: 'Participate in our lottery to win exciting prizes!',
-    cover: 'https://example.com/lottery-cover.jpg',
+    cover:
+      'https://fastly.picsum.photos/id/234/200/300.jpg?hmac=KD9xFDCez7-lqgcMm-EEi7BtpClIdCzJS6YvFVyLiDs',
   };
 
   // 模拟的门票信息
@@ -151,7 +157,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     price: 50,
     max_per_wallet: 4,
     ticket_max_num: 1000,
-    cover: 'https://example.com/ticket-cover.jpg',
+    cover: 'https://picsum.photos/200/300',
     allow_transfer: true,
   };
 
