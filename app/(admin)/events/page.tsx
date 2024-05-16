@@ -49,6 +49,11 @@ export default async function Page() {
 
   return (
     <>
+      <div className="container mx-auto pt-4">
+        <Button>
+          <Link href="/events/create">新建活动</Link>
+        </Button>
+      </div>
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns as ColumnDef<Partial<EventBasics>, unknown>[]}
