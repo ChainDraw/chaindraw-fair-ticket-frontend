@@ -13,49 +13,46 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: 'pending' | 'processing' | 'success' | 'failed';
-  email: string;
-};
+import type { Event } from '@/types';
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Event>[] = [
   {
-    accessorKey: 'status',
-    header: 'Status',
+    accessorKey: 'name',
+    header: '活动名称',
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'start_time',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Email
+          活动开始时间
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: 'amount',
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: 'status',
+    header: () => <div className="text-right">状态</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('amount'));
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+      const status = parseInt(row.getValue('status'));
+      // "review_status": 0 // 0: 未审核、 1：审核通过、2、审核失败
+      if (status === 0) {
+        return <div className="text-right">未审核</div>;
+      } else if (status === 1) {
+        return <div className="text-right text-green-500">审核通过</div>;
+      } else if (status === 2) {
+        return <div className="text-right text-red-500">审核异常</div>;
+      }
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => {
-      const payment = row.original;
+      const Event = row.original;
 
       return (
         <DropdownMenu>
@@ -66,15 +63,16 @@ export const columns: ColumnDef<Payment>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>操作</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(Event.id)}
             >
-              Copy payment ID
+              复制活动ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>查看</DropdownMenuItem>
+            <DropdownMenuItem>编辑</DropdownMenuItem>
+            <DropdownMenuItem>审核</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
