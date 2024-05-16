@@ -7,6 +7,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -17,7 +26,7 @@ const formSchema = z.object({
   price: z.number().min(1),
   session: z.string().min(1),
   quantity: z.number().min(1),
-  date: z.string().min(1),
+  date: z.date(),
 });
 export default function MintForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
@@ -27,7 +36,7 @@ export default function MintForm() {
       price: 1,
       session: '',
       quantity: 1,
-      date: '',
+      date: null,
     },
   });
 
@@ -116,11 +125,39 @@ export default function MintForm() {
           control={form1.control}
           name="date"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>日期</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入日期" {...field} />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of birth</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
