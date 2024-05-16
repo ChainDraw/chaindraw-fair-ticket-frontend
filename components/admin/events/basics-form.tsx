@@ -28,6 +28,7 @@ import { DateTimePicker } from '../../ui/time-picker/date-time-picker';
 
 import { useToast } from '@/components/ui/use-toast';
 import useCreateEvent from '@/stores/useCreateEvent';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: '请输入活动名称' }),
@@ -47,6 +48,8 @@ export default function BasicsForm() {
   const { updateStep, data } = useCreateEvent();
   const { name, address, start_time, end_time, entry_time } = data.step1;
 
+  console.log('data', data);
+
   const { toast } = useToast();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
@@ -59,6 +62,16 @@ export default function BasicsForm() {
       end_time: end_time ?? undefined,
     },
   });
+
+  useEffect(() => {
+    if (data.step1) {
+      form1.setValue('name', data.step1.name);
+      form1.setValue('address', data.step1.address);
+      form1.setValue('start_time', data.step1.start_time);
+      form1.setValue('entry_time', data.step1.entry_time);
+      form1.setValue('end_time', data.step1.end_time);
+    }
+  }, [data.step1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
