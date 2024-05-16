@@ -54,7 +54,7 @@ function checkTimeOrder(startTime: Date, entryTime: Date, endTime: Date) {
   const entry = new Date(entryTime);
   const end = new Date(endTime);
 
-  return start < entry && entry < end;
+  return entry < start && start < end;
 }
 
 export {

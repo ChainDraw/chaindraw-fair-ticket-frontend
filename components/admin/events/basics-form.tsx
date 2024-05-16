@@ -71,7 +71,7 @@ export default function BasicsForm() {
       form1.setValue('entry_time', data.step1.entry_time);
       form1.setValue('end_time', data.step1.end_time);
     }
-  }, [data.step1]);
+  }, [data.step1, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
@@ -128,10 +128,10 @@ export default function BasicsForm() {
           <div className="flex-1">
             <FormField
               control={form1.control}
-              name="start_time"
+              name="entry_time"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>开始时间</FormLabel>
+                  <FormLabel>入场时间</FormLabel>
                   <Popover>
                     <FormControl>
                       <PopoverTrigger asChild>
@@ -146,7 +146,7 @@ export default function BasicsForm() {
                           {field.value ? (
                             format(field.value, 'PPP HH:mm:ss')
                           ) : (
-                            <span>开始时间</span>
+                            <span>入场时间</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -174,10 +174,10 @@ export default function BasicsForm() {
           <div className="flex-1">
             <FormField
               control={form1.control}
-              name="entry_time"
+              name="start_time"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>入场时间</FormLabel>
+                  <FormLabel>开始时间</FormLabel>
                   <Popover>
                     <FormControl>
                       <PopoverTrigger asChild>
@@ -192,7 +192,7 @@ export default function BasicsForm() {
                           {field.value ? (
                             format(field.value, 'PPP HH:mm:ss')
                           ) : (
-                            <span>入场时间</span>
+                            <span>开始时间</span>
                           )}
                         </Button>
                       </PopoverTrigger>
