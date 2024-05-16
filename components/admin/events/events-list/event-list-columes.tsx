@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { Event } from '@/types';
+import { format } from 'date-fns';
 
 export const columns: ColumnDef<Event>[] = [
   {
@@ -32,6 +33,12 @@ export const columns: ColumnDef<Event>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      const startTime = row.original.start_time;
+      return startTime
+        ? format(new Date(startTime), 'yyyy-MM-dd HH:mm:ss')
+        : '';
     },
   },
   {
