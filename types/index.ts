@@ -57,7 +57,8 @@
 //   allow_transfer: z.boolean().optional(),
 // });
 
-export interface Event {
+// 基础信息
+export interface EventBasics {
   id: string;
   name: string;
   address: string;
@@ -67,15 +68,16 @@ export interface Event {
   cover: string;
   description: string;
   status: number;
-  tickets: Ticket[];
-  promotions: Promotion[];
+}
+// 抽奖信息
+export interface EventPromotion {
   lottery_start_date: Date;
   lottery_end_date: Date;
-  lottery_winner: string;
+  description: string;
+  cover: string;
 }
-
-export interface Ticket {
-  id: string;
+// 门票信息
+export interface EventTicket {
   name: string;
   description: string;
   price: number;
@@ -83,11 +85,4 @@ export interface Ticket {
   ticket_max_num: number;
   cover: string;
   allow_transfer: boolean;
-}
-
-export interface Promotion {
-  id: string;
-  name: string;
-  description: string;
-  cover: string;
 }

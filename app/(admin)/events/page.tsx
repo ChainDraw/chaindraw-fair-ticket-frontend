@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 import { columns } from '@/components/admin/events/events-list/event-list-columes';
 import { DataTable } from '@/components/admin/events/events-list/data-table';
-import type { Event } from '@/types';
+import type { EventBasics } from '@/types';
 
 import { ColumnDef } from '@tanstack/react-table';
 
-async function getData(): Promise<Partial<Event>[]> {
+async function getData(): Promise<Partial<EventBasics>[]> {
   return [
     {
       id: '728ed52f',
@@ -32,18 +32,7 @@ async function getData(): Promise<Partial<Event>[]> {
 }
 
 export default async function Page() {
-  const demo_data = await getData();
-
-  const res = await fetch('http://localhost:3000/api/admin/events', {
-    cache: 'no-store',
-  });
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const responseData = await res.json();
-
-  const { data } = responseData;
-  console.log('data', data);
+  const data = await getData();
 
   if (!data.length) {
     return (
@@ -62,8 +51,8 @@ export default async function Page() {
     <>
       <div className="container mx-auto py-10">
         <DataTable
-          columns={columns as ColumnDef<Partial<Event>, unknown>[]}
-          data={demo_data}
+          columns={columns as ColumnDef<Partial<EventBasics>, unknown>[]}
+          data={data}
         />
       </div>
     </>
