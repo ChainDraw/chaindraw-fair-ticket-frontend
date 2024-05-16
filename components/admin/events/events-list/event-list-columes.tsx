@@ -13,10 +13,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import type { Event } from '@/types';
+import type { EventBasics } from '@/types';
 import { format } from 'date-fns';
 
-export const columns: ColumnDef<Event>[] = [
+export const columns: ColumnDef<EventBasics>[] = [
   {
     accessorKey: 'name',
     header: '活动名称',
@@ -59,7 +59,7 @@ export const columns: ColumnDef<Event>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const Event = row.original;
+      const EventBasics = row.original;
 
       return (
         <DropdownMenu>
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Event>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>操作</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(Event.id)}
+              onClick={() => navigator.clipboard.writeText(EventBasics.id)}
             >
               复制活动ID
             </DropdownMenuItem>
