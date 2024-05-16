@@ -40,7 +40,7 @@ const LotteryHero = (props: Props) => {
         <div className="absolute w-full h-full bg-white rounded-full "></div>
         <div className="image-flip ">
           <img
-            src="/images/nftLottery.png"
+            src="/images/nftlottery.png"
             alt="lotteryImg"
             width={100}
             height={100}

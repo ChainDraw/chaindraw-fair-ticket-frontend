@@ -1,18 +1,18 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
-import { ContextProvider } from '@/config/context';
-import { headers } from 'next/headers';
-import { cn } from '@/lib/utils';
-import { Toaster } from '@/components/ui/toaster';
-
-const inter = Inter({ subsets: ['latin'] });
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
+import { ContextProvider } from "@/config/context";
+import { headers } from "next/headers";
+import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as ReactHotToast } from "react-hot-toast";
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'ChainDraw',
+  title: "ChainDraw",
   description:
-    'ChainDraw 是一个去中心化的演唱会门票抽选系统，旨在提供一个公平、透明的门票分配平台。',
+    "ChainDraw 是一个去中心化的演唱会门票抽选系统，旨在提供一个公平、透明的门票分配平台。",
 };
 
 export default function RootLayout({
@@ -20,12 +20,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookie = headers().get('cookie');
+  const cookie = headers().get("cookie");
   return (
     <html lang="en">
       <body className={cn(inter.className)}>
         <ContextProvider cookie={cookie}>{children}</ContextProvider>
         <Toaster />
+        <ReactHotToast />
       </body>
     </html>
   );
