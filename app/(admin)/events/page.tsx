@@ -6,6 +6,7 @@ import { DataTable } from '@/components/admin/events/events-list/data-table';
 import type { EventBasics } from '@/types';
 
 import { ColumnDef } from '@tanstack/react-table';
+import CreateButton from '@/components/admin/events/create-button';
 
 async function getData(): Promise<Partial<EventBasics>[]> {
   return [
@@ -39,9 +40,7 @@ export default async function Page() {
       <div className="flex-center flex-col h-full">
         <p className="mb-4">暂无活动</p>
         <div>
-          <Button>
-            <Link href="/events/create">新建活动</Link>
-          </Button>
+          <CreateButton />
         </div>
       </div>
     );
