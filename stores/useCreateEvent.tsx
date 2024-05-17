@@ -5,7 +5,8 @@ interface StepData {
   [key: string]: any; // 可以根据你的表单数据需求自定义类型
 }
 
-type EventMode = 'create' | 'edit' | 'readonly';
+// 新建、编辑、查看/只读、审核
+export type EventMode = 'create' | 'edit' | 'readonly' | 'approve';
 
 interface FormStepsState {
   data: {
@@ -49,6 +50,18 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   progress: stepMap[1],
   mode: 'create',
   updateMode: (mode) => {
+    // 如果 mode 为创建，那么 data 的值需要初始化
+    if (mode === 'create') {
+      set({
+        data: {
+          step1: {},
+          step2: {},
+          step3: {},
+        },
+        currentStep: 1,
+        progress: stepMap[1],
+      });
+    }
     set({ mode });
   },
   updateStep: (step, formData) => {
@@ -146,9 +159,14 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     lottery_start_date: new Date('2024-05-01T00:00:00Z'),
     lottery_end_date: new Date('2024-05-31T23:59:59Z'),
     description: 'Participate in our lottery to win exciting prizes!',
-    cover:
-      'https://fastly.picsum.photos/id/234/200/300.jpg?hmac=KD9xFDCez7-lqgcMm-EEi7BtpClIdCzJS6YvFVyLiDs',
+    cover: '',
   };
+
+  // 需要把图片转换为 blob 格式
+  const response = await fetch('https://picsum.photos/200/300');
+  const blob = await response.blob();
+  const response2 = await fetch('https://picsum.photos/300/200');
+  const blob2 = await response2.blob();
 
   // 模拟的门票信息
   const ticket: EventTicket = {
@@ -164,8 +182,8 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 返回模拟的数据
   return {
     step1: event,
-    step2: promotion,
-    step3: ticket,
+    step2: { ...promotion, cover: blob },
+    step3: { ...ticket, cover: blob2 },
   };
 }
 
