@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Form,
   FormControl,
@@ -6,21 +6,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount, useWriteContract } from "wagmi";
+import { abi } from "@/contracts/abis/erc721";
+
 const formSchema = z.object({
   name: z.string().min(1),
   price: z.number().min(1),
@@ -32,34 +36,54 @@ export default function MintForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      name: "",
       price: 1,
-      session: '',
+      session: "",
       quantity: 1,
       date: null,
     },
   });
-
   const priceOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const price = parseFloat(e.target.value)
+    const price = parseFloat(e.target.value);
     if (isNaN(price)) {
-      return
+      return;
     }
-    form1.setValue('price', price)
+    form1.setValue("price", price);
   };
   const quantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const quantity = parseFloat(e.target.value)
+    const quantity = parseFloat(e.target.value);
     if (isNaN(quantity)) {
-      return
+      return;
     }
-    form1.setValue('quantity', quantity)
-  }
+    form1.setValue("quantity", quantity);
+  };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values', values);
+  const { isConnected, address } = useAccount();
+  const contractConfig = {
+    address: "0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30",
+    abi,
+  };
+  const {
+    data: hash,
+    writeContract: mint,
+    isPending: isMintLoading,
+    isSuccess: isMintStarted,
+    error: mintError,
+  } = useWriteContract();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("address", address);
+    const { quantity, ...data } = values;
+    for (let i = 0; i < quantity; i++) {
+      await mint({ ...contractConfig, functionName: "mint" });
+      console.log(`Minting NFT ${i + 1}/${quantity}...`);
+    }
+    console.log("All NFTs minted successfully.");
   }
-  return (
+  return !isConnected ? (
+    <ConnectButton></ConnectButton>
+  ) : (
     <Form {...form1}>
+      <ConnectButton></ConnectButton>
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form1.control}
@@ -151,9 +175,7 @@ export default function MintForm() {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date("1900-01-01")
-                    }
+                    disabled={(date) => date < new Date("1900-01-01")}
                     initialFocus
                   />
                 </PopoverContent>
@@ -167,9 +189,11 @@ export default function MintForm() {
             重置
           </Button>
           <Button type="submit" className="mx-5">
-            铸造
+            {isMintLoading ? "铸造中..." : "铸造"}
           </Button>
         </div>
+        {isMintStarted && <p>铸造开始，交易哈希: {hash}</p>}
+        {mintError && <p>铸造错误: {mintError.message}</p>}
       </form>
     </Form>
   );
