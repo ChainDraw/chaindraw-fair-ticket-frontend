@@ -132,15 +132,15 @@ export default function TicketsForm() {
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         {fields.map((field, index) => (
           <Collapsible key={field.id} className="border-2 p-4">
-            <CollapsibleTrigger className="w-full flex justify-between items-center">
-              <div>
+            <div className="flex justify-between items-center">
+              <CollapsibleTrigger className="w-full text-left">
                 {form1.getValues(`tickets.${index}.ticket_name`) ||
                   '新增门票 ' + (index + 1)}
-              </div>
+              </CollapsibleTrigger>
               <Button type="button" onClick={() => handleRemove(index)}>
                 删除
               </Button>
-            </CollapsibleTrigger>
+            </div>
             <CollapsibleContent>
               <FormField
                 control={form1.control}
@@ -268,7 +268,6 @@ export default function TicketsForm() {
         <div className="text-center space-x-8">
           <Button onClick={goBack}>上一步</Button>
           <Button
-            type="button"
             onClick={() =>
               append({
                 max_per_wallet: 0,
@@ -283,9 +282,7 @@ export default function TicketsForm() {
           >
             添加
           </Button>
-          <Button type="submit" onClick={() => onSubmit(form1.getValues())}>
-            提交信息
-          </Button>
+          <Button onClick={() => onSubmit(form1.getValues())}>提交信息</Button>
         </div>
       </form>
     </Form>

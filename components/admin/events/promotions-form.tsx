@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE, cn, compareDates, isPastDate } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   Popover,
@@ -50,7 +50,7 @@ const formSchema = z.object({
 });
 
 export default function PromotionsForm() {
-  const { updateStep, goBack, data } = useCreateEvent();
+  const { updateStep, goBack, data, mode } = useCreateEvent();
   const { lottery_start_date, lottery_end_date, description, cover } =
     data.step2;
 
@@ -58,18 +58,38 @@ export default function PromotionsForm() {
     undefined
   );
 
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
-    fn(e.target.files?.[0]);
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]);
-    } else {
-      setSelectedImage(undefined);
-    }
+    const file = e.target.files?.[0];
+    fn(file);
+    setSelectedImage(file);
+    form1.setValue('cover', file!); // 使用 setValue 更新表单的 cover 字段
+
+    // 如果选择了文件，手动设置input元素的值
+    const inputFile = inputFileRef.current!; // 获取当前的引用
+    console.log('==============inputFile==============', inputFile);
+    // if (inputFile) {
+    //   if (file) {
+    //     console.log(file.name);
+    //     inputFile.value = file.name; // 当引用存在时，设置其 value 属性
+    //   } else {
+    //     inputFile.value = ''; // 如果没有选择文件，将 input 的值重置为空
+    //   }
+    // }
   };
 
   useEffect(() => {
-    setSelectedImage(cover);
-  }, []);
+    // 创建、编辑
+    if (cover) {
+      setSelectedImage(cover);
+    } else {
+      // 显示默认图片
+      setSelectedImage(undefined);
+    }
+
+    // }
+  }, [cover]);
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +100,16 @@ export default function PromotionsForm() {
       cover: cover ?? undefined,
     },
   });
+
+  useEffect(() => {
+    if (data.step2) {
+      console.log(data.step2.cover);
+      form1.setValue('lottery_start_date', data.step2.lottery_start_date);
+      form1.setValue('lottery_end_date', data.step2.lottery_end_date);
+      form1.setValue('description', data.step2.description);
+      form1.setValue('cover', data.step2.cover);
+    }
+  }, [data.step2, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { lottery_start_date, lottery_end_date } = values;
@@ -224,8 +254,10 @@ export default function PromotionsForm() {
                 <>
                   <Input
                     {...fieldProps}
+                    ref={inputFileRef}
                     type="file"
                     accept="image/*"
+                    // style={{ display: 'none' }}
                     onChange={(event) => onImageChange(event, onChange)}
                   />
                   {selectedImage && (
