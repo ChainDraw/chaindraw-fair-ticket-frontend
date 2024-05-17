@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-import { columns } from '@/components/admin/events/events-list/event-list-columes';
+import { columns } from '@/components/admin/events/events-list/columes';
 import { DataTable } from '@/components/admin/events/events-list/data-table';
 import type { EventBasics } from '@/types';
 

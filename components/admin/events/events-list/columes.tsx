@@ -32,7 +32,14 @@ const DropdownMenuItemComponent = ({
 
   const handleClick = () => {
     updateMode(mode);
-    router.push(`/events/${rowOriginal.id}`);
+
+    const map: Partial<Record<EventMode, string>> = {
+      edit: `/events/${rowOriginal.id}/edit`,
+      review: `/events/${rowOriginal.id}/review`,
+      readonly: `/events/${rowOriginal.id}`,
+    };
+
+    router.push(map[mode]!);
   };
 
   return <DropdownMenuItem onClick={handleClick}>{label}</DropdownMenuItem>;
@@ -111,7 +118,7 @@ export const columns: ColumnDef<EventBasics>[] = [
             />
             <DropdownMenuItemComponent
               label="审核"
-              mode="approve"
+              mode="review"
               rowOriginal={rowOriginal}
             />
           </DropdownMenuContent>

@@ -6,7 +6,7 @@ interface StepData {
 }
 
 // 新建、编辑、查看/只读、审核
-export type EventMode = 'create' | 'edit' | 'readonly' | 'approve';
+export type EventMode = 'create' | 'edit' | 'readonly' | 'review';
 
 interface FormStepsState {
   data: {
