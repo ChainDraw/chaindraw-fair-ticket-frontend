@@ -15,6 +15,28 @@ import {
 
 import type { EventBasics } from '@/types';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
+
+const DropdownMenuItemComponent = ({
+  label,
+  mode,
+  rowOriginal,
+}: {
+  label: string;
+  mode: EventMode;
+  rowOriginal: EventBasics;
+}) => {
+  const router = useRouter();
+  const { updateMode } = useCreateEvent();
+
+  const handleClick = () => {
+    updateMode(mode);
+    router.push(`/events/${rowOriginal.id}`);
+  };
+
+  return <DropdownMenuItem onClick={handleClick}>{label}</DropdownMenuItem>;
+};
 
 export const columns: ColumnDef<EventBasics>[] = [
   {
@@ -59,7 +81,7 @@ export const columns: ColumnDef<EventBasics>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const EventBasics = row.original;
+      const rowOriginal = row.original;
 
       return (
         <DropdownMenu>
@@ -72,14 +94,26 @@ export const columns: ColumnDef<EventBasics>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>操作</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(EventBasics.id)}
+              onClick={() => navigator.clipboard.writeText(rowOriginal.id)}
             >
               复制活动ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>查看</DropdownMenuItem>
-            <DropdownMenuItem>编辑</DropdownMenuItem>
-            <DropdownMenuItem>审核</DropdownMenuItem>
+            <DropdownMenuItemComponent
+              label="查看"
+              mode="readonly"
+              rowOriginal={rowOriginal}
+            />
+            <DropdownMenuItemComponent
+              label="编辑"
+              mode="edit"
+              rowOriginal={rowOriginal}
+            />
+            <DropdownMenuItemComponent
+              label="审核"
+              mode="approve"
+              rowOriginal={rowOriginal}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       );
