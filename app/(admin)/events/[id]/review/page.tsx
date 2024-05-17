@@ -1,6 +1,5 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
@@ -8,30 +7,9 @@ import BasicsForm from '@/components/admin/events/basics-form';
 import PromotionsForm from '@/components/admin/events/promotions-form';
 import TicketsForm from '@/components/admin/events/tickets-form';
 import useCreateEvent from '@/stores/useCreateEvent';
-import { useEffect } from 'react';
 
 export default function Page() {
-  const params = useParams<{ id: string }>();
-
-  const {
-    mode,
-    progress,
-    getCurrentFormName,
-    initializeForEdit,
-    initializeForView,
-  } = useCreateEvent();
-
-  useEffect(() => {
-    (async () => {
-      if (params.id) {
-        if (mode === 'edit' || mode === 'create') {
-          await initializeForEdit(params.id);
-        } else {
-          await initializeForView(params.id);
-        }
-      }
-    })();
-  }, [params.id, mode, initializeForEdit, initializeForView]);
+  const { progress, getCurrentFormName } = useCreateEvent();
 
   return (
     <>
