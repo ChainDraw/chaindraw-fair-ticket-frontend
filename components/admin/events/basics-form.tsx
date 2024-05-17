@@ -48,8 +48,6 @@ export default function BasicsForm() {
   const { updateStep, data } = useCreateEvent();
   const { name, address, start_time, end_time, entry_time } = data.step1;
 
-  console.log('data', data);
-
   const { toast } = useToast();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
@@ -70,8 +68,9 @@ export default function BasicsForm() {
       form1.setValue('start_time', data.step1.start_time);
       form1.setValue('entry_time', data.step1.entry_time);
       form1.setValue('end_time', data.step1.end_time);
+      console.log('step1-data', data.step1);
     }
-  }, [data.step1, form1]);
+  }, []);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
