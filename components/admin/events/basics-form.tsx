@@ -273,13 +273,6 @@ export default function BasicsForm() {
             />
           </div>
         </div>
-        {/* <div className="text-center">
-          {disabled ? (
-            <Button>（查看）下一步</Button>
-          ) : (
-            <Button type="submit">下一步</Button>
-          )}
-        </div> */}
       </form>
       <div className="text-center mt-6">
         {disabled ? (

@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE, cn, compareDates, isPastDate } from '@/lib/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   Popover,
@@ -53,6 +53,8 @@ export default function PromotionsForm() {
   const { updateStep, goBack, data, mode } = useCreateEvent();
   const { lottery_start_date, lottery_end_date, description, cover } =
     data.step2;
+
+  const disabled = useMemo(() => mode === 'readonly', [mode]);
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
@@ -140,6 +142,7 @@ export default function PromotionsForm() {
         <div className="w-full flex justify-between items-center space-x-4">
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="lottery_start_date"
               render={({ field }) => (
@@ -186,6 +189,7 @@ export default function PromotionsForm() {
           </div>
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="lottery_end_date"
               render={({ field }) => (
@@ -232,6 +236,7 @@ export default function PromotionsForm() {
           </div>
         </div>
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="description"
           render={({ field }) => (
@@ -245,6 +250,7 @@ export default function PromotionsForm() {
           )}
         />
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="cover"
           render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -278,11 +284,20 @@ export default function PromotionsForm() {
             </FormItem>
           )}
         />
-        <div className="text-center space-x-8">
-          <Button onClick={goBack}>上一步</Button>
-          <Button type="submit">下一步</Button>
-        </div>
       </form>
+      <div className="text-center mt-6 space-x-8">
+        {disabled ? (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            <Button onClick={() => updateStep(2)}>（查看/审核）下一步</Button>
+          </>
+        ) : (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            <Button type="submit">下一步</Button>
+          </>
+        )}
+      </div>
     </Form>
   );
 }
