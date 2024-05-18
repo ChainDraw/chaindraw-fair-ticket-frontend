@@ -8,8 +8,21 @@ import PromotionsForm from '@/components/admin/events/promotions-form';
 import TicketsForm from '@/components/admin/events/tickets-form';
 import useCreateEvent from '@/stores/useCreateEvent';
 
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+
 export default function Page() {
-  const { progress, getCurrentFormName } = useCreateEvent();
+  const params = useParams<{ id: string }>();
+
+  const { progress, getCurrentFormName, initializeData } = useCreateEvent();
+
+  useEffect(() => {
+    (async () => {
+      if (params.id) {
+        initializeData(params.id);
+      }
+    })();
+  }, [params.id]);
 
   return (
     <>
