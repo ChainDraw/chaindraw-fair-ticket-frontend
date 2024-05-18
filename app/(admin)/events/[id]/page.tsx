@@ -13,25 +13,15 @@ import { useEffect } from 'react';
 export default function Page() {
   const params = useParams<{ id: string }>();
 
-  const {
-    mode,
-    progress,
-    getCurrentFormName,
-    initializeForEdit,
-    initializeForView,
-  } = useCreateEvent();
+  const { progress, getCurrentFormName, initializeData } = useCreateEvent();
 
   useEffect(() => {
     (async () => {
       if (params.id) {
-        if (mode === 'edit' || mode === 'create') {
-          await initializeForEdit(params.id);
-        } else {
-          await initializeForView(params.id);
-        }
+        initializeData(params.id);
       }
     })();
-  }, [params.id, mode, initializeForEdit, initializeForView]);
+  }, [params.id]);
 
   return (
     <>

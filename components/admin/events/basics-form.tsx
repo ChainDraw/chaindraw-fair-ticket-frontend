@@ -28,7 +28,7 @@ import { DateTimePicker } from '../../ui/time-picker/date-time-picker';
 
 import { useToast } from '@/components/ui/use-toast';
 import useCreateEvent from '@/stores/useCreateEvent';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: '请输入活动名称' }),
@@ -45,7 +45,10 @@ const formSchema = z.object({
 });
 
 export default function BasicsForm() {
-  const { updateStep, data } = useCreateEvent();
+  const { updateStep, data, mode } = useCreateEvent();
+
+  const disabled = useMemo(() => mode === 'readonly', [mode]);
+
   const { name, address, start_time, end_time, entry_time } = data.step1;
 
   const { toast } = useToast();
@@ -61,6 +64,7 @@ export default function BasicsForm() {
     },
   });
 
+  // 监听 data.step1 更新 form1
   useEffect(() => {
     if (data.step1) {
       form1.setValue('name', data.step1.name);
@@ -70,7 +74,7 @@ export default function BasicsForm() {
       form1.setValue('end_time', data.step1.end_time);
       console.log('step1-data', data.step1);
     }
-  }, []);
+  }, [data.step1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
@@ -96,8 +100,10 @@ export default function BasicsForm() {
 
   return (
     <Form {...form1}>
+      {mode}
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="name"
           render={({ field }) => (
@@ -111,6 +117,7 @@ export default function BasicsForm() {
           )}
         />
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="address"
           render={({ field }) => (
@@ -126,6 +133,7 @@ export default function BasicsForm() {
         <div className="w-full flex justify-between items-center space-x-4">
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="entry_time"
               render={({ field }) => (
@@ -172,6 +180,7 @@ export default function BasicsForm() {
           </div>
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="start_time"
               render={({ field }) => (
@@ -218,6 +227,7 @@ export default function BasicsForm() {
           </div>
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="end_time"
               render={({ field }) => (
@@ -263,11 +273,21 @@ export default function BasicsForm() {
             />
           </div>
         </div>
-
-        <div className="text-center">
-          <Button type="submit">下一步</Button>
-        </div>
+        {/* <div className="text-center">
+          {disabled ? (
+            <Button>（查看）下一步</Button>
+          ) : (
+            <Button type="submit">下一步</Button>
+          )}
+        </div> */}
       </form>
+      <div className="text-center mt-6">
+        {disabled ? (
+          <Button onClick={() => updateStep(1)}>（查看/审核）下一步</Button>
+        ) : (
+          <Button type="submit">下一步</Button>
+        )}
+      </div>
     </Form>
   );
 }

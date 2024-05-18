@@ -18,13 +18,12 @@ interface FormStepsState {
   progress: number;
   mode: EventMode;
   updateMode: (mode: EventMode) => void;
-  updateStep: (step: number, formData: StepData) => void;
+  updateStep: (step: number, formData?: StepData) => void;
   updateFinalStep: (formData: StepData) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
   getCurrentFormName: () => string;
   goBack: () => void;
-  initializeForEdit: (id: string) => Promise<void>;
-  initializeForView: (id: string) => Promise<void>;
+  initializeData: (id: string) => Promise<void>;
 }
 
 const stepMap: { [key: number]: number } = {
@@ -113,23 +112,31 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
       progress: stepMap[Math.max(state.currentStep - 1, 1)],
     }));
   },
-  initializeForEdit: async (id: string) => {
-    const eventData = await fetchEventData(id);
+  reset: () => {
     set({
-      data: eventData,
-      mode: 'edit',
+      data: { step1: {}, step2: {}, step3: {} },
       currentStep: 1,
       progress: stepMap[1],
     });
   },
-  initializeForView: async (id: string) => {
-    const eventData = await fetchEventData(id);
-    set({
-      data: eventData,
-      mode: 'readonly',
-      currentStep: 1,
-      progress: stepMap[1],
-    });
+  // 根据状态，初始化数据
+  async initializeData(id: string) {
+    const { mode } = get();
+    if (mode === 'create') {
+      set({
+        data: { step1: {}, step2: {}, step3: {} },
+        currentStep: 1,
+        progress: stepMap[1],
+      });
+    } else {
+      const data = await fetchEventData(id);
+      console.log('初始化数据', data);
+      set({
+        data,
+        currentStep: 1,
+        progress: stepMap[1],
+      });
+    }
   },
 }));
 
