@@ -16,14 +16,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // const response = await fetch("http://localhost:3000/me");
-        // const { address } = await response.json();
-        // console.log("address: ", address);
-        const address = await new Promise((r) =>
-          setTimeout(() => r(false), 3000)
+        const response = await fetch(
+          "http://www.biturd.com/api/v1/user/personal_information"
         );
-
-        setAuthStatus(address ? "authenticated" : "unauthenticated");
+        const { code } = await response.json();
+        console.log(code !== -1);
+        setAuthStatus(code !== -1 ? "authenticated" : "unauthenticated");
       } catch (error) {
         console.log("error: ", error);
         setAuthStatus("unauthenticated");
@@ -31,18 +29,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
     fetchUser();
   }, []);
+  const expirationTime = new Date(Date.now() + 15 * 60 * 1000).toISOString();
   const authAdapter = useMemo(() => {
     return createAuthenticationAdapter({
       getNonce: async () => {
-        const response = await fetch(
-          "http://localhost:3000/api/signMessage/nonce"
-        );
-        const { data } = await response.json();
-        return data.nonce;
+        const response = await fetch("http://www.biturd.com/api/v1/user/nonce");
+        const data = await response.json();
+        return data.data;
       },
 
       createMessage: ({ nonce, address, chainId }) => {
-        console.log(nonce, address, chainId);
         return new SiweMessage({
           domain: window.location.host,
           address,
@@ -51,6 +47,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           version: "1",
           chainId,
           nonce,
+          expirationTime,
         });
       },
 
@@ -61,14 +58,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       verify: async ({ message, signature }) => {
         try {
           setAuthStatus("loading");
+          console.log(message, signature);
           const verifyRes = await fetch(
-            "http://localhost:3000/api/signMessage/verify",
+            "http://www.biturd.com/api/v1/user/verify",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ message, signature }),
             }
           );
+          const res = await verifyRes.json();
+          console.log(verifyRes.ok);
+          console.log(res);
           setAuthStatus("authenticated");
           return !!verifyRes.ok;
         } catch (error) {
