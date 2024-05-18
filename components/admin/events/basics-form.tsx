@@ -160,6 +160,7 @@ export default function BasicsForm() {
                     </FormControl>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={disabled}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
@@ -167,6 +168,7 @@ export default function BasicsForm() {
                       />
                       <div className="p-3 border-t border-border">
                         <DateTimePicker
+                          disabled={disabled}
                           setDate={field.onChange}
                           date={field.value}
                         />
@@ -207,6 +209,7 @@ export default function BasicsForm() {
                     </FormControl>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={disabled}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
@@ -214,6 +217,7 @@ export default function BasicsForm() {
                       />
                       <div className="p-3 border-t border-border">
                         <DateTimePicker
+                          disabled={disabled}
                           setDate={field.onChange}
                           date={field.value}
                         />
@@ -254,6 +258,7 @@ export default function BasicsForm() {
                     </FormControl>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={disabled}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
@@ -261,6 +266,7 @@ export default function BasicsForm() {
                       />
                       <div className="p-3 border-t border-border">
                         <DateTimePicker
+                          disabled={disabled}
                           setDate={field.onChange}
                           date={field.value}
                         />

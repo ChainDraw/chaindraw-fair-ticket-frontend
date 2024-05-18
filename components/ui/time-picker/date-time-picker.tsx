@@ -8,9 +8,14 @@ import { TimePickerInput } from '@/components/ui/time-picker/time-picker-input';
 interface DateTimePickerProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  disabled?: boolean;
 }
 
-export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
+export function DateTimePicker({
+  date,
+  setDate,
+  disabled = false,
+}: DateTimePickerProps) {
   const minuteRef = React.useRef<HTMLInputElement>(null);
   const hourRef = React.useRef<HTMLInputElement>(null);
   const secondRef = React.useRef<HTMLInputElement>(null);
@@ -26,7 +31,8 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           date={date}
           setDate={setDate}
           ref={hourRef}
-          onRightFocus={() => minuteRef.current?.focus()}
+          disabled={disabled}
+          onRightFocus={() => !disabled && minuteRef.current?.focus()}
         />
       </div>
       <div className="grid gap-1 text-center">
@@ -38,8 +44,9 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           date={date}
           setDate={setDate}
           ref={minuteRef}
-          onLeftFocus={() => hourRef.current?.focus()}
-          onRightFocus={() => secondRef.current?.focus()}
+          disabled={disabled}
+          onLeftFocus={() => !disabled && hourRef.current?.focus()}
+          onRightFocus={() => !disabled && secondRef.current?.focus()}
         />
       </div>
       <div className="grid gap-1 text-center">
@@ -51,7 +58,8 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           date={date}
           setDate={setDate}
           ref={secondRef}
-          onLeftFocus={() => minuteRef.current?.focus()}
+          disabled={disabled}
+          onLeftFocus={() => !disabled && minuteRef.current?.focus()}
         />
       </div>
       <div className="flex h-10 items-center">

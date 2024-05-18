@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import {
@@ -59,7 +59,7 @@ const formSchema = z.object({
 });
 
 export default function TicketsForm() {
-  const { submitData, goBack, data, updateFinalStep } = useCreateEvent();
+  const { submitData, goBack, data, updateFinalStep, mode } = useCreateEvent();
   const {
     max_per_wallet,
     ticket_max_num,
@@ -69,6 +69,8 @@ export default function TicketsForm() {
     ticket_cover,
     allow_transfer,
   } = data.step3;
+
+  const disabled = useMemo(() => mode === 'readonly', [mode]);
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
@@ -143,6 +145,7 @@ export default function TicketsForm() {
             </div>
             <CollapsibleContent>
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_name`)}
                 render={({ field }) => (
@@ -160,6 +163,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.max_per_wallet`)}
                 render={({ field }) => (
@@ -177,6 +181,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_max_num`)}
                 render={({ field }) => (
@@ -194,6 +199,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_description`)}
                 render={({ field }) => (
@@ -211,6 +217,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_cover`)}
                 render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -245,6 +252,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.allow_transfer`)}
                 render={({ field }) => (
@@ -254,6 +262,7 @@ export default function TicketsForm() {
                     </div>
                     <FormControl>
                       <Switch
+                        disabled={disabled}
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         ref={field.ref}
@@ -265,26 +274,36 @@ export default function TicketsForm() {
             </CollapsibleContent>
           </Collapsible>
         ))}
-        <div className="text-center space-x-8">
-          <Button onClick={goBack}>上一步</Button>
-          <Button
-            onClick={() =>
-              append({
-                max_per_wallet: 0,
-                ticket_max_num: 0,
-                ticket_price: 0,
-                ticket_name: '',
-                ticket_description: '',
-                ticket_cover: undefined!,
-                allow_transfer: false,
-              })
-            }
-          >
-            添加
-          </Button>
-          <Button onClick={() => onSubmit(form1.getValues())}>提交信息</Button>
-        </div>
       </form>
+      <div className="text-center mt-6 space-x-8">
+        {disabled ? (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+          </>
+        ) : (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            <Button
+              onClick={() =>
+                append({
+                  max_per_wallet: 0,
+                  ticket_max_num: 0,
+                  ticket_price: 0,
+                  ticket_name: '',
+                  ticket_description: '',
+                  ticket_cover: undefined!,
+                  allow_transfer: false,
+                })
+              }
+            >
+              添加
+            </Button>
+            <Button onClick={() => onSubmit(form1.getValues())}>
+              提交信息
+            </Button>
+          </>
+        )}
+      </div>
     </Form>
   );
 }
