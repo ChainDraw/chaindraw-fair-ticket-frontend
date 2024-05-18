@@ -25,6 +25,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import ReviewDialog from './events-review/review-dialog';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
@@ -279,6 +280,7 @@ export default function TicketsForm() {
         {disabled ? (
           <>
             <Button onClick={goBack}>上一步</Button>
+            {mode === 'review' && <ReviewDialog />}
           </>
         ) : (
           <>
@@ -296,7 +298,7 @@ export default function TicketsForm() {
                 })
               }
             >
-              添加
+              添加新票
             </Button>
             <Button onClick={() => onSubmit(form1.getValues())}>
               提交信息
