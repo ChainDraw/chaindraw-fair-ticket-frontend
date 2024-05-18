@@ -54,7 +54,10 @@ export default function PromotionsForm() {
   const { lottery_start_date, lottery_end_date, description, cover } =
     data.step2;
 
-  const disabled = useMemo(() => mode === 'readonly', [mode]);
+  const disabled = useMemo(
+    () => mode === 'readonly' || mode === 'review',
+    [mode]
+  );
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined

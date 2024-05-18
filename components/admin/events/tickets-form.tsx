@@ -71,7 +71,10 @@ export default function TicketsForm() {
     allow_transfer,
   } = data.step3;
 
-  const disabled = useMemo(() => mode === 'readonly', [mode]);
+  const disabled = useMemo(
+    () => mode === 'readonly' || mode === 'review',
+    [mode]
+  );
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 

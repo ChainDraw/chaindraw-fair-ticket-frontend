@@ -47,7 +47,10 @@ const formSchema = z.object({
 export default function BasicsForm() {
   const { updateStep, data, mode } = useCreateEvent();
 
-  const disabled = useMemo(() => mode === 'readonly', [mode]);
+  const disabled = useMemo(
+    () => mode === 'readonly' || mode === 'review',
+    [mode]
+  );
 
   const { name, address, start_time, end_time, entry_time } = data.step1;
 
