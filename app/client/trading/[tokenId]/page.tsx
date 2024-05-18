@@ -1,17 +1,26 @@
-'use client'
-import React from "react";
-import Link from "next/link";
+'use client';
+import React from 'react';
+import Link from 'next/link';
+import { useAccount, useWriteContract } from 'wagmi';
+import { abi } from '@/contracts/abis/erc721';
 
 const NFTDropPage = () => {
   const collection = {
-    nftCollectionName: "nftCollectionName",
-    description: "description",
-    title: "title",
+    nftCollectionName: 'nftCollectionName',
+    price: '0.01',
+    tokenId: '3282',
+    description: 'description',
+    title: 'title',
+    seller: '99999999999999999',
   };
 
   // Auth
-  const address = "address88888888888888888";  //useAddress();
-
+  const { address } = useAccount();
+  const { writeContract: purchaseNFT, isPending: isPurchaseLoading } =
+    useWriteContract({
+      address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
+      abi,
+    });
   return (
     <div className="flex h-screen flex-col lg:grid lg:grid-cols-10">
       {/* left */}
@@ -36,12 +45,12 @@ const NFTDropPage = () => {
       <div className="flex flex-1 flex-col p-12 py-20 lg:col-span-6">
         {/* Header */}
         <header className="flex item-center justify-between">
-          <Link href={"/"}>
+          <Link href={'/'}>
             <h1 className="w-52 cursor-pointer text-xl font-extralight sm:w-80">
-              The{" "}
+              The{' '}
               <span className="font-extrabold underline decoration-pink-600/50">
                 ChainDraw
-              </span>{" "}
+              </span>{' '}
               NFT Market Place
             </h1>
           </Link>
@@ -65,12 +74,27 @@ const NFTDropPage = () => {
             {collection.title}
           </h1>
           <p className="pt-2 text-xl text-green-500">
-            seller: 123123123123123123
+            seller: {collection.seller}
           </p>
         </div>
         {/* Mint Button */}
-        <button className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white">
-          Buy Now (0.01 ETH)
+        <button
+          className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white"
+          onClick={() =>
+            purchaseNFT({
+              method: 'purchase',
+              args: [
+                {
+                  tokenId: collection.tokenId,
+                  price: collection.price,
+                  seller: collection.seller,
+                },
+              ],
+            })
+          }
+        >
+          {isPurchaseLoading ? 'Loading...' : 'Purchase'} ( {collection.price}{' '}
+          ETH )
         </button>
       </div>
     </div>
@@ -78,4 +102,3 @@ const NFTDropPage = () => {
 };
 
 export default NFTDropPage;
-
