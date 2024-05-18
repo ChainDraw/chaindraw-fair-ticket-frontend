@@ -24,6 +24,7 @@ interface FormStepsState {
   getCurrentFormName: () => string;
   goBack: () => void;
   initializeData: (id: string) => Promise<void>;
+  reset: () => void;
 }
 
 const stepMap: { [key: number]: number } = {

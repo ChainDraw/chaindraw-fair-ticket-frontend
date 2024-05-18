@@ -291,17 +291,18 @@ export default function PromotionsForm() {
             </FormItem>
           )}
         />
+        {!disabled && (
+          <div className="text-center mt-6 space-x-8">
+            <Button onClick={goBack}>上一步</Button>
+            <Button type="submit">下一步</Button>
+          </div>
+        )}
       </form>
       <div className="text-center mt-6 space-x-8">
-        {disabled ? (
+        {disabled && (
           <>
             <Button onClick={goBack}>上一步</Button>
             <Button onClick={() => updateStep(2)}>（查看/审核）下一步</Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={goBack}>上一步</Button>
-            <Button type="submit">下一步</Button>
           </>
         )}
       </div>

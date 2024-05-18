@@ -278,15 +278,8 @@ export default function TicketsForm() {
             </CollapsibleContent>
           </Collapsible>
         ))}
-      </form>
-      <div className="text-center mt-6 space-x-8">
-        {disabled ? (
-          <>
-            <Button onClick={goBack}>上一步</Button>
-            {mode === 'review' && <ReviewDialog />}
-          </>
-        ) : (
-          <>
+        {!disabled && (
+          <div className="text-center mt-6 space-x-8">
             <Button onClick={goBack}>上一步</Button>
             <Button
               onClick={() =>
@@ -306,6 +299,14 @@ export default function TicketsForm() {
             <Button onClick={() => onSubmit(form1.getValues())}>
               提交信息
             </Button>
+          </div>
+        )}
+      </form>
+      <div className="text-center mt-6 space-x-8">
+        {disabled && (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            {mode === 'review' && <ReviewDialog />}
           </>
         )}
       </div>

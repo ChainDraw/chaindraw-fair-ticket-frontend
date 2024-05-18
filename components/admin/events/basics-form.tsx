@@ -77,7 +77,7 @@ export default function BasicsForm() {
       form1.setValue('end_time', data.step1.end_time);
       console.log('step1-data', data.step1);
     }
-  }, [data.step1]);
+  }, [data.step1, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
@@ -282,12 +282,15 @@ export default function BasicsForm() {
             />
           </div>
         </div>
+        {!disabled && (
+          <div className="text-center mt-6">
+            <Button type="submit">下一步</Button>
+          </div>
+        )}
       </form>
       <div className="text-center mt-6">
-        {disabled ? (
+        {disabled && (
           <Button onClick={() => updateStep(1)}>（查看/审核）下一步</Button>
-        ) : (
-          <Button type="submit">下一步</Button>
         )}
       </div>
     </Form>

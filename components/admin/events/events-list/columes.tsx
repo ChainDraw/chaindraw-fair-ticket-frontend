@@ -28,9 +28,10 @@ const DropdownMenuItemComponent = ({
   rowOriginal: EventBasics;
 }) => {
   const router = useRouter();
-  const { updateMode } = useCreateEvent();
+  const { updateMode, reset } = useCreateEvent();
 
   const handleClick = () => {
+    reset();
     updateMode(mode);
 
     const map: Partial<Record<EventMode, string>> = {
