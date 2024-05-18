@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import {
@@ -25,6 +25,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import ReviewDialog from './events-review/review-dialog';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
@@ -59,7 +60,7 @@ const formSchema = z.object({
 });
 
 export default function TicketsForm() {
-  const { submitData, goBack, data, updateFinalStep } = useCreateEvent();
+  const { submitData, goBack, data, updateFinalStep, mode } = useCreateEvent();
   const {
     max_per_wallet,
     ticket_max_num,
@@ -69,6 +70,11 @@ export default function TicketsForm() {
     ticket_cover,
     allow_transfer,
   } = data.step3;
+
+  const disabled = useMemo(
+    () => mode === 'readonly' || mode === 'review',
+    [mode]
+  );
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
@@ -132,17 +138,18 @@ export default function TicketsForm() {
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         {fields.map((field, index) => (
           <Collapsible key={field.id} className="border-2 p-4">
-            <CollapsibleTrigger className="w-full flex justify-between items-center">
-              <div>
+            <div className="flex justify-between items-center">
+              <CollapsibleTrigger className="w-full text-left">
                 {form1.getValues(`tickets.${index}.ticket_name`) ||
                   '新增门票 ' + (index + 1)}
-              </div>
+              </CollapsibleTrigger>
               <Button type="button" onClick={() => handleRemove(index)}>
                 删除
               </Button>
-            </CollapsibleTrigger>
+            </div>
             <CollapsibleContent>
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_name`)}
                 render={({ field }) => (
@@ -160,6 +167,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.max_per_wallet`)}
                 render={({ field }) => (
@@ -177,6 +185,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_max_num`)}
                 render={({ field }) => (
@@ -194,6 +203,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_description`)}
                 render={({ field }) => (
@@ -211,6 +221,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.ticket_cover`)}
                 render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -245,6 +256,7 @@ export default function TicketsForm() {
                 )}
               />
               <FormField
+                disabled={disabled}
                 control={form1.control}
                 {...form1.register(`tickets.${index}.allow_transfer`)}
                 render={({ field }) => (
@@ -254,6 +266,7 @@ export default function TicketsForm() {
                     </div>
                     <FormControl>
                       <Switch
+                        disabled={disabled}
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         ref={field.ref}
@@ -265,29 +278,38 @@ export default function TicketsForm() {
             </CollapsibleContent>
           </Collapsible>
         ))}
-        <div className="text-center space-x-8">
-          <Button onClick={goBack}>上一步</Button>
-          <Button
-            type="button"
-            onClick={() =>
-              append({
-                max_per_wallet: 0,
-                ticket_max_num: 0,
-                ticket_price: 0,
-                ticket_name: '',
-                ticket_description: '',
-                ticket_cover: undefined!,
-                allow_transfer: false,
-              })
-            }
-          >
-            添加
-          </Button>
-          <Button type="submit" onClick={() => onSubmit(form1.getValues())}>
-            提交信息
-          </Button>
-        </div>
+        {!disabled && (
+          <div className="text-center mt-6 space-x-8">
+            <Button onClick={goBack}>上一步</Button>
+            <Button
+              onClick={() =>
+                append({
+                  max_per_wallet: 0,
+                  ticket_max_num: 0,
+                  ticket_price: 0,
+                  ticket_name: '',
+                  ticket_description: '',
+                  ticket_cover: undefined!,
+                  allow_transfer: false,
+                })
+              }
+            >
+              添加新票
+            </Button>
+            <Button onClick={() => onSubmit(form1.getValues())}>
+              提交信息
+            </Button>
+          </div>
+        )}
       </form>
+      <div className="text-center mt-6 space-x-8">
+        {disabled && (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            {mode === 'review' && <ReviewDialog />}
+          </>
+        )}
+      </div>
     </Form>
   );
 }
