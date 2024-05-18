@@ -70,14 +70,26 @@ export default function BasicsForm() {
   // 监听 data.step1 更新 form1
   useEffect(() => {
     if (data.step1) {
-      form1.setValue('name', data.step1.name);
-      form1.setValue('address', data.step1.address);
-      form1.setValue('start_time', data.step1.start_time);
-      form1.setValue('entry_time', data.step1.entry_time);
-      form1.setValue('end_time', data.step1.end_time);
+      // 只有当新值与当前表单值不同时才设置表单值
+      if (data.step1.name !== form1.getValues('name')) {
+        form1.setValue('name', data.step1.name ?? '');
+      }
+      if (data.step1.address !== form1.getValues('address')) {
+        form1.setValue('address', data.step1.address ?? '');
+      }
+      if (data.step1.start_time !== form1.getValues('start_time')) {
+        form1.setValue('start_time', data.step1.start_time ?? undefined);
+      }
+      if (data.step1.entry_time !== form1.getValues('entry_time')) {
+        form1.setValue('entry_time', data.step1.entry_time ?? undefined);
+      }
+      if (data.step1.end_time !== form1.getValues('end_time')) {
+        form1.setValue('end_time', data.step1.end_time ?? undefined);
+      }
+
       console.log('step1-data', data.step1);
     }
-  }, [data.step1, form1]);
+  }, [data.step1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { start_time, entry_time, end_time } = values;
