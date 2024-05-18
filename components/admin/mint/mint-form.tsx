@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Form,
   FormControl,
@@ -6,24 +6,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+} from '@/components/ui/form';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useWriteContract } from "wagmi";
-import { abi } from "@/contracts/abis/erc721";
+} from '@/components/ui/popover';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount, useWriteContract } from 'wagmi';
+import { abi } from '@/contracts/abis/erc721';
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -36,9 +36,9 @@ export default function MintForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: '',
       price: 1,
-      session: "",
+      session: '',
       quantity: 1,
       date: null,
     },
@@ -48,19 +48,19 @@ export default function MintForm() {
     if (isNaN(price)) {
       return;
     }
-    form1.setValue("price", price);
+    form1.setValue('price', price);
   };
   const quantityOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const quantity = parseFloat(e.target.value);
     if (isNaN(quantity)) {
       return;
     }
-    form1.setValue("quantity", quantity);
+    form1.setValue('quantity', quantity);
   };
 
   const { isConnected, address } = useAccount();
   const contractConfig = {
-    address: "0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30",
+    address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
     abi,
   };
   const {
@@ -70,14 +70,15 @@ export default function MintForm() {
     isSuccess: isMintStarted,
     error: mintError,
   } = useWriteContract();
+  console.log('isMintStarted', isMintStarted);
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("address", address);
+    console.log('address', address);
     const { quantity, ...data } = values;
     for (let i = 0; i < quantity; i++) {
-      await mint({ ...contractConfig, functionName: "mint" });
+      await mint({ ...contractConfig, functionName: 'mint' });
       console.log(`Minting NFT ${i + 1}/${quantity}...`);
     }
-    console.log("All NFTs minted successfully.");
+    console.log('All NFTs minted successfully.');
   }
   return !isConnected ? (
     <ConnectButton></ConnectButton>
@@ -155,14 +156,14 @@ export default function MintForm() {
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, 'PPP')
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -175,7 +176,7 @@ export default function MintForm() {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) => date < new Date("1900-01-01")}
+                    disabled={(date) => date < new Date('1900-01-01')}
                     initialFocus
                   />
                 </PopoverContent>
@@ -189,7 +190,7 @@ export default function MintForm() {
             重置
           </Button>
           <Button type="submit" className="mx-5">
-            {isMintLoading ? "铸造中..." : "铸造"}
+            {isMintStarted ? '铸造中...' : '铸造'}
           </Button>
         </div>
         {isMintStarted && <p>铸造开始，交易哈希: {hash}</p>}
