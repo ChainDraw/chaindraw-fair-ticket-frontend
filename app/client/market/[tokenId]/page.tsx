@@ -16,11 +16,12 @@ const NFTDropPage = () => {
 
   // Auth
   const { address } = useAccount();
-  const { writeContract: purchaseNFT, isPending: isPurchaseLoading } =
-    useWriteContract({
-      address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
-      abi,
-    });
+  const contractConfig = {
+    address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
+    abi,
+  };
+  const { writeContract: buyTicket, isPending: isPurchaseLoading } =
+    useWriteContract();
   return (
     <div className="flex h-screen flex-col lg:grid lg:grid-cols-10">
       {/* left */}
@@ -81,15 +82,10 @@ const NFTDropPage = () => {
         <button
           className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white"
           onClick={() =>
-            purchaseNFT({
-              method: 'purchase',
-              args: [
-                {
-                  tokenId: collection.tokenId,
-                  price: collection.price,
-                  seller: collection.seller,
-                },
-              ],
+            buyTicket({
+              ...contractConfig,
+              functionName: 'buyTicket',
+              args: [collection.tokenId],
             })
           }
         >
