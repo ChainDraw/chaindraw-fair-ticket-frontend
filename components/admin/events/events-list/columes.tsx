@@ -13,6 +13,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+
 import type { EventBasics } from '@/types';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -44,6 +55,44 @@ const DropdownMenuItemComponent = ({
   };
 
   return <DropdownMenuItem onClick={handleClick}>{label}</DropdownMenuItem>;
+};
+
+const DropdownMenuItemCancel = ({
+  rowOriginal,
+}: {
+  rowOriginal: EventBasics;
+}) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="destructive" className="h-8">
+          取消
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>取消活动</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="cancel-reason" className="text-right">
+              取消理由
+            </Label>
+            <Textarea
+              placeholder="请输入取消理由～"
+              id="cancel-reason"
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={() => console.log('确认', rowOriginal.id)}>
+            确认
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export const columns: ColumnDef<EventBasics>[] = [
@@ -122,6 +171,7 @@ export const columns: ColumnDef<EventBasics>[] = [
               mode="review"
               rowOriginal={rowOriginal}
             />
+            <DropdownMenuItemCancel rowOriginal={rowOriginal} />
           </DropdownMenuContent>
         </DropdownMenu>
       );
