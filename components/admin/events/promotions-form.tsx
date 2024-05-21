@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import useCreateEvent from '@/stores/useCreateEvent';
 import { MAX_FILE_SIZE, cn, compareDates, isPastDate } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   Popover,
@@ -50,26 +50,51 @@ const formSchema = z.object({
 });
 
 export default function PromotionsForm() {
-  const { updateStep, goBack, data } = useCreateEvent();
+  const { updateStep, goBack, data, mode } = useCreateEvent();
   const { lottery_start_date, lottery_end_date, description, cover } =
     data.step2;
+
+  const disabled = useMemo(
+    () => mode === 'readonly' || mode === 'review',
+    [mode]
+  );
 
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
   );
 
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
-    fn(e.target.files?.[0]);
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]);
-    } else {
-      setSelectedImage(undefined);
-    }
+    const file = e.target.files?.[0];
+    fn(file);
+    setSelectedImage(file);
+    form1.setValue('cover', file!); // 使用 setValue 更新表单的 cover 字段
+
+    // 如果选择了文件，手动设置input元素的值
+    const inputFile = inputFileRef.current!; // 获取当前的引用
+    console.log('==============inputFile==============', inputFile);
+    // if (inputFile) {
+    //   if (file) {
+    //     console.log(file.name);
+    //     inputFile.value = file.name; // 当引用存在时，设置其 value 属性
+    //   } else {
+    //     inputFile.value = ''; // 如果没有选择文件，将 input 的值重置为空
+    //   }
+    // }
   };
 
   useEffect(() => {
-    setSelectedImage(cover);
-  }, []);
+    // 创建、编辑
+    if (cover) {
+      setSelectedImage(cover);
+    } else {
+      // 显示默认图片
+      setSelectedImage(undefined);
+    }
+
+    // }
+  }, [cover]);
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +105,16 @@ export default function PromotionsForm() {
       cover: cover ?? undefined,
     },
   });
+
+  useEffect(() => {
+    if (data.step2) {
+      console.log(data.step2.cover);
+      form1.setValue('lottery_start_date', data.step2.lottery_start_date);
+      form1.setValue('lottery_end_date', data.step2.lottery_end_date);
+      form1.setValue('description', data.step2.description);
+      form1.setValue('cover', data.step2.cover);
+    }
+  }, [data.step2, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { lottery_start_date, lottery_end_date } = values;
@@ -110,6 +145,7 @@ export default function PromotionsForm() {
         <div className="w-full flex justify-between items-center space-x-4">
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="lottery_start_date"
               render={({ field }) => (
@@ -136,6 +172,7 @@ export default function PromotionsForm() {
                     </FormControl>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={disabled}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
@@ -143,6 +180,7 @@ export default function PromotionsForm() {
                       />
                       <div className="p-3 border-t border-border">
                         <DateTimePicker
+                          disabled={disabled}
                           setDate={field.onChange}
                           date={field.value}
                         />
@@ -156,6 +194,7 @@ export default function PromotionsForm() {
           </div>
           <div className="flex-1">
             <FormField
+              disabled={disabled}
               control={form1.control}
               name="lottery_end_date"
               render={({ field }) => (
@@ -182,6 +221,7 @@ export default function PromotionsForm() {
                     </FormControl>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
+                        disabled={disabled}
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
@@ -189,6 +229,7 @@ export default function PromotionsForm() {
                       />
                       <div className="p-3 border-t border-border">
                         <DateTimePicker
+                          disabled={disabled}
                           setDate={field.onChange}
                           date={field.value}
                         />
@@ -202,6 +243,7 @@ export default function PromotionsForm() {
           </div>
         </div>
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="description"
           render={({ field }) => (
@@ -215,6 +257,7 @@ export default function PromotionsForm() {
           )}
         />
         <FormField
+          disabled={disabled}
           control={form1.control}
           name="cover"
           render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -224,8 +267,10 @@ export default function PromotionsForm() {
                 <>
                   <Input
                     {...fieldProps}
+                    ref={inputFileRef}
                     type="file"
                     accept="image/*"
+                    // style={{ display: 'none' }}
                     onChange={(event) => onImageChange(event, onChange)}
                   />
                   {selectedImage && (
@@ -246,11 +291,21 @@ export default function PromotionsForm() {
             </FormItem>
           )}
         />
-        <div className="text-center space-x-8">
-          <Button onClick={goBack}>上一步</Button>
-          <Button type="submit">下一步</Button>
-        </div>
+        {!disabled && (
+          <div className="text-center mt-6 space-x-8">
+            <Button onClick={goBack}>上一步</Button>
+            <Button type="submit">下一步</Button>
+          </div>
+        )}
       </form>
+      <div className="text-center mt-6 space-x-8">
+        {disabled && (
+          <>
+            <Button onClick={goBack}>上一步</Button>
+            <Button onClick={() => updateStep(2)}>（查看/审核）下一步</Button>
+          </>
+        )}
+      </div>
     </Form>
   );
 }
