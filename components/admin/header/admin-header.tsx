@@ -4,6 +4,7 @@ import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
 import { usePathname } from 'next/navigation';
 import { getHeaderTitle } from './pathMap';
 import { useEffect } from 'react';
+import { CustomConnectButton } from '@/components/client/header/CustomConnectButton';
 
 export default function AdminHeader() {
   const pathname = usePathname();
@@ -43,7 +44,9 @@ export default function AdminHeader() {
       <div className="w-[--admin-sidebar-width] font-bold">chaindraw</div>
       <div className="flex-1 flex justify-between items-center w-full">
         <h1 className="font-bold">{title}</h1>
-        <div>xxx@gmail.com</div>
+        <div>
+          <CustomConnectButton />
+        </div>
       </div>
     </header>
   );

@@ -1,7 +1,7 @@
-"use client";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+'use client';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   CircleUserRound,
   Cloud,
@@ -27,11 +27,11 @@ import {
   PlusCircle,
   User,
   UserPlus,
-} from "lucide-react";
-import { useDisconnect } from "wagmi";
-import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { paths } from "@/utils/paths";
+} from 'lucide-react';
+import { useDisconnect } from 'wagmi';
+import { Button, buttonVariants } from '@/components/ui/button';
+import Link from 'next/link';
+import { paths } from '@/utils/paths';
 
 export const CustomConnectButton = () => {
   const { disconnect } = useDisconnect();
@@ -48,12 +48,12 @@ export const CustomConnectButton = () => {
       }) => {
         // Note: If your app doesn't use authentication, you
         // can remove all 'authenticationStatus' checks
-        const ready = mounted && authenticationStatus !== "loading";
+        const ready = mounted && authenticationStatus !== 'loading';
         const connected =
           ready &&
           account &&
           chain &&
-          (!authenticationStatus || authenticationStatus === "authenticated");
+          (!authenticationStatus || authenticationStatus === 'authenticated');
         if (!connected) {
           return (
             <Button
@@ -77,8 +77,8 @@ export const CustomConnectButton = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   className={cn(
-                    buttonVariants({ variant: "default" }),
-                    "group text-white font-bold text-base lg:h-full gap-x-2"
+                    buttonVariants({ variant: 'default' }),
+                    'group text-white font-bold text-base lg:h-full gap-x-2'
                   )}
                 >
                   <CircleUserRound className="text-xl md:text-2xl lg:text-3xl group-hover:scale-110 transform transition duration-300" />
@@ -147,7 +147,7 @@ export const CustomConnectButton = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={async () => {
-                    await fetch("http://localhost:3000/logout");
+                    await fetch('http://localhost:3000/logout');
                     disconnect();
                   }}
                 >
