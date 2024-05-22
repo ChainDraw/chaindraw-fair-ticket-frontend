@@ -26,6 +26,10 @@ export async function POST(req: Request, res: Response) {
 
   try {
     const message: any = new SiweMessage(clientMessage);
+
+    if (!session.nonce) {
+      throw new Error("Invalid or missing nonce");
+    }
     const { data: fields } = await message.verify({
       signature,
       nonce: session.nonce,
@@ -42,6 +46,7 @@ export async function POST(req: Request, res: Response) {
     session.siwe = null;
     session.nonce = null;
     session.ens = null;
+    console.log(error);
     switch (error) {
       case SiweErrorType.EXPIRED_MESSAGE: {
         session.save(() => NextResponse.json({ message: error.message }));

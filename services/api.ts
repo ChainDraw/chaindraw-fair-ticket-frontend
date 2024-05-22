@@ -1,6 +1,30 @@
-// react query function
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+// src/api.ts
+
+import axios, { AxiosResponse } from "axios";
+import { SiweMessage } from "siwe";
+
 const axiosInstance = axios.create({
-  baseURL: "https://your-api-url.com",
+  baseURL: "https://www.biturd.com/api/v1/",
+  withCredentials: true,
 });
+
+// 获取用户个人信息
+export const fetchUserInfo = async () => {
+  const response = await axiosInstance.get("/user/personal_information");
+  return response.data;
+};
+
+// 获取 nonce
+export const fetchNonce = async () => {
+  const response = await axiosInstance.get("/user/nonce");
+  return response.data.data;
+};
+
+// 验证签名
+export const fetchVerifySignature = async (message, signature: string) => {
+  const response = await axiosInstance.post("/user/verify", {
+    message: message,
+    signature,
+  });
+  return response.data;
+};

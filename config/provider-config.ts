@@ -11,16 +11,7 @@ import {
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  zora,
-  sepolia,
-} from "wagmi/chains";
-import { injected } from "wagmi/connectors";
+import { bscTestnet, bsc, Chain } from "wagmi/chains";
 declare module "wagmi" {
   interface Register {
     config: typeof config;
@@ -29,7 +20,7 @@ declare module "wagmi" {
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) throw new Error("Project ID is not defined");
 const isDev = process.env.NODE_ENV === "development";
-// const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
+export const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
 const isClient = typeof window === "undefined" ? true : false;
 const connectors = !isClient
   ? connectorsForWallets(
@@ -52,14 +43,13 @@ const connectors = !isClient
     )
   : [];
 export const config = createConfig({
-  chains: [mainnet /**........ */],
+  chains: supportChains,
   connectors,
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
   }),
   transports: {
-    [mainnet.id]: http(),
-    // [bscTestnet.id]: http(process.env.BSC_RPC),
+    [bscTestnet.id]: http(process.env.BSC_RPC),
   },
 });

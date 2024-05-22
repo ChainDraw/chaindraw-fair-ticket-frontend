@@ -1,7 +1,6 @@
 "use client";
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import {
-  AuthenticationStatus,
   RainbowKitAuthenticationProvider,
   RainbowKitProvider,
   createAuthenticationAdapter,
@@ -10,39 +9,38 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, cookieToInitialState } from "wagmi";
 import { config } from "./provider-config";
 import { SiweMessage } from "siwe";
+import useAuthStore from "@/stores/authStore";
+import {
+  fetchNonce,
+  fetchUserInfo,
+  fetchVerifySignature,
+} from "@/services/api";
 const queryClient = new QueryClient();
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("loading");
+  const { authStatus, setAuthStatus } = useAuthStore();
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetch = async () => {
       try {
-        // const response = await fetch("http://localhost:3000/me");
-        // const { address } = await response.json();
-        // console.log("address: ", address);
-        const address = await new Promise((r) =>
-          setTimeout(() => r(false), 3000)
+        const response = await fetchUserInfo();
+        setAuthStatus(
+          response.code !== -1 ? "authenticated" : "unauthenticated"
         );
-
-        setAuthStatus(address ? "authenticated" : "unauthenticated");
       } catch (error) {
         console.log("error: ", error);
         setAuthStatus("unauthenticated");
       }
     };
-    fetchUser();
+    fetch();
   }, []);
+  const expirationTime = new Date(Date.now() + 15 * 60 * 1000).toISOString();
   const authAdapter = useMemo(() => {
     return createAuthenticationAdapter({
       getNonce: async () => {
-        const response = await fetch(
-          "http://localhost:3000/api/signMessage/nonce"
-        );
-        const { data } = await response.json();
-        return data.nonce;
+        const response = await fetchNonce();
+        return response;
       },
 
       createMessage: ({ nonce, address, chainId }) => {
-        console.log(nonce, address, chainId);
         return new SiweMessage({
           domain: window.location.host,
           address,
@@ -51,6 +49,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           version: "1",
           chainId,
           nonce,
+          expirationTime,
         });
       },
 
@@ -60,18 +59,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       verify: async ({ message, signature }) => {
         try {
+          const messageString = message.prepareMessage();
           setAuthStatus("loading");
-          const verifyRes = await fetch(
-            "http://localhost:3000/api/signMessage/verify",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ message, signature }),
-            }
+          const verifyRes = await fetchVerifySignature(
+            messageString,
+            signature
           );
-          setAuthStatus("authenticated");
+          if (verifyRes.code === 0) {
+            setAuthStatus("authenticated");
+          } else if (verifyRes.code === -1) {
+            setAuthStatus("unauthenticated");
+          }
           return !!verifyRes.ok;
         } catch (error) {
+          console.log("verify", error);
           setAuthStatus("unauthenticated");
           return false;
         }
