@@ -2,10 +2,25 @@
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  lotteryEscrowAbi,
+  useReadLotteryEscrowGetTicketPrice,
+  useWriteLotteryEscrowDeposit,
+  useWriteLotteryEscrowRefund,
+} from "@/contracts/generated";
+import { useLottery } from "@/contracts/hooks/lottery/useLottery";
+import useAuthStore from "@/stores/authStore";
+import { paths } from "@/utils/paths";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+
 // import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
 import Image from "next/image";
-import React from "react";
+import Link from "next/link";
+import React, { useCallback } from "react";
+import toast from "react-hot-toast";
+import { Address, formatEther, parseEther } from "viem";
+import { useAccount, useConnect } from "wagmi";
 const data = {
   concert_id: "123456",
   concert_name: "Example Concert",
@@ -31,6 +46,7 @@ const data = {
 };
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { lotteryId } = params;
+  const { address } = useAccount();
   // const fetchLotteries = async (id: string) => {
   //   const { data } = await axios.post("/api/lottery", {
   //     id,
@@ -43,7 +59,11 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   //   queryFn: () => fetchLotteries(lotteryId),
   //   enabled: !!lotteryId,
   // });
+  // 合约地址
 
+  const contractAddress = "0x162ae4cee9f654949c04be6A8221D8605f431C59";
+  const { handleRefound, handleDeposit, priceData } =
+    useLottery(contractAddress);
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -71,9 +91,10 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
                   <Image
                     alt="Collectible"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    width={30}
+                    height={30}
+                    className="w-full"
+                    priority
                     src={data?.concert_img}
                   />
                 </div>
@@ -81,34 +102,101 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 ` TODO:DETAIL INFO `
               </p>
-              <Button className="w-full md:hidden bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400">
-                Buy
-              </Button>
+              <div className="md:hidden">
+                {false && (
+                  <Button
+                    className="w-full md:hidden bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
+                    onClick={() => handleDeposit()}
+                  >
+                    Buy
+                  </Button>
+                )}
+                <div>
+                  {false ? (
+                    <div>
+                      <h1 className="text-4xl mb-4 text-orange-500 italic">
+                        You are the winner :
+                      </h1>
+                      <p className="mb-4">
+                        The reward has been sent to your wallet address
+                      </p>
+                      <Link
+                        className=" w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 py-2 text-center rounded-lg px-4"
+                        href={paths.client.profile}
+                      >
+                        Check your repository -&gt;
+                      </Link>
+                    </div>
+                  ) : (
+                    <Button
+                      className=" w-full "
+                      variant="destructive"
+                      onClick={() => handleRefound()}
+                    >
+                      Refund
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
           <div className="hidden md:block md:w-2/5">
             <div className="w-full h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
               <Image
                 alt="Lottery Image"
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
+                width={300}
+                height={200}
+                priority
+                className="w-full"
                 src={data?.concert_img}
               />
             </div>
-            <div>
-              <div className="hidden md:flex items-center justify-between py-14">
-                <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
-                <span className="flex items-center space-x-2 mb-2.5">
-                  <p className="text-3xl md:text-5xl font-bold">
-                    <span className="text-blue mr-1">$</span>
-                    {data.ticket_types[0].price}
-                  </p>
-                </span>
+
+            {true && (
+              <div>
+                <div className="hidden md:flex items-center justify-between py-14">
+                  <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
+                  <span className="flex items-center space-x-2 mb-2.5">
+                    <p className="text-3xl md:text-5xl font-bold">
+                      <span className="text-blue mr-1">$</span>
+                      {/* {data.ticket_types[0].price} */}
+                      {priceData}
+                    </p>
+                  </span>
+                </div>
+                <Button
+                  className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
+                  onClick={() => handleDeposit()}
+                >
+                  Buy
+                </Button>
               </div>
-              <Button className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400">
-                Buy
-              </Button>
+            )}
+            <div>
+              {false ? (
+                <div>
+                  <h1 className="text-4xl mb-4 text-orange-500 italic">
+                    You are the winner :
+                  </h1>
+                  <p className="mb-4">
+                    The reward has been sent to your wallet address
+                  </p>
+                  <Link
+                    className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 py-2 text-center rounded-lg"
+                    href={paths.client.profile}
+                  >
+                    Check your repository -&gt;
+                  </Link>
+                </div>
+              ) : (
+                <Button
+                  className="hidden md:block w-full "
+                  disabled
+                  variant="destructive"
+                >
+                  Not Winner
+                </Button>
+              )}
             </div>
           </div>
         </div>

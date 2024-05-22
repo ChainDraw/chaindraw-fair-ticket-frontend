@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 import Hero from "@/components/client/hero/Hero";
@@ -9,7 +10,6 @@ import Image from "next/image";
 import Create from "@/components/client/create/Create";
 
 type Props = {};
-
 const Home = (props: Props) => {
   return (
     <main className="bg-[#040001] w-full pb-10 relative md:pb-20">

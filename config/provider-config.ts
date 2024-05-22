@@ -20,7 +20,7 @@ declare module "wagmi" {
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) throw new Error("Project ID is not defined");
 const isDev = process.env.NODE_ENV === "development";
-const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
+export const supportChains: [Chain, ...Chain[]] = isDev ? [bscTestnet] : [bsc];
 const isClient = typeof window === "undefined" ? true : false;
 const connectors = !isClient
   ? connectorsForWallets(
