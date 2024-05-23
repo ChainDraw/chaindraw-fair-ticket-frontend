@@ -1,15 +1,24 @@
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
 export const handleError = (error: unknown) => {
   if (error instanceof Error) {
-    let errorMessage = "";
-    if (error.name === "ContractFunctionExecutionError") {
-      errorMessage = error.message.split("\n")[1];
-      return toast.error(errorMessage);
+    let errorMessage = '';
+    // 指定错误
+    if (error.name === 'ContractFunctionExecutionError') {
+      errorMessage = error.message.split('\n')[1];
+    } else {
+      // 其他错误
+      errorMessage = error.message;
     }
-  } else if (typeof error === "string") {
+    toast.error(errorMessage);
+    console.error(errorMessage);
+  } else if (typeof error === 'string') {
+    toast.error(error);
+    console.error(error);
+  } else {
+    const unknownErrorMessage =
+      'An unknown error occurred. Please try again later.';
+    toast.error(unknownErrorMessage);
     console.error(error);
   }
-
-  toast.error("An error occurred. Please try again later.");
 };
