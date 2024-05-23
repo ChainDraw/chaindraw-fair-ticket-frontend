@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -7,6 +9,8 @@ import type { EventBasics } from '@/types';
 
 import { ColumnDef } from '@tanstack/react-table';
 import CreateButton from '@/components/admin/events/create-button';
+import { useEffect, useState } from 'react';
+import { handleError } from '@/utils/errors';
 
 async function getData(): Promise<Partial<EventBasics>[]> {
   return [
@@ -32,10 +36,42 @@ async function getData(): Promise<Partial<EventBasics>[]> {
   ];
 }
 
-export default async function Page() {
-  const data = await getData();
+export default function Page() {
+  // const data = await getData();
+  const [data, setData] = useState([]);
 
-  if (!data.length) {
+  useEffect(() => {
+    (async function fetchData() {
+      try {
+        const res = await fetch(
+          'https://www.biturd.com/api/v1/concert/concert_list',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (!res.ok) {
+          if (res.status === 500) {
+            console.log('Server error: 500');
+            throw new Error('Server error: 500');
+          } else {
+            throw new Error(`Unexpected status code: ${res.status}`);
+          }
+        }
+
+        const data = await res.json();
+        console.log(data);
+        setData(data);
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, []);
+
+  if (!data?.length) {
     return (
       <div className="flex-center flex-col h-full">
         <p className="mb-4">暂无活动</p>
