@@ -29,29 +29,26 @@ import ReviewDialog from './events-review/review-dialog';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
-  max_per_wallet: z.coerce.number().min(1, {
+  max_quantity_per_wallet: z.coerce.number().min(1, {
     message: '请输入单个钱包最大购买数量',
   }),
-  ticket_max_num: z.coerce.number().min(1, {
+  num: z.coerce.number().min(1, {
     message: '请输入门票最大可购买数量',
   }),
-  ticket_price: z.coerce.number().min(1, {
+  price: z.coerce.number().min(1, {
     message: '请输入门票价格',
   }),
-  ticket_name: z.string().min(1, {
+  type_name: z.string().min(1, {
     message: '请输入门票名称',
   }),
-  ticket_description: z.string().min(1, {
-    message: '请输入门票描述',
-  }),
-  ticket_cover: z
+  ticket_img: z
     .instanceof(File, {
       message: '请选择一张图片',
     })
     .refine((file) => file.size < MAX_FILE_SIZE, {
       message: '图片大小不能超过 5MB',
     }),
-  allow_transfer: z.boolean().optional(),
+  trade: z.boolean().optional(),
 });
 
 // 更新模式以处理门票的数组
@@ -60,16 +57,10 @@ const formSchema = z.object({
 });
 
 export default function TicketsForm() {
-  const { submitData, goBack, data, updateFinalStep, mode } = useCreateEvent();
-  const {
-    max_per_wallet,
-    ticket_max_num,
-    ticket_price,
-    ticket_name,
-    ticket_description,
-    ticket_cover,
-    allow_transfer,
-  } = data.step3;
+  const { submitData, goBack, data, updateFinalStep, mode, reset } =
+    useCreateEvent();
+  const { max_quantity_per_wallet, num, price, type_name, ticket_img, trade } =
+    data.step3;
 
   const disabled = useMemo(
     () => mode === 'readonly' || mode === 'review',
@@ -101,13 +92,12 @@ export default function TicketsForm() {
     defaultValues: {
       tickets: [
         {
-          max_per_wallet: max_per_wallet ?? 0,
-          ticket_max_num: ticket_max_num ?? 0,
-          ticket_price: ticket_price ?? 0,
-          ticket_name: ticket_name ?? '',
-          ticket_description: ticket_description ?? '',
-          ticket_cover: ticket_cover ?? undefined,
-          allow_transfer: allow_transfer ?? false,
+          max_quantity_per_wallet: max_quantity_per_wallet ?? 0,
+          num: num ?? 0,
+          price: price ?? 0,
+          type_name: type_name ?? '',
+          ticket_img: ticket_img ?? undefined,
+          trade: trade ?? false,
         },
       ],
     },
@@ -123,6 +113,7 @@ export default function TicketsForm() {
     updateFinalStep(values);
     const response = await submitData();
     console.log(await response);
+    reset();
     toast({
       title: '提交成功',
     });
@@ -140,7 +131,7 @@ export default function TicketsForm() {
           <Collapsible key={field.id} className="border-2 p-4">
             <div className="flex justify-between items-center">
               <CollapsibleTrigger className="w-full text-left">
-                {form1.getValues(`tickets.${index}.ticket_name`) ||
+                {form1.getValues(`tickets.${index}.type_name`) ||
                   '新增门票 ' + (index + 1)}
               </CollapsibleTrigger>
               <Button type="button" onClick={() => handleRemove(index)}>
@@ -151,7 +142,7 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.ticket_name`)}
+                {...form1.register(`tickets.${index}.type_name`)}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>门票名称</FormLabel>
@@ -169,7 +160,25 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.max_per_wallet`)}
+                {...form1.register(`tickets.${index}.price`)}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>门票价格</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="请输入门票价格"
+                        {...field}
+                        ref={field.ref}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                disabled={disabled}
+                control={form1.control}
+                {...form1.register(`tickets.${index}.max_quantity_per_wallet`)}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>单个钱包最大购买数量</FormLabel>
@@ -187,7 +196,7 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.ticket_max_num`)}
+                {...form1.register(`tickets.${index}.num`)}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>门票最大可购买数量</FormLabel>
@@ -205,25 +214,7 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.ticket_description`)}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>门票描述</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="请输入门票描述"
-                        {...field}
-                        ref={field.ref}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                disabled={disabled}
-                control={form1.control}
-                {...form1.register(`tickets.${index}.ticket_cover`)}
+                {...form1.register(`tickets.${index}.ticket_img`)}
                 render={({ field: { value, onChange, ...fieldProps } }) => (
                   <FormItem>
                     <FormLabel>门票封面</FormLabel>
@@ -258,7 +249,7 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.allow_transfer`)}
+                {...form1.register(`tickets.${index}.trade`)}
                 render={({ field }) => (
                   <FormItem>
                     <div className="space-y-0.5">
@@ -284,13 +275,12 @@ export default function TicketsForm() {
             <Button
               onClick={() =>
                 append({
-                  max_per_wallet: 0,
-                  ticket_max_num: 0,
-                  ticket_price: 0,
-                  ticket_name: '',
-                  ticket_description: '',
-                  ticket_cover: undefined!,
-                  allow_transfer: false,
+                  max_quantity_per_wallet: 0,
+                  num: 0,
+                  price: 0,
+                  type_name: '',
+                  ticket_img: undefined!,
+                  trade: false,
                 })
               }
             >

@@ -89,18 +89,20 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   },
   submitData: async () => {
     const { data } = get();
-    console.log('data', data);
-    // 向后端发送数据
-    // 这里我们只是模拟了一个 submitFormData 的函数调用
-    const response = await submitFormData(data);
+    const transformedData = transformData(data);
+    console.log('Transformed data', transformedData);
 
-    // 将表单数据重置为初始状态
-    // set({
-    //   data: { step1: {}, step2: {}, step3: {} },
-    //   currentStep: 1,
-    //   progress: stepMap[1],
-    // });
-    return response;
+    const response = await fetch(
+      'https://www.biturd.com/api/v1/concert/commit',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    return response.json();
   },
   getCurrentFormName: () => {
     const { progress } = get();
@@ -141,11 +143,47 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   },
 }));
 
+// 转换数据的函数
+function transformData(data: any) {
+  const step1 = data.step1 || {};
+  const step2 = data.step2 || {};
+  const step3 = data.step3 || {};
+
+  const tickets = (step3.tickets || []).map((ticket: any) => ({
+    max_quantity_per_wallet: parseInt(ticket.max_quantity_per_wallet, 10),
+    num: parseInt(ticket.num, 10),
+    price: String(ticket.price),
+    // ticket_img: ticket.ticket_img || '', // todo 后面改
+    ticket_img: '',
+    trade: ticket.trade,
+    type_name: ticket.type_name || '',
+  }));
+
+  return {
+    address: step1.address || '',
+    concert_date: step1.concert_date || '',
+    // concert_img: step2.concert_img || '', // todo 后面改
+    concert_img: '',
+    concert_name: step1.concert_name || '',
+    // concert_status: 0,
+    lottery_end_date: step2.lottery_end_date || '',
+    lottery_start_date: step2.lottery_start_date || '',
+    remark: '',
+    // review_status: 0,
+    tickets: tickets,
+  };
+}
+
 // 模拟后端提交表单函数
-async function submitFormData(data: FormStepsState['data']): Promise<any> {
-  // 发送请求到后端并返回响应数据的逻辑
-  // 这里为了演示，我们直接返回 data
-  return data;
+async function submitFormData(data: any): Promise<any> {
+  const response = await fetch('https://www.biturd.com/api/v1/concert/commit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  return response.json();
 }
 
 // 模拟后端获取表单数据函数
