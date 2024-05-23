@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { checkTimeOrder, cn, isPastDate } from '@/lib/utils';
+import { cn, isPastDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -31,16 +31,10 @@ import useCreateEvent from '@/stores/useCreateEvent';
 import { useEffect, useMemo } from 'react';
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: '请输入活动名称' }),
+  concert_name: z.string().min(1, { message: '请输入活动名称' }),
   address: z.string().min(1, { message: '请输入活动地点' }),
-  start_time: z.date({
-    required_error: '请选择活动开始时间',
-  }),
-  end_time: z.date({
-    required_error: '请选择活动结束时间',
-  }),
-  entry_time: z.date({
-    required_error: '请选择活动入场时间',
+  concert_date: z.date({
+    required_error: '请选择活动日期',
   }),
 });
 
@@ -52,18 +46,16 @@ export default function BasicsForm() {
     [mode]
   );
 
-  const { name, address, start_time, end_time, entry_time } = data.step1;
+  const { concert_name, address, concert_date } = data.step1;
 
   const { toast } = useToast();
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: name ?? '',
+      concert_name: concert_name ?? '',
       address: address ?? '',
-      start_time: start_time ?? undefined,
-      entry_time: entry_time ?? undefined,
-      end_time: end_time ?? undefined,
+      concert_date: concert_date ?? undefined,
     },
   });
 
@@ -71,29 +63,22 @@ export default function BasicsForm() {
   useEffect(() => {
     if (data.step1) {
       // 只有当新值与当前表单值不同时才设置表单值
-      if (data.step1.name !== form1.getValues('name')) {
-        form1.setValue('name', data.step1.name ?? '');
+      if (data.step1.concert_name !== form1.getValues('concert_name')) {
+        form1.setValue('concert_name', data.step1.concert_name ?? '');
       }
       if (data.step1.address !== form1.getValues('address')) {
         form1.setValue('address', data.step1.address ?? '');
       }
-      if (data.step1.start_time !== form1.getValues('start_time')) {
-        form1.setValue('start_time', data.step1.start_time ?? undefined);
+      if (data.step1.entry_time !== form1.getValues('concert_date')) {
+        form1.setValue('concert_date', data.step1.concert_date ?? undefined);
       }
-      if (data.step1.entry_time !== form1.getValues('entry_time')) {
-        form1.setValue('entry_time', data.step1.entry_time ?? undefined);
-      }
-      if (data.step1.end_time !== form1.getValues('end_time')) {
-        form1.setValue('end_time', data.step1.end_time ?? undefined);
-      }
-
       console.log('step1-data', data.step1);
     }
   }, [data.step1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const { start_time, entry_time, end_time } = values;
-    if (isPastDate(start_time)) {
+    const { concert_date } = values;
+    if (isPastDate(concert_date)) {
       toast({
         title: '时间错误',
         description: '不能选择过去的时间',
@@ -101,16 +86,7 @@ export default function BasicsForm() {
       });
       return;
     }
-    const isOrderCorrect = checkTimeOrder(start_time, entry_time, end_time);
-    if (!isOrderCorrect) {
-      toast({
-        title: '时间顺序错误',
-        description: '请检查活动时间顺序',
-        variant: 'destructive',
-      });
-    } else {
-      updateStep(1, values);
-    }
+    updateStep(1, values);
   }
 
   return (
@@ -120,7 +96,7 @@ export default function BasicsForm() {
         <FormField
           disabled={disabled}
           control={form1.control}
-          name="name"
+          name="concert_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>活动名称</FormLabel>
@@ -145,155 +121,53 @@ export default function BasicsForm() {
             </FormItem>
           )}
         />
-        <div className="w-full flex justify-between items-center space-x-4">
-          <div className="flex-1">
-            <FormField
-              disabled={disabled}
-              control={form1.control}
-              name="entry_time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>入场时间</FormLabel>
-                  <Popover>
-                    <FormControl>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            'w-[280px] justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, 'PPP HH:mm:ss')
-                          ) : (
-                            <span>入场时间</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                    </FormControl>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        disabled={disabled}
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                      <div className="p-3 border-t border-border">
-                        <DateTimePicker
-                          disabled={disabled}
-                          setDate={field.onChange}
-                          date={field.value}
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex-1">
-            <FormField
-              disabled={disabled}
-              control={form1.control}
-              name="start_time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>开始时间</FormLabel>
-                  <Popover>
-                    <FormControl>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            'w-[280px] justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, 'PPP HH:mm:ss')
-                          ) : (
-                            <span>开始时间</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                    </FormControl>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        disabled={disabled}
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                      <div className="p-3 border-t border-border">
-                        <DateTimePicker
-                          disabled={disabled}
-                          setDate={field.onChange}
-                          date={field.value}
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex-1">
-            <FormField
-              disabled={disabled}
-              control={form1.control}
-              name="end_time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>结束时间</FormLabel>
-                  <Popover>
-                    <FormControl>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            'w-[280px] justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, 'PPP HH:mm:ss')
-                          ) : (
-                            <span>结束时间</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                    </FormControl>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        disabled={disabled}
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                      <div className="p-3 border-t border-border">
-                        <DateTimePicker
-                          disabled={disabled}
-                          setDate={field.onChange}
-                          date={field.value}
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
+        <FormField
+          disabled={disabled}
+          control={form1.control}
+          name="concert_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>入场时间</FormLabel>
+              <Popover>
+                <FormControl>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        'w-[280px] justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? (
+                        format(field.value, 'PPP HH:mm:ss')
+                      ) : (
+                        <span>入场时间</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                </FormControl>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    disabled={disabled}
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <DateTimePicker
+                      disabled={disabled}
+                      setDate={field.onChange}
+                      date={field.value}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {!disabled && (
           <div className="text-center mt-6">
             <Button type="submit">下一步</Button>
