@@ -37,10 +37,7 @@ const formSchema = z.object({
   lottery_end_date: z.date({
     required_error: '请选择抽奖截止时间',
   }),
-  description: z.string().min(1, {
-    message: '请输入活动描述',
-  }),
-  cover: z
+  concert_img: z
     .instanceof(File, {
       message: '请选择一张图片',
     })
@@ -51,8 +48,7 @@ const formSchema = z.object({
 
 export default function PromotionsForm() {
   const { updateStep, goBack, data, mode } = useCreateEvent();
-  const { lottery_start_date, lottery_end_date, description, cover } =
-    data.step2;
+  const { lottery_start_date, lottery_end_date, concert_img } = data.step2;
 
   const disabled = useMemo(
     () => mode === 'readonly' || mode === 'review',
@@ -69,7 +65,7 @@ export default function PromotionsForm() {
     const file = e.target.files?.[0];
     fn(file);
     setSelectedImage(file);
-    form1.setValue('cover', file!); // 使用 setValue 更新表单的 cover 字段
+    form1.setValue('concert_img', file!); // 使用 setValue 更新表单的 concert_img 字段
 
     // 如果选择了文件，手动设置input元素的值
     const inputFile = inputFileRef.current!; // 获取当前的引用
@@ -86,33 +82,31 @@ export default function PromotionsForm() {
 
   useEffect(() => {
     // 创建、编辑
-    if (cover) {
-      setSelectedImage(cover);
+    if (concert_img) {
+      setSelectedImage(concert_img);
     } else {
       // 显示默认图片
       setSelectedImage(undefined);
     }
 
     // }
-  }, [cover]);
+  }, [concert_img]);
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       lottery_start_date: lottery_start_date ?? undefined,
       lottery_end_date: lottery_end_date ?? undefined,
-      description: description ?? '',
-      cover: cover ?? undefined,
+      concert_img: concert_img ?? undefined,
     },
   });
 
   useEffect(() => {
     if (data.step2) {
-      console.log(data.step2.cover);
+      console.log(data.step2.concert_img);
       form1.setValue('lottery_start_date', data.step2.lottery_start_date);
       form1.setValue('lottery_end_date', data.step2.lottery_end_date);
-      form1.setValue('description', data.step2.description);
-      form1.setValue('cover', data.step2.cover);
+      form1.setValue('concert_img', data.step2.concert_img);
     }
   }, [data.step2, form1]);
 
@@ -245,21 +239,7 @@ export default function PromotionsForm() {
         <FormField
           disabled={disabled}
           control={form1.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>活动描述</FormLabel>
-              <FormControl>
-                <Input placeholder="请输入活动描述" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          disabled={disabled}
-          control={form1.control}
-          name="cover"
+          name="concert_img"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>活动封面</FormLabel>
