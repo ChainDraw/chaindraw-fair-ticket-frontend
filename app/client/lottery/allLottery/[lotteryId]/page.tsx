@@ -2,13 +2,6 @@
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  lotteryEscrowAbi,
-  useReadLotteryEscrowGetTicketPrice,
-  useWriteLotteryEscrowDeposit,
-  useWriteLotteryEscrowRefund,
-} from "@/contracts/generated";
-import { useLottery } from "@/contracts/hooks/lottery/useLottery";
 import useAuthStore from "@/stores/authStore";
 import { paths } from "@/utils/paths";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -62,8 +55,6 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   // 合约地址
 
   const contractAddress = "0x162ae4cee9f654949c04be6A8221D8605f431C59";
-  const { handleRefound, handleDeposit, priceData } =
-    useLottery(contractAddress);
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -106,7 +97,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 {false && (
                   <Button
                     className="w-full md:hidden bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => handleDeposit()}
+                    onClick={() => {}}
                   >
                     Buy
                   </Button>
@@ -131,7 +122,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     <Button
                       className=" w-full "
                       variant="destructive"
-                      onClick={() => handleRefound()}
+                      onClick={() => {}}
                     >
                       Refund
                     </Button>
@@ -160,13 +151,13 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     <p className="text-3xl md:text-5xl font-bold">
                       <span className="text-blue mr-1">$</span>
                       {/* {data.ticket_types[0].price} */}
-                      {priceData}
+                      {"1"}
                     </p>
                   </span>
                 </div>
                 <Button
                   className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                  onClick={() => handleDeposit()}
+                  onClick={() => {}}
                 >
                   Buy
                 </Button>

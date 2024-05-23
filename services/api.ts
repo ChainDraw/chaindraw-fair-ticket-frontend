@@ -21,7 +21,7 @@ export const fetchNonce = async () => {
 };
 
 // 验证签名
-export const fetchVerifySignature = async (message, signature: string) => {
+export const fetchVerifySignature = async (message: any, signature: string) => {
   const response = await axiosInstance.post("/user/verify", {
     message: message,
     signature,
