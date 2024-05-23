@@ -63,8 +63,7 @@ export default function Page() {
         }
 
         const data = await res.json();
-        console.log(data);
-        setData(data);
+        setData(data.result);
       } catch (error) {
         handleError(error);
       }
