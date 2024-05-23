@@ -1,14 +1,32 @@
-import useSWR from 'swr';
-import { fetcher } from '@/utils/fetcher';
+import useSWR, { SWRResponse } from 'swr';
+import { fetcher } from '../utils/fetcher';
 
-const useData = (endpoint: string) => {
-  const { data, error } = useSWR(endpoint, fetcher);
+interface FetcherParams {
+  [key: string]: any;
+}
 
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export const useGetData = <T>(url: string): SWRResponse<T, any> => {
+  return useSWR<T>(url, (url: string) => fetcher<T>(url, 'GET'));
 };
 
-export default useData;
+export const usePostData = <T>(
+  url: string,
+  options: FetcherParams
+): SWRResponse<T, any> => {
+  return useSWR<T>([url, options], (url: string) =>
+    fetcher<T>(url, 'POST', options)
+  );
+};
+
+export const usePatchData = <T>(
+  url: string,
+  options: FetcherParams
+): SWRResponse<T, any> => {
+  return useSWR<T>([url, options], (url: string) =>
+    fetcher<T>(url, 'PATCH', options)
+  );
+};
+
+export const useDeleteData = <T>(url: string): SWRResponse<T, any> => {
+  return useSWR<T>(url, (url: string) => fetcher<T>(url, 'DELETE'));
+};
