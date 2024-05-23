@@ -1,28 +1,28 @@
 // src/api.ts
 
-import axios, { AxiosResponse } from "axios";
-import { SiweMessage } from "siwe";
+import axios, { AxiosResponse } from 'axios';
+import { SiweMessage } from 'siwe';
 
-const axiosInstance = axios.create({
-  baseURL: "https://www.biturd.com/api/v1/",
+export const axiosInstance = axios.create({
+  baseURL: 'https://www.biturd.com/api/v1/',
   withCredentials: true,
 });
 
 // 获取用户个人信息
 export const fetchUserInfo = async () => {
-  const response = await axiosInstance.get("/user/personal_information");
+  const response = await axiosInstance.get('/user/personal_information');
   return response.data;
 };
 
 // 获取 nonce
 export const fetchNonce = async () => {
-  const response = await axiosInstance.get("/user/nonce");
+  const response = await axiosInstance.get('/user/nonce');
   return response.data.data;
 };
 
 // 验证签名
 export const fetchVerifySignature = async (message, signature: string) => {
-  const response = await axiosInstance.post("/user/verify", {
+  const response = await axiosInstance.post('/user/verify', {
     message: message,
     signature,
   });
