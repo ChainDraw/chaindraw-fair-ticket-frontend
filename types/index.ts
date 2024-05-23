@@ -29,12 +29,6 @@ export interface EventTicket0 {
   allow_transfer: boolean;
 }
 
-export interface EventPromotion {
-  lottery_start_date: Date;
-  lottery_end_date: Date;
-  concert_img: string;
-}
-
 export interface EventBasics {
   concert_id: string;
   concert_name: string;
@@ -43,6 +37,12 @@ export interface EventBasics {
   remark: string;
   concert_status?: number; // 0: 未开始 1：已过期 2、已取消
   review_status?: number; // 0: 未审核、 1：审核通过、2、审核失败
+}
+
+export interface EventPromotion {
+  lottery_start_date: Date;
+  lottery_end_date: Date;
+  concert_img: string;
 }
 
 export interface EventTicket {

@@ -152,22 +152,22 @@ async function submitFormData(data: FormStepsState['data']): Promise<any> {
 async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 模拟的活动基础信息
   const event: EventBasics = {
-    id,
-    name: 'Example Event',
+    concert_id: id,
+    concert_name: 'Example Event',
     address: '123 Main St, City, Country',
-    start_time: new Date('2024-06-01T10:00:00Z'),
-    end_time: new Date('2024-06-01T18:00:00Z'),
-    entry_time: new Date('2024-06-01T09:00:00Z'),
-    description: 'This is an example event.',
-    status: 1,
+    concert_date: new Date('2024-06-01T10:00:00Z'),
+    // start_time: new Date('2024-06-01T10:00:00Z'),
+    // end_time: new Date('2024-06-01T18:00:00Z'),
+    // entry_time: new Date('2024-06-01T09:00:00Z'),
+    remark: 'This is an example event.',
+    review_status: 1,
   };
 
   // 模拟的抽奖信息
   const promotion: EventPromotion = {
     lottery_start_date: new Date('2024-05-01T00:00:00Z'),
     lottery_end_date: new Date('2024-05-31T23:59:59Z'),
-    description: 'Participate in our lottery to win exciting prizes!',
-    cover: '',
+    concert_img: '',
   };
 
   // 需要把图片转换为 blob 格式
@@ -178,13 +178,12 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
 
   // 模拟的门票信息
   const ticket: EventTicket = {
-    name: 'General Admission',
-    description: 'Access to all areas of the event.',
+    type_name: 'General Admission',
     price: 50,
-    max_per_wallet: 4,
-    ticket_max_num: 1000,
-    cover: 'https://picsum.photos/200/300',
-    allow_transfer: true,
+    max_quantity_per_wallet: 4,
+    num: 1000,
+    ticket_img: 'https://picsum.photos/200/300',
+    trade: true,
   };
 
   // 返回模拟的数据
