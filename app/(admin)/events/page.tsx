@@ -12,29 +12,29 @@ import CreateButton from '@/components/admin/events/create-button';
 import { useEffect, useState } from 'react';
 import { handleError } from '@/utils/errors';
 
-async function getData(): Promise<Partial<EventBasics>[]> {
-  return [
-    {
-      id: '728ed52f',
-      name: 'event1',
-      start_time: new Date(new Date().getTime()),
-      status: 0,
-    },
-    {
-      id: '728ed52a',
-      name: 'event2',
-      start_time: new Date(new Date().getTime() + 20000),
-      status: 1,
-    },
-    {
-      id: '728ed52b',
-      name: 'event3',
-      start_time: new Date(new Date().getTime() + 40000),
-      status: 0,
-    },
-    // ...
-  ];
-}
+// async function getData(): Promise<Partial<EventBasics>[]> {
+//   return [
+//     {
+//       id: '728ed52f',
+//       name: 'event1',
+//       start_time: new Date(new Date().getTime()),
+//       status: 0,
+//     },
+//     {
+//       id: '728ed52a',
+//       name: 'event2',
+//       start_time: new Date(new Date().getTime() + 20000),
+//       status: 1,
+//     },
+//     {
+//       id: '728ed52b',
+//       name: 'event3',
+//       start_time: new Date(new Date().getTime() + 40000),
+//       status: 0,
+//     },
+//     // ...
+//   ];
+// }
 
 export default function Page() {
   // const data = await getData();

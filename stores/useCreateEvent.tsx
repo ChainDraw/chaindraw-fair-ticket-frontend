@@ -227,8 +227,8 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 返回模拟的数据
   return {
     step1: event,
-    step2: { ...promotion, cover: blob },
-    step3: { ...ticket, cover: blob2 },
+    step2: { ...promotion, concert_img: blob },
+    step3: { ...ticket, ticket_img: blob2 },
   };
 }
 

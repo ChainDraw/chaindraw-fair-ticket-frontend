@@ -37,7 +37,7 @@ const formSchema = z.object({
   lottery_end_date: z.date({
     required_error: '请选择抽奖截止时间',
   }),
-  concert_img: z
+  concert_img_preview: z
     .instanceof(File, {
       message: '请选择一张图片',
     })
@@ -48,69 +48,84 @@ const formSchema = z.object({
 
 export default function PromotionsForm() {
   const { updateStep, goBack, data, mode } = useCreateEvent();
-  const { lottery_start_date, lottery_end_date, concert_img } = data.step2;
+  const { lottery_start_date, lottery_end_date, concert_img_preview } =
+    data.step2;
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(
+    undefined
+  );
+  const [ipfsHash, setIpfsHash] = useState('');
+  const [hasUploaded, setHasUploaded] = useState(false);
 
   const disabled = useMemo(
     () => mode === 'readonly' || mode === 'review',
     [mode]
   );
 
-  const [selectedImage, setSelectedImage] = useState<File | undefined>(
-    undefined
-  );
-
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
+  // 图片变化时
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
     const file = e.target.files?.[0];
     fn(file);
     setSelectedImage(file);
-    form1.setValue('concert_img', file!); // 使用 setValue 更新表单的 concert_img 字段
-
-    // 如果选择了文件，手动设置input元素的值
-    const inputFile = inputFileRef.current!; // 获取当前的引用
-    console.log('==============inputFile==============', inputFile);
-    // if (inputFile) {
-    //   if (file) {
-    //     console.log(file.name);
-    //     inputFile.value = file.name; // 当引用存在时，设置其 value 属性
-    //   } else {
-    //     inputFile.value = ''; // 如果没有选择文件，将 input 的值重置为空
-    //   }
-    // }
+    form1.setValue('concert_img_preview', file!); // 使用 setValue 更新表单的 concert_img_preview 字段
+    setIpfsHash('');
   };
 
-  useEffect(() => {
-    // 创建、编辑
-    if (concert_img) {
-      setSelectedImage(concert_img);
-    } else {
-      // 显示默认图片
-      setSelectedImage(undefined);
+  // 上传到IPFS
+  const uploadToIPFS = async (e: any) => {
+    e.preventDefault();
+    if (!selectedImage) {
+      toast({
+        title: '请选择一张图片',
+        description: '请选择一张图片',
+        variant: 'destructive',
+      });
+      setHasUploaded(false);
+      return;
     }
+    const formData = new FormData();
 
-    // }
-  }, [concert_img]);
+    formData.append('file', selectedImage as File);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log(data);
+    setIpfsHash(data.ipfsHash);
+    setHasUploaded(true);
+  };
 
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       lottery_start_date: lottery_start_date ?? undefined,
       lottery_end_date: lottery_end_date ?? undefined,
-      concert_img: concert_img ?? undefined,
+      concert_img_preview: concert_img_preview ?? undefined,
     },
   });
 
   useEffect(() => {
+    // 创建、编辑
+    if (concert_img_preview) {
+      setSelectedImage(concert_img_preview);
+    } else {
+      // 显示默认图片
+      setSelectedImage(undefined);
+    }
+  }, [concert_img_preview]);
+
+  useEffect(() => {
     if (data.step2) {
-      console.log(data.step2.concert_img);
+      console.log(data.step2.concert_img_preview);
       form1.setValue('lottery_start_date', data.step2.lottery_start_date);
       form1.setValue('lottery_end_date', data.step2.lottery_end_date);
-      form1.setValue('concert_img', data.step2.concert_img);
+      form1.setValue('concert_img_preview', data.step2.concert_img_preview);
     }
   }, [data.step2, form1]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const { lottery_start_date, lottery_end_date } = values;
     const isOrderCorrect =
       compareDates(lottery_start_date, lottery_end_date) === -1;
@@ -128,8 +143,17 @@ export default function PromotionsForm() {
         description: '请检查抽奖时间顺序',
         variant: 'destructive',
       });
+      return;
+    }
+
+    if (hasUploaded) {
+      updateStep(2, { ...values, concert_img: ipfsHash });
     } else {
-      updateStep(2, values);
+      toast({
+        title: '图片未上传',
+        description: '请先上传至IPFS',
+        variant: 'destructive',
+      });
     }
   }
 
@@ -239,20 +263,33 @@ export default function PromotionsForm() {
         <FormField
           disabled={disabled}
           control={form1.control}
-          name="concert_img"
+          name="concert_img_preview"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>活动封面</FormLabel>
               <FormControl>
                 <>
-                  <Input
-                    {...fieldProps}
-                    ref={inputFileRef}
-                    type="file"
-                    accept="image/*"
-                    // style={{ display: 'none' }}
-                    onChange={(event) => onImageChange(event, onChange)}
-                  />
+                  <div className="flex space-x-8">
+                    <Input
+                      {...fieldProps}
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => onImageChange(event, onChange)}
+                    />
+                    <Button onClick={(e) => uploadToIPFS(e)}>上 传</Button>
+                  </div>
+                  {ipfsHash && (
+                    <div className="text-center">
+                      <p>Image uploaded to IPFS with hash: {ipfsHash}</p>
+                      <a
+                        href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        查看图片
+                      </a>
+                    </div>
+                  )}
                   {selectedImage && (
                     <div className="flex-center h-[auto]">
                       <Image
