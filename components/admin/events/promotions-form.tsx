@@ -78,6 +78,9 @@ export default function PromotionsForm() {
       setUploading(false);
       setSelectedImage(undefined);
     }
+
+    setIpfsHash('');
+    setHasUploaded(false);
     fn(file);
     setSelectedImage(file);
     form1.setValue('concert_img_preview', file!); // 使用 setValue 更新表单的 concert_img_preview 字段
@@ -305,8 +308,16 @@ export default function PromotionsForm() {
               <FormLabel>活动封面</FormLabel>
               <FormControl>
                 <>
-                  <div className="flex space-x-8">
+                  <div className="flex-center space-x-8">
+                    <label
+                      className="bg-black text-white p-2 cursor-pointer rounded "
+                      htmlFor="upload-btn"
+                    >
+                      选择图片
+                    </label>
                     <Input
+                      id="upload-btn"
+                      className="hidden"
                       {...fieldProps}
                       type="file"
                       accept="image/*"
