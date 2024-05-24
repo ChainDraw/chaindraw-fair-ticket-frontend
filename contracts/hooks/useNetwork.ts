@@ -2,7 +2,7 @@
 
 import { useAccount } from "wagmi";
 import addressConfig from "../contractAddressConfig";
-const getNetwork = (chainId?: number) => {
+export const getNetwork = (chainId?: number) => {
   if (chainId === undefined || !addressConfig[chainId]) {
     return addressConfig[97];
   }

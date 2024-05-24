@@ -29,9 +29,9 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
           src={props.concert_img}
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{ objectFit: "cover", objectPosition: "center" }}
           alt="lottery"
           className="transform duration-300 group-hover:scale-110"
         />

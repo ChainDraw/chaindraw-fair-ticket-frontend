@@ -4,12 +4,15 @@ import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
 import { usePathname } from 'next/navigation';
 import { getHeaderTitle } from './pathMap';
 import { useEffect } from 'react';
+import { CustomConnectButton } from '@/components/client/header/CustomConnectButton';
+import { Webhook } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminHeader() {
   const pathname = usePathname();
   const title = getHeaderTitle(pathname);
 
-  const { mode, updateMode } = useCreateEvent();
+  const { updateMode } = useCreateEvent();
 
   // 根据路由更新 mode 的映射关系
   const modeMap: { [key: string]: EventMode } = {
@@ -40,10 +43,20 @@ export default function AdminHeader() {
 
   return (
     <header className="flex items-center h-[--admin-header-height] p-4 border-b border-b-[#ddd]">
-      <div className="w-[--admin-sidebar-width] font-bold">chaindraw</div>
+      <div className="w-[--admin-sidebar-width] font-bold">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-2xl lg:text-3xl font-bold italic"
+        >
+          <Webhook size={40} className="text-[#f8cf15]" />
+          ChainDraw
+        </Link>
+      </div>
       <div className="flex-1 flex justify-between items-center w-full">
         <h1 className="font-bold">{title}</h1>
-        <div>xxx@gmail.com</div>
+        <div>
+          <CustomConnectButton />
+        </div>
       </div>
     </header>
   );
