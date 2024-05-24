@@ -32,6 +32,7 @@ import { useDisconnect } from "wagmi";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { paths } from "@/utils/paths";
+import { fetchLogout } from "@/services/api";
 
 export const CustomConnectButton = () => {
   const { disconnect } = useDisconnect();
@@ -147,7 +148,7 @@ export const CustomConnectButton = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={async () => {
-                    await fetch("http://localhost:3000/logout");
+                    const res = await fetchLogout();
                     disconnect();
                   }}
                 >

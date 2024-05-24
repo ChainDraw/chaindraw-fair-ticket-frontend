@@ -8,6 +8,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import EventItem from "@/components/client/eventsItem/EventItem";
 import LatestLotteryItem from "../lottery/components/LatestLottery/LatestLotteryItem";
+import useAuthStore from "@/stores/authStore";
+import { redirect } from "next/navigation";
 
 interface Item {
   id: number;

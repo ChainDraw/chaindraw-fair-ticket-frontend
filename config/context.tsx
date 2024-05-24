@@ -15,9 +15,11 @@ import {
   fetchUserInfo,
   fetchVerifySignature,
 } from "@/services/api";
+
 const queryClient = new QueryClient();
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { authStatus, setAuthStatus } = useAuthStore();
+
   useEffect(() => {
     const fetch = async () => {
       try {

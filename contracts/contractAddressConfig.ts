@@ -6,12 +6,10 @@ interface IAddressConfig {
 }
 const addressConfig: Record<Chain["id"], IAddressConfig> = {
   [bscTestnet.id]: {
-    lotteryEscrowFactory: "0x0AC5A22dEbA7E6174704152c17fC3D0ec62483D0",
-    // token: "0x6b175474e89094c44da98b954eedeac495271d0f",
+    lotteryEscrowFactory: "0xF27ae6E1336BdC88161D7591355495C6ed98947e",
   },
   [bsc.id]: {
     lotteryEscrowFactory: "0x271fAE920a22e50E27E7ec6fD1a1aD097d48d86a",
-    // token: "0x6b175474e89094c44da98b954eedeac495271d0f",
   },
 };
 

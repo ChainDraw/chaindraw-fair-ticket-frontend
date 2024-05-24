@@ -13,6 +13,11 @@ export const fetchUserInfo = async () => {
   const response = await axiosInstance.get("/user/personal_information");
   return response.data;
 };
+//
+export const fetchLogout = async () => {
+  const response = await axiosInstance.get("/user/logout");
+  return response.data;
+};
 
 // 获取 nonce
 export const fetchNonce = async () => {
@@ -28,3 +33,4 @@ export const fetchVerifySignature = async (message: any, signature: string) => {
   });
   return response.data;
 };
+// useLottery list

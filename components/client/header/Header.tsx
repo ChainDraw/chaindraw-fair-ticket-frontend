@@ -21,15 +21,8 @@ const Header = memo(function Header() {
       title: "Create",
       link: paths.admin.events,
     },
-    // {
-    //   title: "Contact",
-    //   link: "/contact",
-    // },
-    // {
-    //   title: "Collectables",
-    //   link: "/collectable",
-    // },
   ];
+
   return (
     <header
       className={cn(

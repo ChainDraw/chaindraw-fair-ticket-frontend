@@ -2,10 +2,12 @@
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useLottery } from "@/contracts/hooks/useLottery";
 import useAuthStore from "@/stores/authStore";
 import { paths } from "@/utils/paths";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-
+import { ethers } from "ethers";
+import abi from "../../../../../contracts/abis/LotteryEscrow.json";
 // import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
 import Image from "next/image";
@@ -13,7 +15,7 @@ import Link from "next/link";
 import React, { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Address, formatEther, parseEther } from "viem";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount, useConnect, useEstimateGas } from "wagmi";
 const data = {
   concert_id: "123456",
   concert_name: "Example Concert",
@@ -53,8 +55,17 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   //   enabled: !!lotteryId,
   // });
   // 合约地址
-
-  const contractAddress = "0x162ae4cee9f654949c04be6A8221D8605f431C59";
+  const contractAddress = "0x0978C76a1a5675dC1502564a91d27FD662312A78";
+  const {
+    handleDeposit,
+    handleRefound,
+    price,
+    isWinner,
+    isJoin,
+    isEnded,
+    handleStartLottery,
+  } = useLottery(contractAddress);
+  const { authStatus } = useAuthStore();
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -91,13 +102,24 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 </div>
               </div>
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
-                ` TODO:DETAIL INFO `
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Eveniet voluptatum dolores quasi. Magnam consequatur impedit
+                natus voluptatem id placeat ducimus nihil quidem. Fugiat hic
+                itaque accusamus sed perferendis, temporibus nihil.
               </p>
-              <div className="md:hidden">
+              <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Eveniet voluptatum dolores quasi. Magnam consequatur impedit
+                natus voluptatem id placeat ducimus nihil quidem. Fugiat hic
+                itaque accusamus sed perferendis, temporibus nihil.
+              </p>
+
+              {/* mobile */}
+              {/* <div className="md:hidden">
                 {false && (
                   <Button
                     className="w-full md:hidden bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => {}}
+                    onClick={() => handleDeposit()}
                   >
                     Buy
                   </Button>
@@ -122,13 +144,13 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     <Button
                       className=" w-full "
                       variant="destructive"
-                      onClick={() => {}}
+                      onClick={() => handleRefound()}
                     >
                       Refund
                     </Button>
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="hidden md:block md:w-2/5">
@@ -143,52 +165,63 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
               />
             </div>
 
-            {true && (
-              <div>
-                <div className="hidden md:flex items-center justify-between py-14">
-                  <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
-                  <span className="flex items-center space-x-2 mb-2.5">
-                    <p className="text-3xl md:text-5xl font-bold">
-                      <span className="text-blue mr-1">$</span>
-                      {/* {data.ticket_types[0].price} */}
-                      {"1"}
-                    </p>
-                  </span>
-                </div>
-                <Button
-                  className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                  onClick={() => {}}
-                >
-                  Buy
-                </Button>
-              </div>
-            )}
-            <div>
-              {false ? (
-                <div>
-                  <h1 className="text-4xl mb-4 text-orange-500 italic">
-                    You are the winner :
-                  </h1>
-                  <p className="mb-4">
-                    The reward has been sent to your wallet address
-                  </p>
-                  <Link
-                    className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 py-2 text-center rounded-lg"
-                    href={paths.client.profile}
-                  >
-                    Check your repository -&gt;
-                  </Link>
-                </div>
-              ) : (
-                <Button
-                  className="hidden md:block w-full "
-                  disabled
-                  variant="destructive"
-                >
-                  Not Winner
-                </Button>
-              )}
+            <div className="hidden md:flex items-center justify-between py-14">
+              <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
+              <span className="flex items-center space-x-2 mb-2.5">
+                <p className="text-3xl md:text-5xl font-bold">
+                  {price?.toString()}
+                  <span className="text-blue mr-1"> Wei</span>
+                </p>
+              </span>
             </div>
+            {authStatus === "authenticated" ? (
+              <div>
+                {isJoin?.toString() === "0" ? (
+                  isWinner ? (
+                    <div>
+                      <h1 className="text-4xl mb-4 text-orange-500 italic">
+                        You are the winner :
+                      </h1>
+                      <p className="mb-4">
+                        The reward has been sent to your wallet address
+                      </p>
+                      <Link
+                        className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 py-2 text-center rounded-lg"
+                        href={paths.client.profile}
+                      >
+                        Check your repository -&gt;
+                      </Link>
+                    </div>
+                  ) : (
+                    <Button
+                      className="hidden md:block w-full "
+                      variant="destructive"
+                      onClick={() => handleRefound()}
+                    >
+                      Not Winner - Click Refund
+                    </Button>
+                  )
+                ) : isEnded ? (
+                  <Button
+                    className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
+                    onClick={() => handleDeposit()}
+                  >
+                    Already Ended
+                  </Button>
+                ) : (
+                  <Button
+                    className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
+                    onClick={() => handleDeposit()}
+                  >
+                    Join
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <Button className="w-full" variant="destructive">
+                Please Connect Wallet
+              </Button>
+            )}
           </div>
         </div>
       </MaxWidthWrapper>
