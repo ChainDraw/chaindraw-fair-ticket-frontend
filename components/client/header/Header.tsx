@@ -7,6 +7,19 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 
 import { cn } from "@/lib/utils";
 import { paths } from "@/utils/paths";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerPortal,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 const Header = memo(function Header() {
   const navList = [
     {
@@ -39,9 +52,25 @@ const Header = memo(function Header() {
             ChainDraw
           </Link>
           {/* Mobile */}
-          <div className="hover:cursor-pointer h-full flex lg:hidden text-[#f8cf15]">
-            <Menu size={40} color="#fff" />
-          </div>
+
+          <Drawer direction="right">
+            <DrawerTrigger>
+              <div className="hover:cursor-pointer h-full flex lg:hidden text-[#f8cf15]">
+                <Menu size={40} color="#fff" />
+              </div>
+            </DrawerTrigger>
+            <DrawerPortal>
+              <DrawerOverlay className="fixed inset-0 bg-black/40" />
+              <DrawerContent className="bg-black flex flex-col rounded-t-[10px] h-full w-full mt-24 fixed bottom-0 right-0">
+                <div className="flex flex-col flex-1 gap-10 ">
+                  {navList.map((item, index) => {
+                    return <NavItem {...item} key={item.title} />;
+                  })}
+                  <CustomConnectButton />
+                </div>
+              </DrawerContent>
+            </DrawerPortal>
+          </Drawer>
         </div>
         <div className="hidden lg:flex flex-col justify-end right-0 lg:mt-0 lg:absolute lg:top-0 lg:h-full lg:items-center">
           <div className="flex flex-col flex-1 gap-10 lg:flex lg:flex-row lg:items-center">

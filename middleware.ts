@@ -12,8 +12,7 @@ export async function middleware(request: NextRequest) {
     "/500",
   ];
   const isWhite = whiteList.includes(pathname);
-  const token = request.headers;
-  console.log(token);
+
   if (isWhite) {
     return NextResponse.next();
   } else {
