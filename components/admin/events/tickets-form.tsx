@@ -26,6 +26,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import ReviewDialog from './events-review/review-dialog';
+import { handleError } from '@/utils/errors';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
@@ -41,7 +42,7 @@ const ticketSchema = z.object({
   type_name: z.string().min(1, {
     message: '请输入门票名称',
   }),
-  ticket_img: z
+  ticket_img_preview: z
     .instanceof(File, {
       message: '请选择一张图片',
     })
@@ -59,8 +60,14 @@ const formSchema = z.object({
 export default function TicketsForm() {
   const { submitData, goBack, data, updateFinalStep, mode, reset } =
     useCreateEvent();
-  const { max_quantity_per_wallet, num, price, type_name, ticket_img, trade } =
-    data.step3;
+  const {
+    max_quantity_per_wallet,
+    num,
+    price,
+    type_name,
+    ticket_img_preview,
+    trade,
+  } = data.step3;
 
   const disabled = useMemo(
     () => mode === 'readonly' || mode === 'review',
@@ -68,6 +75,13 @@ export default function TicketsForm() {
   );
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [ipfsHashes, setIpfsHashes] = useState<{ [key: string]: string }>({});
+  const [hasUploadedMap, setHasUploadedMap] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [uploadingMap, setUploadingMap] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const onImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -87,6 +101,72 @@ export default function TicketsForm() {
     }
   };
 
+  // 上传到IPFS
+  const uploadToIPFS = async (e: any, image: File, field: any) => {
+    e.preventDefault();
+    const { id } = field;
+
+    if (!image) {
+      toast({
+        title: '请选择一张图片',
+        description: '请选择一张图片',
+        variant: 'destructive',
+      });
+      setHasUploadedMap((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+      setUploadingMap((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+
+      return;
+    }
+
+    setUploadingMap((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+
+    const formData = new FormData();
+
+    formData.append('file', image as File);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      setIpfsHashes((prev) => ({
+        ...prev,
+        [id]: data.ipfsHash,
+      }));
+
+      setHasUploadedMap((prev) => ({
+        ...prev,
+        [id]: true,
+      }));
+      setUploadingMap((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+    } catch (error) {
+      handleError(error);
+      setHasUploadedMap((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+      setUploadingMap((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
+      return;
+    }
+  };
+
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -96,7 +176,7 @@ export default function TicketsForm() {
           num: num ?? 0,
           price: price ?? 0,
           type_name: type_name ?? '',
-          ticket_img: ticket_img ?? undefined,
+          ticket_img_preview: ticket_img_preview ?? undefined,
           trade: trade ?? false,
         },
       ],
@@ -110,6 +190,36 @@ export default function TicketsForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // 遍历图片上传情况
+    console.log('hasUploadedMap', hasUploadedMap);
+    console.log('ipfsHashes', ipfsHashes);
+    console.log('selectedImages', selectedImages);
+    if (!selectedImages.length) {
+      toast({
+        title: '请上传图片',
+        description: '请上传图片',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (selectedImages.length) {
+      if (!Object.values(hasUploadedMap).length) {
+        toast({
+          title: '请上传图片',
+          description: '请上传图片',
+          variant: 'destructive',
+        });
+      }
+      if (!Object.values(hasUploadedMap).every((value) => value === true)) {
+        toast({
+          title: 'Please upload all images',
+          description: 'Please upload all images',
+          variant: 'destructive',
+        });
+      }
+    }
+    console.log('values.tickets', values.tickets);
+    return;
     updateFinalStep(values);
     const response = await submitData();
     console.log(await response);
@@ -119,22 +229,36 @@ export default function TicketsForm() {
     });
   }
 
-  const handleRemove = (index: number) => {
+  const handleRemove = (e: any, index: number, id: string) => {
+    e.preventDefault();
     remove(index);
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setHasUploadedMap((prevMap) => {
+      const newMap = { ...prevMap };
+      delete newMap[id];
+      return newMap;
+    });
+    setIpfsHashes((prev) => {
+      const newHashes = { ...prev };
+      delete newHashes[id];
+      return newHashes;
+    });
   };
 
   return (
     <Form {...form1}>
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         {fields.map((field, index) => (
-          <Collapsible key={field.id} className="border-2 p-4">
+          <Collapsible defaultOpen key={field.id} className="border-2 p-4">
             <div className="flex justify-between items-center">
               <CollapsibleTrigger className="w-full text-left">
                 {form1.getValues(`tickets.${index}.type_name`) ||
                   '新增门票 ' + (index + 1)}
               </CollapsibleTrigger>
-              <Button type="button" onClick={() => handleRemove(index)}>
+              <Button
+                type="button"
+                onClick={(e) => handleRemove(e, index, field.id)}
+              >
                 删除
               </Button>
             </div>
@@ -214,21 +338,55 @@ export default function TicketsForm() {
               <FormField
                 disabled={disabled}
                 control={form1.control}
-                {...form1.register(`tickets.${index}.ticket_img`)}
+                {...form1.register(`tickets.${index}.ticket_img_preview`)}
                 render={({ field: { value, onChange, ...fieldProps } }) => (
                   <FormItem>
                     <FormLabel>门票封面</FormLabel>
                     <FormControl>
                       <>
-                        <Input
-                          {...fieldProps}
-                          // ref={field.ref}
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            onImageChange(event, onChange, index)
-                          }
-                        />
+                        <div className="flex-center space-x-8">
+                          <label
+                            className="bg-black text-white p-2 cursor-pointer rounded "
+                            htmlFor={`upload-btn-${index}`}
+                          >
+                            选择图片
+                          </label>
+                          <Input
+                            id={`upload-btn-${index}`}
+                            className="hidden"
+                            {...fieldProps}
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                              onImageChange(event, onChange, index)
+                            }
+                          />
+                          {uploadingMap[field.id] ? (
+                            <Button disabled>上传中...</Button>
+                          ) : (
+                            <Button
+                              onClick={(e) => uploadToIPFS(e, value, field)}
+                              disabled={hasUploadedMap[field.id]}
+                            >
+                              {hasUploadedMap[field.id] ? '已上传' : '上 传'}
+                            </Button>
+                          )}
+                        </div>
+                        {ipfsHashes[field.id] && (
+                          <div className="text-center">
+                            <p>
+                              Image uploaded to IPFS with hash:{' '}
+                              {ipfsHashes[field.id]}
+                            </p>
+                            <a
+                              href={`https://gateway.pinata.cloud/ipfs/${ipfsHashes[field.id]}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              查看图片
+                            </a>
+                          </div>
+                        )}
                         {selectedImages[index] && (
                           <div className="flex-center h-[auto]">
                             <Image
@@ -273,16 +431,17 @@ export default function TicketsForm() {
           <div className="text-center mt-6 space-x-8">
             <Button onClick={goBack}>上一步</Button>
             <Button
-              onClick={() =>
+              onClick={(e) => {
+                e.preventDefault();
                 append({
                   max_quantity_per_wallet: 0,
                   num: 0,
                   price: 0,
                   type_name: '',
-                  ticket_img: undefined!,
+                  ticket_img_preview: undefined!,
                   trade: false,
-                })
-              }
+                });
+              }}
             >
               添加新票
             </Button>
