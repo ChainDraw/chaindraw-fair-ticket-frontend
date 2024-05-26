@@ -46,9 +46,9 @@ const DropdownMenuItemComponent = ({
     updateMode(mode);
 
     const map: Partial<Record<EventMode, string>> = {
-      edit: `/events/${rowOriginal.id}/edit`,
-      review: `/events/${rowOriginal.id}/review`,
-      readonly: `/events/${rowOriginal.id}`,
+      edit: `/events/${rowOriginal.concert_id}/edit`,
+      review: `/events/${rowOriginal.concert_id}/review`,
+      readonly: `/events/${rowOriginal.concert_id}`,
     };
 
     router.push(map[mode]!);
@@ -86,7 +86,7 @@ const DropdownMenuItemCancel = ({
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={() => console.log('确认', rowOriginal.id)}>
+          <Button onClick={() => console.log('确认', rowOriginal.concert_id)}>
             确认
           </Button>
         </DialogFooter>
@@ -97,11 +97,11 @@ const DropdownMenuItemCancel = ({
 
 export const columns: ColumnDef<EventBasics>[] = [
   {
-    accessorKey: 'name',
+    accessorKey: 'concert_name',
     header: '活动名称',
   },
   {
-    accessorKey: 'start_time',
+    accessorKey: 'concert_date',
     header: ({ column }) => {
       return (
         <Button
@@ -114,17 +114,34 @@ export const columns: ColumnDef<EventBasics>[] = [
       );
     },
     cell: ({ row }) => {
-      const startTime = row.original.start_time;
+      // const startTime = row.original.concert_date; // todo 等后端更新后打开
+      const startTime = '2024-05-26T16:00:00.000Z';
+
       return startTime
         ? format(new Date(startTime), 'yyyy-MM-dd HH:mm:ss')
         : '';
     },
   },
   {
-    accessorKey: 'status',
-    header: () => <div className="text-right">状态</div>,
+    accessorKey: 'concert_status',
+    header: () => <div className="text-right">演唱会状态</div>,
     cell: ({ row }) => {
-      const status = parseInt(row.getValue('status'));
+      const status = parseInt(row.getValue('concert_status'));
+      // "concert_status": 0, // 0: 未开始 1：已过期 2、已取消
+      if (status === 0) {
+        return <div className="text-right">未开始</div>;
+      } else if (status === 1) {
+        return <div className="text-right text-red-500">已过期</div>;
+      } else if (status === 2) {
+        return <div className="text-right text-yellow-500">已取消</div>;
+      }
+    },
+  },
+  {
+    accessorKey: 'review_status',
+    header: () => <div className="text-right">审核状态</div>,
+    cell: ({ row }) => {
+      const status = parseInt(row.getValue('review_status'));
       // "review_status": 0 // 0: 未审核、 1：审核通过、2、审核失败
       if (status === 0) {
         return <div className="text-right">未审核</div>;
@@ -151,7 +168,9 @@ export const columns: ColumnDef<EventBasics>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>操作</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(rowOriginal.id)}
+              onClick={() =>
+                navigator.clipboard.writeText(rowOriginal.concert_id)
+              }
             >
               复制活动ID
             </DropdownMenuItem>
