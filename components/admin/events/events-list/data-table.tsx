@@ -54,16 +54,21 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      {/* 搜索框 */}
       <div className="flex items-center py-4">
         <Input
           placeholder="搜索名称..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          value={
+            (table.getColumn('concert_name')?.getFilterValue() as string) ?? ''
+          }
           onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
+            table.getColumn('concert_name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
       </div>
+
+      {/* 表格 */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -114,6 +119,8 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      {/* 分页器 */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"

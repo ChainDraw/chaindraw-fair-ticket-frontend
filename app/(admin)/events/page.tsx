@@ -44,7 +44,7 @@ export default function Page() {
     (async function fetchData() {
       try {
         const res = await fetch(
-          'https://www.biturd.com/api/v1/concert/concert_list',
+          `https://www.biturd.com/api/v1/concert/concert_list?page_size=999`,
           {
             method: 'GET',
             headers: {
