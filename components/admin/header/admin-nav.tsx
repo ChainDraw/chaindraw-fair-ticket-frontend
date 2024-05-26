@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
-import { Calendar, Settings } from 'lucide-react';
+import { Calendar, Settings, Hammer } from 'lucide-react';
 
 // 左侧导航栏
 const links = [
@@ -20,6 +20,12 @@ const links = [
     label: '主办方设置',
     icon: Settings,
     href: '/settings',
+  },
+  {
+    title: 'Mint',
+    label: '铸造NFT',
+    icon: Hammer,
+    href: '/mint',
   },
 ];
 
