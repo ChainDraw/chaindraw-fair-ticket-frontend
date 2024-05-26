@@ -6,6 +6,9 @@ import { SiweMessage } from "siwe";
 const axiosInstance = axios.create({
   baseURL: "https://www.biturd.com/api/v1/",
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // 获取用户个人信息

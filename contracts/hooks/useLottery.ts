@@ -6,6 +6,7 @@ import { useAccount, useSimulateContract, useWalletClient } from "wagmi";
 import {
   lotteryAbi,
   useReadLotteryCompleteDraw,
+  useReadLotteryDdl,
   useReadLotteryDeposits,
   useReadLotteryIsWinner,
   useReadLotteryPrice,
@@ -32,6 +33,7 @@ export const useLottery = (contractAddress: Address) => {
     address: contractAddress,
     args: [address!],
   });
+  const { data: ddl } = useReadLotteryDdl({ address: contractAddress });
   // Write
   const { writeContractAsync: refund } = useWriteLotteryRefund();
 
@@ -85,10 +87,11 @@ export const useLottery = (contractAddress: Address) => {
   return {
     handleRefound,
     handleDeposit,
+    handleStartLottery,
     price,
     isWinner,
     isJoin,
     isEnded,
-    handleStartLottery,
+    ddl,
   };
 };

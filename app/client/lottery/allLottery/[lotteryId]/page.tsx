@@ -16,6 +16,7 @@ import React, { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Address, formatEther, parseEther } from "viem";
 import { useAccount, useConnect, useEstimateGas } from "wagmi";
+import CountdownComponent from "../../components/countdowm/CountDown";
 const data = {
   concert_id: "123456",
   concert_name: "Example Concert",
@@ -59,11 +60,12 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const {
     handleDeposit,
     handleRefound,
+    handleStartLottery,
     price,
     isWinner,
     isJoin,
     isEnded,
-    handleStartLottery,
+    ddl,
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
   return (
@@ -154,6 +156,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             </div>
           </div>
           <div className="hidden md:block md:w-2/5">
+            <CountdownComponent targetTime={Number(ddl)} />
             <div className="w-full h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
               <Image
                 alt="Lottery Image"
@@ -174,6 +177,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 </p>
               </span>
             </div>
+
             {authStatus === "authenticated" ? (
               <div>
                 {isJoin?.toString() === "0" ? (

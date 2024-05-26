@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 import Hero from "@/components/client/hero/Hero";
 
@@ -8,7 +8,6 @@ import Feature from "@/components/client/Feature/Feature";
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import Image from "next/image";
 import Create from "@/components/client/create/Create";
-import { ethers } from "ethers";
 
 type Props = {};
 const Home = (props: Props) => {

@@ -61,8 +61,8 @@ const Header = memo(function Header() {
             </DrawerTrigger>
             <DrawerPortal>
               <DrawerOverlay className="fixed inset-0 bg-black/40" />
-              <DrawerContent className="bg-black flex flex-col rounded-t-[10px] h-full w-full mt-24 fixed bottom-0 right-0">
-                <div className="flex flex-col flex-1 gap-10 ">
+              <DrawerContent className=" bg-black border-none flex flex-col rounded-t-[10px] h-full w-[80%] mt-24 fixed bottom-0 left-0 right-0">
+                <div className="px-10 py-10 flex flex-col flex-1 gap-10 ">
                   {navList.map((item, index) => {
                     return <NavItem {...item} key={item.title} />;
                   })}
