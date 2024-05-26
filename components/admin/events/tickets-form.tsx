@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/collapsible';
 import ReviewDialog from './events-review/review-dialog';
 import { handleError } from '@/utils/errors';
+import { useRouter } from 'next/navigation';
 
 // 定义一个门票对象的模式
 const ticketSchema = z.object({
@@ -75,13 +76,17 @@ export default function TicketsForm() {
   );
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [ipfsHashes, setIpfsHashes] = useState<{ [key: string]: string }>({});
+  const [ipfsHashes, setIpfsHashes] = useState<{
+    [key: string]: string;
+  }>({});
   const [hasUploadedMap, setHasUploadedMap] = useState<{
     [key: string]: boolean;
   }>({});
   const [uploadingMap, setUploadingMap] = useState<{ [key: string]: boolean }>(
     {}
   );
+
+  const router = useRouter();
 
   const onImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -104,6 +109,7 @@ export default function TicketsForm() {
   // 上传到IPFS
   const uploadToIPFS = async (e: any, image: File, field: any) => {
     e.preventDefault();
+
     const { id } = field;
 
     if (!image) {
@@ -218,15 +224,26 @@ export default function TicketsForm() {
         });
       }
     }
-    console.log('values.tickets', values.tickets);
-    return;
-    updateFinalStep(values);
-    const response = await submitData();
-    console.log(await response);
-    reset();
-    toast({
-      title: '提交成功',
+
+    const tickets = values.tickets.map((ticket, index) => {
+      const id = fields[index].id; // 获取临时 id
+      const ipfsHash = ipfsHashes[id]; // 拿到 ipfshash 字符串
+
+      return {
+        ...ticket,
+        ticket_img: ipfsHash,
+      };
     });
+    console.log('tickets', tickets);
+
+    updateFinalStep(tickets);
+
+    const response = await submitData();
+    toast({
+      title: '信息已提交',
+    });
+    reset();
+    router.push('/events');
   }
 
   const handleRemove = (e: any, index: number, id: string) => {

@@ -1,4 +1,5 @@
 import { EventBasics, EventPromotion, EventTicket } from '@/types';
+import { handleError } from '@/utils/errors';
 import { create } from 'zustand';
 
 interface StepData {
@@ -92,17 +93,21 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     const transformedData = transformData(data);
     console.log('Transformed data', transformedData);
 
-    const response = await fetch(
-      'https://www.biturd.com/api/v1/concert/commit',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }
-    );
-    return response.json();
+    try {
+      const response = await fetch(
+        'https://www.biturd.com/api/v1/concert/commit',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(transformedData),
+        }
+      );
+      return response.json();
+    } catch (err) {
+      handleError(err);
+    }
   },
   getCurrentFormName: () => {
     const { progress } = get();
@@ -149,12 +154,11 @@ function transformData(data: any) {
   const step2 = data.step2 || {};
   const step3 = data.step3 || {};
 
-  const tickets = (step3.tickets || []).map((ticket: any) => ({
+  const tickets = (step3 || []).map((ticket: any) => ({
     max_quantity_per_wallet: parseInt(ticket.max_quantity_per_wallet, 10),
     num: parseInt(ticket.num, 10),
     price: String(ticket.price),
-    // ticket_img: ticket.ticket_img || '', // todo 后面改
-    ticket_img: '',
+    ticket_img: ticket.ticket_img || '',
     trade: ticket.trade,
     type_name: ticket.type_name || '',
   }));
@@ -162,8 +166,7 @@ function transformData(data: any) {
   return {
     address: step1.address || '',
     concert_date: step1.concert_date || '',
-    // concert_img: step2.concert_img || '', // todo 后面改
-    concert_img: '',
+    concert_img: step2.concert_img || '',
     concert_name: step1.concert_name || '',
     // concert_status: 0,
     lottery_end_date: step2.lottery_end_date || '',
