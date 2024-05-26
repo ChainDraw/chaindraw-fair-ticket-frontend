@@ -124,31 +124,31 @@ export const columns: ColumnDef<EventBasics>[] = [
   },
   {
     accessorKey: 'concert_status',
-    header: () => <div className="text-right">演唱会状态</div>,
+    header: () => <div className="text-center">演唱会状态</div>,
     cell: ({ row }) => {
       const status = parseInt(row.getValue('concert_status'));
       // "concert_status": 0, // 0: 未开始 1：已过期 2、已取消
       if (status === 0) {
-        return <div className="text-right">未开始</div>;
+        return <div className="text-center">未开始</div>;
       } else if (status === 1) {
-        return <div className="text-right text-red-500">已过期</div>;
+        return <div className="text-center text-red-500">已过期</div>;
       } else if (status === 2) {
-        return <div className="text-right text-yellow-500">已取消</div>;
+        return <div className="text-center text-yellow-500">已取消</div>;
       }
     },
   },
   {
     accessorKey: 'review_status',
-    header: () => <div className="text-right">审核状态</div>,
+    header: () => <div className="text-center">审核状态</div>,
     cell: ({ row }) => {
       const status = parseInt(row.getValue('review_status'));
       // "review_status": 0 // 0: 未审核、 1：审核通过、2、审核失败
       if (status === 0) {
-        return <div className="text-right">未审核</div>;
+        return <div className="text-center">未审核</div>;
       } else if (status === 1) {
-        return <div className="text-right text-green-500">审核通过</div>;
+        return <div className="text-center text-green-500">审核通过</div>;
       } else if (status === 2) {
-        return <div className="text-right text-red-500">审核异常</div>;
+        return <div className="text-center text-red-500">审核异常</div>;
       }
     },
   },
