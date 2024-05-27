@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       msg: '获取成功',
-      data: [],
+      data: events,
     });
   }
 }

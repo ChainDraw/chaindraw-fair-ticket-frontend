@@ -1,10 +1,10 @@
 // src/api.ts
 
 import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { gql, request } from "graphql-request";
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: "https://www.biturd.com/api/v1/",
   withCredentials: true,
   headers: {
@@ -44,10 +44,10 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
   return useQuery({
     queryKey: ["ExhibitLottery", orderBy, orderDirection],
     queryFn: async () =>
-      request(
+      await request(
         BASE_API_DEV,
         gql`
-          query {
+          ExhibitLottery {
             lotteries(
               first: 3
               orderBy: $orderBy
@@ -75,9 +75,43 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
     refetchOnWindowFocus: false,
   });
 };
-export const useLotteryAll = () => {
+export const useLotteryList = (
+  orderBy: string,
+  orderDirection: string,
+  skip: number
+) => {
   return useQuery({
-    queryKey: [""],
-    queryFn: () => {},
+    queryKey: ["LotteryList", orderBy, orderDirection, skip],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return null;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query {
+            lotteries(
+              orderBy: $orderBy
+              orderDirection: $orderDirection
+              skip: $skip
+            ) {
+              id
+              name
+              createAtTimestamp
+              createAtBlockNumber
+              ddl
+              concertId
+              completeDraw
+              price
+              remainingTicketCount
+              ticketCount
+              ticketType
+              url
+              organizer {
+                id
+              }
+            }
+          }
+        `
+      );
+    },
   });
 };
