@@ -33,6 +33,7 @@ import { useEffect, useMemo } from 'react';
 const formSchema = z.object({
   concert_name: z.string().min(1, { message: '请输入活动名称' }),
   address: z.string().min(1, { message: '请输入活动地点' }),
+  remark: z.string().min(1, { message: '请输入活动描述' }),
   concert_date: z.date({
     required_error: '请选择活动日期',
   }),
@@ -46,7 +47,7 @@ export default function BasicsForm() {
     [mode]
   );
 
-  const { concert_name, address, concert_date } = data.step1;
+  const { concert_name, address, remark, concert_date } = data.step1;
 
   const { toast } = useToast();
 
@@ -55,6 +56,7 @@ export default function BasicsForm() {
     defaultValues: {
       concert_name: concert_name ?? '',
       address: address ?? '',
+      remark: remark ?? '',
       concert_date: concert_date ?? undefined,
     },
   });
@@ -68,6 +70,9 @@ export default function BasicsForm() {
       }
       if (data.step1.address !== form1.getValues('address')) {
         form1.setValue('address', data.step1.address ?? '');
+      }
+      if (data.step1.address !== form1.getValues('remark')) {
+        form1.setValue('remark', data.step1.remark ?? '');
       }
       if (data.step1.entry_time !== form1.getValues('concert_date')) {
         form1.setValue('concert_date', data.step1.concert_date ?? undefined);
@@ -116,6 +121,20 @@ export default function BasicsForm() {
               <FormLabel>活动地点</FormLabel>
               <FormControl>
                 <Input placeholder="请输入活动地点" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          disabled={disabled}
+          control={form1.control}
+          name="remark"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>活动描述</FormLabel>
+              <FormControl>
+                <Input placeholder="请输入活动描述" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
