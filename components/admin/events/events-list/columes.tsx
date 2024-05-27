@@ -114,8 +114,7 @@ export const columns: ColumnDef<EventBasics>[] = [
       );
     },
     cell: ({ row }) => {
-      // const startTime = row.original.concert_date; // todo 等后端更新后打开
-      const startTime = '2024-05-26T16:00:00.000Z';
+      const startTime = row.original.concert_date;
 
       return startTime
         ? format(new Date(startTime), 'yyyy-MM-dd HH:mm:ss')
