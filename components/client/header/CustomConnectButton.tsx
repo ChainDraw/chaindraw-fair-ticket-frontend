@@ -32,9 +32,26 @@ import { useDisconnect } from 'wagmi';
 import { Button, buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { paths } from '@/utils/paths';
+import { useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 
 export const CustomConnectButton = () => {
   const { disconnect } = useDisconnect();
+  const router = useRouter();
+
+  // 登出
+  const logout = async () => {
+    const res = await fetch('/api/logout', {
+      method: 'DELETE',
+    }).then((res) => res.json());
+    if (res.success) {
+      toast({
+        description: res.msg,
+      });
+      disconnect();
+      router.push('/client');
+    }
+  };
 
   return (
     <ConnectButton.Custom>
@@ -145,12 +162,7 @@ export const CustomConnectButton = () => {
                   <span>API</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={async () => {
-                    await fetch('http://localhost:3000/logout');
-                    disconnect();
-                  }}
-                >
+                <DropdownMenuItem onClick={() => logout()}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
