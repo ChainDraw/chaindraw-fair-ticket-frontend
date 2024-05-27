@@ -4,6 +4,7 @@ import { paths } from "@/utils/paths";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Address } from "viem";
 
 interface TicketType {
   ticket_type: string;
@@ -12,14 +13,18 @@ interface TicketType {
   max_quantity_per_wallet: number;
 }
 export type LotteryItemProps = {
-  concert_id: string;
-  concert_name: string;
-  concert_img: string;
-  concert_date: string;
-  lottery_start_date: string;
-  lottery_end_date: string;
-  concert_status: number;
-  ticket_types: TicketType[];
+  id: Address;
+  concertId: string;
+  ddl: string;
+  price: string;
+  remainingTicketCount: string;
+  ticketCount: string;
+  ticketType: string;
+  url: string;
+  organizer: {
+    id: Address;
+  };
+  name: string;
 };
 
 const LatestLotteryItem = (props: LotteryItemProps) => {
@@ -28,7 +33,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
-          src={props.concert_img}
+          src="/images/test8.png"
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
@@ -37,43 +42,44 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
         />
       </div>
       <div className="py-2">
-        <h1 className="text-white font-semibold text-lg px-2">
-          {props.concert_name}
-        </h1>
+        <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1>
         <article className="px-4">
           <div className="flex justify-between">
             <span>Price</span>
             <div>
               <span>$</span>
-              {props.ticket_types[1].price}
+              {props.price}
             </div>
-          </div>
-          <div className="flex justify-between ">
-            <span>Start_Date</span>
-            <div>{props.concert_date}</div>
           </div>
           <div className="flex justify-between">
             <span>End_Date</span>
-            <div>{props.concert_date}</div>
+            <div>{props.ddl}</div>
           </div>
         </article>
       </div>
 
       {/* {props.concert_status === 0 &&<Button variant="destructive">Has Not Started</Button> } */}
-      {props.concert_status === 0 && (
+      {Date.now() > Number(props.ddl) ? (
         <Link
-          href={paths.client.lotteryInfo(props.concert_id)}
+          href={paths.client.lotteryInfo(props.id)}
+          className="text-center py-2 border-t border-white"
+        >
+          已开奖
+        </Link>
+      ) : (
+        <Link
+          href={paths.client.lotteryInfo(props.id)}
           className="text-center py-2 border-t border-white"
         >
           Join
         </Link>
       )}
-      {props.concert_status === 1 && (
+      {/* {props.concert_status === 1 && (
         <Button variant="destructive">Expired</Button>
-      )}
-      {props.concert_status === 2 && (
+      )} */}
+      {/* {props.concert_status === 2 && (
         <Button variant="destructive">Has Not Started</Button>
-      )}
+      )} */}
     </div>
   );
 };

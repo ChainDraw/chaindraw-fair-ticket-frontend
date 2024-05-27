@@ -32,6 +32,8 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "ethers": "^6.12.1",
+    "graphql": "^16.8.1",
+    "graphql-request": "^7.0.1",
     "iron-session": "^8.0.1",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.376.0",
