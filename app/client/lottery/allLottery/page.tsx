@@ -7,34 +7,30 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import axios from "axios";
 import debounce from "lodash.debounce";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LatestLotteryItem from "../components/LatestLottery/LatestLotteryItem";
+import { useLotteryList, useSearchLottery } from "@/services/api";
 
 type Props = {};
 
 const AllLottery = (props: Props) => {
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
-  const fetchLotteries = async (page: number, search: string) => {
-    const { data } = await axios.post("/api/lottery", {
-      search,
-      page,
-    });
-    return data;
-  };
-
-  const { data, isPlaceholderData, refetch } = useQuery({
-    queryKey: ["lottery"],
-    queryFn: () => fetchLotteries(currentPage, searchValue),
-    placeholderData: keepPreviousData,
-  });
-  const onSubmit = () => refetch();
-
-  const debouncedSubmit = debounce(onSubmit, 400);
-  const _debouncedSubmit = useCallback(debouncedSubmit, []);
+  const { data, error, isFetching } = searchValue
+    ? useSearchLottery(
+        "createAtTimestamp",
+        "desc",
+        currentPage * 10,
+        searchValue
+      )
+    : useLotteryList("createAtTimestamp", "desc", currentPage * 10);
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prePage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   };
 
   return (
@@ -47,21 +43,30 @@ const AllLottery = (props: Props) => {
           value={searchValue}
           onChange={(e) => {
             setSearchValue(e.target.value);
-            _debouncedSubmit();
           }}
         />
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.data?.map((lottery: any) => (
-            <LatestLotteryItem {...lottery} key={lottery.concert_id} />
-          )) || <div className="text-white">Loading...</div>}
+          {isFetching ? (
+            <div className="text-white">Fetching...</div>
+          ) : (
+            data?.map((lottery: any) => (
+              <LatestLotteryItem {...lottery} key={lottery.concert_id} />
+            ))
+          )}
         </div>
         <div className="mt-8 flex justify-center items-center gap-8 ">
-          <button className="text-white w-8 h-8 rounded-full bg-white flex justify-center items-center">
+          <button
+            onClick={() => prePage()}
+            className="text-white w-8 h-8 rounded-full bg-white flex justify-center items-center"
+          >
             <ChevronLeft className="h-6 w-6" color="black" />
           </button>
           <div className="text-white">Page</div>
-          <button className="text-white w-8 h-8 rounded-full bg-white flex justify-center items-center">
+          <button
+            onClick={() => nextPage()}
+            className="text-white w-8 h-8 rounded-full bg-white flex justify-center items-center"
+          >
             <ChevronRight className="h-6 w-6" color="black" />
           </button>
         </div>

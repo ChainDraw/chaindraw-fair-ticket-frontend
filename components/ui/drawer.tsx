@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 "use client";
 
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/lib/utils";
-=======
-"use client"
-
-import * as React from "react"
-import { Drawer as DrawerPrimitive } from "vaul"
-
-import { cn } from "@/lib/utils"
->>>>>>> development
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -22,7 +13,6 @@ const Drawer = ({
     shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
-<<<<<<< HEAD
 );
 Drawer.displayName = "Drawer";
 
@@ -31,16 +21,6 @@ const DrawerTrigger = DrawerPrimitive.Trigger;
 const DrawerPortal = DrawerPrimitive.Portal;
 
 const DrawerClose = DrawerPrimitive.Close;
-=======
-)
-Drawer.displayName = "Drawer"
-
-const DrawerTrigger = DrawerPrimitive.Trigger
-
-const DrawerPortal = DrawerPrimitive.Portal
-
-const DrawerClose = DrawerPrimitive.Close
->>>>>>> development
 
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
@@ -51,13 +31,8 @@ const DrawerOverlay = React.forwardRef<
     className={cn("fixed inset-0 z-50 bg-black/80", className)}
     {...props}
   />
-<<<<<<< HEAD
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
-=======
-))
-DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
->>>>>>> development
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
@@ -77,13 +52,8 @@ const DrawerContent = React.forwardRef<
       {children}
     </DrawerPrimitive.Content>
   </DrawerPortal>
-<<<<<<< HEAD
 ));
 DrawerContent.displayName = "DrawerContent";
-=======
-))
-DrawerContent.displayName = "DrawerContent"
->>>>>>> development
 
 const DrawerHeader = ({
   className,
@@ -93,13 +63,8 @@ const DrawerHeader = ({
     className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)}
     {...props}
   />
-<<<<<<< HEAD
 );
 DrawerHeader.displayName = "DrawerHeader";
-=======
-)
-DrawerHeader.displayName = "DrawerHeader"
->>>>>>> development
 
 const DrawerFooter = ({
   className,
@@ -109,13 +74,8 @@ const DrawerFooter = ({
     className={cn("mt-auto flex flex-col gap-2 p-4", className)}
     {...props}
   />
-<<<<<<< HEAD
 );
 DrawerFooter.displayName = "DrawerFooter";
-=======
-)
-DrawerFooter.displayName = "DrawerFooter"
->>>>>>> development
 
 const DrawerTitle = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
@@ -129,13 +89,8 @@ const DrawerTitle = React.forwardRef<
     )}
     {...props}
   />
-<<<<<<< HEAD
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
-=======
-))
-DrawerTitle.displayName = DrawerPrimitive.Title.displayName
->>>>>>> development
 
 const DrawerDescription = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Description>,
@@ -146,13 +101,8 @@ const DrawerDescription = React.forwardRef<
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-<<<<<<< HEAD
 ));
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
-=======
-))
-DrawerDescription.displayName = DrawerPrimitive.Description.displayName
->>>>>>> development
 
 export {
   Drawer,
@@ -165,8 +115,4 @@ export {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
-<<<<<<< HEAD
 };
-=======
-}
->>>>>>> development

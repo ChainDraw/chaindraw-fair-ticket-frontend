@@ -47,11 +47,11 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
       await request(
         BASE_API_DEV,
         gql`
-          ExhibitLottery {
+          query {
             lotteries(
               first: 3
-              orderBy: $orderBy
-              orderDirection: $orderDirection
+              orderBy: "${orderBy}"
+              orderDirection: "${orderDirection}"
             ) {
               id
               name
@@ -72,9 +72,11 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
           }
         `
       ),
+
     refetchOnWindowFocus: false,
   });
 };
+
 export const useLotteryList = (
   orderBy: string,
   orderDirection: string,
@@ -87,10 +89,11 @@ export const useLotteryList = (
       const data: any = await request(
         BASE_API_DEV,
         gql`
-          query {
+          query AllLotteryList($skip: Int!){
             lotteries(
-              orderBy: $orderBy
-              orderDirection: $orderDirection
+              first: 10,
+              orderBy: "${orderBy}"
+              orderDirection: "${orderDirection}"
               skip: $skip
             ) {
               id
@@ -110,8 +113,68 @@ export const useLotteryList = (
               }
             }
           }
-        `
+        `,
+        { skip }
       );
+      return data.lotteries;
     },
+    enabled:
+      skip !== undefined &&
+      orderBy !== undefined &&
+      orderDirection !== undefined,
+    refetchOnWindowFocus: false,
   });
 };
+export const useSearchLottery = (
+  orderBy: string,
+  orderDirection: string,
+  skip: number,
+  searchValue?: string
+) => {
+  return useQuery({
+    queryKey: ["searchLottery", searchValue, orderBy, orderDirection, skip],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return null;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query SearchLottery($skip: Int!){
+            lotteries(
+              first:10
+              orderBy: "${orderBy}"
+              orderDirection: "${orderDirection}"
+              skip: $skip
+              where: { name_contains: "${searchValue}" }
+              ) {
+              id
+              name
+              createAtTimestamp
+              createAtBlockNumber
+              ddl
+              concertId
+              completeDraw
+              price
+              remainingTicketCount
+              ticketCount
+              ticketType
+              url
+              organizer {
+                id
+              }
+            }
+          }
+        `,
+        { skip }
+      );
+      return data.lotteries;
+    },
+
+    enabled:
+      skip !== undefined &&
+      orderBy !== undefined &&
+      orderDirection !== undefined &&
+      searchValue !== undefined,
+    refetchOnWindowFocus: false,
+  });
+};
+export const useCreateLottery = () => {};

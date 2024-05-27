@@ -53,7 +53,13 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           </div>
           <div className="flex justify-between">
             <span>End_Date</span>
-            <div>{props.ddl}</div>
+            <div>
+              {new Date(Number(props.ddl) * 1000).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
           </div>
         </article>
       </div>
