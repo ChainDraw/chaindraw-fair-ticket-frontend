@@ -38,6 +38,9 @@ export const fetchVerifySignature = async (message: any, signature: string) => {
   });
   return response.data;
 };
+
+
+
 // Graphql
 const BASE_API_DEV =
   "https://api.studio.thegraph.com/query/70917/chaindraw-metadata/version/latest";
