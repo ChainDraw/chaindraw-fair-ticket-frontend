@@ -20,7 +20,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-const Header = memo(function Header() {
+const Header = function Header() {
   const navList = [
     {
       title: "Market",
@@ -85,5 +85,5 @@ const Header = memo(function Header() {
       </MaxWidthWrapper>
     </header>
   );
-});
+};
 export default Header;
