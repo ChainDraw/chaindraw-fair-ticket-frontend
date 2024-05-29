@@ -55,3 +55,23 @@ export interface EventTicket {
   trade: boolean;
   type_name: string;
 }
+export interface NFT {
+  price: string;
+  nftMetadata: {
+    address: string;
+    concertName: string;
+    description: string;
+    image: string;
+    name: string;
+  };
+}
+export interface CreateLottery {
+  createAtTimestamp: string;
+  participants: any;
+  ticketCount: string;
+  price: string;
+  remainingTicketCount: string;
+  nftMetadata: {
+    concertName: string;
+  };
+}
