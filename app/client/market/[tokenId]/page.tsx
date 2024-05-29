@@ -1,27 +1,40 @@
-'use client';
-import React from 'react';
-import Link from 'next/link';
-import { useAccount, useWriteContract } from 'wagmi';
-import { abi } from '@/contracts/abis/erc721';
+"use client";
+import React from "react";
+import Link from "next/link";
+import { useAccount, useWriteContract } from "wagmi";
+import { abi } from "@/contracts/abis/market";
 
 const NFTDropPage = () => {
   const collection = {
-    nftCollectionName: 'nftCollectionName',
-    price: '0.01',
-    tokenId: '3282',
-    description: 'description',
-    title: 'title',
-    seller: '99999999999999999',
+    nftCollectionName: "nftCollectionName",
+    price: "1",
+    tokenId: "0",
+    description: "description",
+    title: "title",
+    seller: "0x791518786955ca63903fcc22e45bad82c0aff07a",
+    lotteryAddress: "0xc1d422d0e382ef2d8b929bc36e1c749aa955a575",
   };
 
   // Auth
   const { address } = useAccount();
   const contractConfig = {
-    address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
+    address: "0xD2BDf4F1F8f667d91809594cbbdCc7b23a160656",
     abi,
   };
-  const { writeContract: buyTicket, isPending: isPurchaseLoading } =
-    useWriteContract();
+  const {
+    writeContract: buyNFT,
+    isPending: isPurchaseLoading,
+    error: buyError,
+  } = useWriteContract();
+  const buyBtnClick = () => {
+    buyNFT({
+      ...contractConfig,
+      functionName: "buyNFT",
+      args: [collection.lotteryAddress, collection.tokenId],
+      value: collection.price
+    });
+  };
+
   return (
     <div className="flex h-screen flex-col lg:grid lg:grid-cols-10">
       {/* left */}
@@ -46,12 +59,12 @@ const NFTDropPage = () => {
       <div className="flex flex-1 flex-col p-12 py-20 lg:col-span-6">
         {/* Header */}
         <header className="flex item-center justify-between">
-          <Link href={'/'}>
+          <Link href={"/"}>
             <h1 className="w-52 cursor-pointer text-xl font-extralight sm:w-80">
-              The{' '}
+              The{" "}
               <span className="font-extrabold underline decoration-pink-600/50">
                 ChainDraw
-              </span>{' '}
+              </span>{" "}
               NFT Market Place
             </h1>
           </Link>
@@ -81,15 +94,9 @@ const NFTDropPage = () => {
         {/* Mint Button */}
         <button
           className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white"
-          onClick={() =>
-            buyTicket({
-              ...contractConfig,
-              functionName: 'buyTicket',
-              args: [collection.tokenId],
-            })
-          }
+          onClick={() => buyBtnClick()}
         >
-          {isPurchaseLoading ? 'Loading...' : 'Purchase'} ( {collection.price}{' '}
+          {isPurchaseLoading ? "Loading..." : "Purchase"} ( {collection.price}{" "}
           ETH )
         </button>
       </div>
