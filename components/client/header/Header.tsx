@@ -7,7 +7,20 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 
 import { cn } from "@/lib/utils";
 import { paths } from "@/utils/paths";
-const Header = memo(function Header() {
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerPortal,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+const Header = function Header() {
   const navList = [
     {
       title: "Market",
@@ -21,15 +34,8 @@ const Header = memo(function Header() {
       title: "Create",
       link: paths.admin.events,
     },
-    // {
-    //   title: "Contact",
-    //   link: "/contact",
-    // },
-    // {
-    //   title: "Collectables",
-    //   link: "/collectable",
-    // },
   ];
+
   return (
     <header
       className={cn(
@@ -46,9 +52,25 @@ const Header = memo(function Header() {
             ChainDraw
           </Link>
           {/* Mobile */}
-          <div className="hover:cursor-pointer h-full flex lg:hidden text-[#f8cf15]">
-            <Menu size={40} color="#fff" />
-          </div>
+
+          <Drawer direction="right">
+            <DrawerTrigger>
+              <div className="hover:cursor-pointer h-full flex lg:hidden text-[#f8cf15]">
+                <Menu size={40} color="#fff" />
+              </div>
+            </DrawerTrigger>
+            <DrawerPortal>
+              <DrawerOverlay className="fixed inset-0 bg-black/40" />
+              <DrawerContent className=" bg-black border-none flex flex-col rounded-t-[10px] h-full w-[80%] mt-24 fixed bottom-0 left-0 right-0">
+                <div className="px-10 py-10 flex flex-col flex-1 gap-10 ">
+                  {navList.map((item, index) => {
+                    return <NavItem {...item} key={item.title} />;
+                  })}
+                  <CustomConnectButton />
+                </div>
+              </DrawerContent>
+            </DrawerPortal>
+          </Drawer>
         </div>
         <div className="hidden lg:flex flex-col justify-end right-0 lg:mt-0 lg:absolute lg:top-0 lg:h-full lg:items-center">
           <div className="flex flex-col flex-1 gap-10 lg:flex lg:flex-row lg:items-center">
@@ -63,5 +85,5 @@ const Header = memo(function Header() {
       </MaxWidthWrapper>
     </header>
   );
-});
+};
 export default Header;

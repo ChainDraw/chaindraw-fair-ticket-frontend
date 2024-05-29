@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 // 这些路径需要登录认证
-const protectedRoutes = ['/events'];
+const protectedRoutes: any[] = [];
 
 export function middleware(request: NextRequest) {
   const cookieStore = cookies();
@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
+  const token = cookieStore.get('siwe-quickstart')?.value;
 
   const url = request.nextUrl.clone();
   url.pathname = '/client';

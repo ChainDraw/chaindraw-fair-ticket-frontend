@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Copy } from "lucide-react";
@@ -8,6 +8,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import EventItem from "@/components/client/eventsItem/EventItem";
 import LatestLotteryItem from "../lottery/components/LatestLottery/LatestLotteryItem";
+import useAuthStore from "@/stores/authStore";
+import { redirect } from "next/navigation";
+import { useAccount } from "wagmi";
+import { useUserCreateLottery } from "@/services/api";
+import Create from "./components/Create";
+import NFTS from "./components/NFTS";
+import JoinLottery from "./components/JoinLottery";
 
 interface Item {
   id: number;
@@ -40,44 +47,13 @@ const fetchItems = async ({
 
 const Page: React.FC = () => {
   const [filter, setFilter] = useState<Filter[number]>(Filter.Collected);
-
-  const {
-    data,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    ...result
-  } = useInfiniteQuery({
-    queryKey: ["items", filter],
-    queryFn: ({ pageParam }) => fetchItems({ pageParam, filter }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => lastPage.nextCursor ?? undefined,
-    getPreviousPageParam: (firstPage, allPages) =>
-      firstPage.prevCursor ?? undefined,
-  });
+  const { address } = useAccount();
+  const userAddress = address?.toLocaleLowerCase();
 
   const handleFilterChange = (newFilter: Filter[number]) => {
     setFilter(newFilter);
   };
 
-  const renderItems = (items: any) => {
-    switch (filter) {
-      case "Create":
-        return items.map((item: any) => (
-          <LatestLotteryItem key={item.id} {...item} />
-        ));
-      case "Lottery":
-        return items.map((item: any) => (
-          <LatestLotteryItem key={item.id} {...item} />
-        ));
-      case "Collected":
-      default:
-        return items.map((item: any) => <EventItem key={item.id} {...item} />);
-    }
-  };
   return (
     <main className="min-h-screen bg-white md:py-20">
       <div className="flex justify-center items-end h-44 md:h-64 bg-transparent bg-profile-bgi bg-cover bg-center bg-no-repeat">
@@ -112,20 +88,12 @@ const Page: React.FC = () => {
             ))}
           </div>
           <hr className="text-gray-600 mt-6 mb-4" />
-          {/* Content */}
-          <InfiniteScroll
-            dataLength={data?.pages.flatMap((page) => page.items).length || 0}
-            next={fetchNextPage}
-            hasMore={!!hasNextPage}
-            loader={<h4>Loading...</h4>}
-            endMessage={<p>No more items</p>}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center text-white">
-              {data?.pages
-                .flatMap((page) => page.items)
-                .map((event) => renderItems([event]))}
-            </div>
-          </InfiniteScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center text-white">
+            {filter === "Collected" && <NFTS address={userAddress!} />}
+            {filter === "Create" && <Create address={userAddress!} />}
+            {filter === "Lottery" && <JoinLottery address={userAddress!} />}
+          </div>
         </MaxWidthWrapper>
       </article>
     </main>

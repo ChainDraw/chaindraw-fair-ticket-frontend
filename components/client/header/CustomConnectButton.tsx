@@ -1,39 +1,31 @@
-'use client';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+"use client";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   CircleUserRound,
   Cloud,
   CreditCard,
   LifeBuoy,
   LogOut,
-  Mail,
-  MessageSquare,
   Plus,
-  PlusCircle,
   User,
-  UserPlus,
-} from 'lucide-react';
-import { useDisconnect } from 'wagmi';
-import { Button, buttonVariants } from '@/components/ui/button';
-import Link from 'next/link';
-import { paths } from '@/utils/paths';
-import { useRouter } from 'next/navigation';
-import { toast } from '@/components/ui/use-toast';
+} from "lucide-react";
+import { useDisconnect } from "wagmi";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { paths } from "@/utils/paths";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 export const CustomConnectButton = () => {
   const { disconnect } = useDisconnect();
@@ -42,8 +34,8 @@ export const CustomConnectButton = () => {
   // 登出
   const logout = async () => {
     try {
-      const res = await fetch('/api/logout', {
-        method: 'DELETE',
+      const res = await fetch("api/logout", {
+        method: "DELETE",
       });
       const data = await res.json();
       if (data.success) {
@@ -51,17 +43,17 @@ export const CustomConnectButton = () => {
           description: data.msg,
         });
         disconnect();
-        router.push('/client');
+        router.push("/client");
       } else {
         toast({
           description: data.msg,
-          variant: 'destructive',
+          variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        description: '登出失败，请稍后再试',
-        variant: 'destructive',
+        description: "登出失败，请稍后再试",
+        variant: "destructive",
       });
     }
   };
@@ -78,12 +70,12 @@ export const CustomConnectButton = () => {
       }) => {
         // Note: If your app doesn't use authentication, you
         // can remove all 'authenticationStatus' checks
-        const ready = mounted && authenticationStatus !== 'loading';
+        const ready = mounted && authenticationStatus !== "loading";
         const connected =
           ready &&
           account &&
           chain &&
-          (!authenticationStatus || authenticationStatus === 'authenticated');
+          (!authenticationStatus || authenticationStatus === "authenticated");
         if (!connected) {
           return (
             <Button
@@ -107,8 +99,8 @@ export const CustomConnectButton = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   className={cn(
-                    buttonVariants({ variant: 'default' }),
-                    'group text-white font-bold text-base lg:h-full gap-x-2'
+                    buttonVariants({ variant: "default" }),
+                    "group text-white font-bold text-base lg:h-full gap-x-2"
                   )}
                 >
                   <CircleUserRound className="text-xl md:text-2xl lg:text-3xl group-hover:scale-110 transform transition duration-300" />
@@ -139,31 +131,7 @@ export const CustomConnectButton = () => {
                   </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                {/* <DropdownMenuGroup>
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      <span>Invite users</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        <DropdownMenuItem>
-                          <Mail className="mr-2 h-4 w-4" />
-                          <span>Email</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <MessageSquare className="mr-2 h-4 w-4" />
-                          <span>Message</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <PlusCircle className="mr-2 h-4 w-4" />
-                          <span>More...</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-                </DropdownMenuGroup> */}
+
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
