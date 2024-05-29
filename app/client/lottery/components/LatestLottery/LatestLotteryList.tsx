@@ -10,6 +10,7 @@ const LatestLotteryList = (props: Props) => {
     "createAtBlockNumber",
     "desc"
   );
+  console.log(data);
   if (error !== null) {
     handleError(error);
   }

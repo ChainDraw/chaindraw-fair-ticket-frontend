@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { formatAddress } from "@/utils/common";
 import { paths } from "@/utils/paths";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +13,7 @@ interface TicketType {
   price: string;
   max_quantity_per_wallet: number;
 }
-export type LotteryItemProps = {
+export interface LotteryItemProps {
   id: Address;
   concertId: string;
   ddl: string;
@@ -25,15 +26,26 @@ export type LotteryItemProps = {
     id: Address;
   };
   name: string;
-};
+  nftMetadata: {
+    address: string;
+    concertName: string;
+    description: string;
+    image: string;
+    name: string;
+  };
+}
 
 const LatestLotteryItem = (props: LotteryItemProps) => {
+  //gateway.pinata.cloud/ipfs/QmdRkCmHrZuA5XetmSfLgmVSe5ms2MS7HonC4LuXieRR4b
+  const image =
+    "https://gateway.pinata.cloud/ipfs/" +
+    props.nftMetadata.image.split("ipfs://")[1];
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
-          src="/images/test8.png"
+          src={image}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
@@ -42,13 +54,16 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
         />
       </div>
       <div className="py-2">
-        <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1>
+        {/* <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1> */}
+        <h1 className="text-white font-semibold text-lg px-2">
+          {props.nftMetadata.concertName}
+        </h1>
         <article className="px-4">
           <div className="flex justify-between">
             <span>Price</span>
             <div>
-              <span>$</span>
               {props.price}
+              <span> Wei</span>
             </div>
           </div>
           <div className="flex justify-between">
@@ -61,6 +76,14 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
               })}
             </div>
           </div>
+          <div className="flex justify-between">
+            <span>Location</span>
+            <div>{props.nftMetadata.address}</div>
+          </div>
+          <div className="flex justify-between">
+            <span>organizer</span>
+            <div>{formatAddress(props.organizer.id)}</div>
+          </div>
         </article>
       </div>
 
@@ -70,7 +93,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           href={paths.client.lotteryInfo(props.id)}
           className="text-center py-2 border-t border-white"
         >
-          已开奖
+          Ended
         </Link>
       ) : (
         <Link

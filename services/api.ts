@@ -1,5 +1,6 @@
 // src/api.ts
 
+import { LotteryItemProps } from "@/app/client/lottery/components/LatestLottery/LatestLotteryItem";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { gql, request } from "graphql-request";
@@ -39,7 +40,7 @@ export const fetchVerifySignature = async (message: any, signature: string) => {
 };
 // Graphql
 const BASE_API_DEV =
-  "https://api.studio.thegraph.com/query/70917/chaindraw/version/latest";
+  "https://api.studio.thegraph.com/query/70917/chaindraw-metadata/version/latest";
 export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
   return useQuery({
     queryKey: ["ExhibitLottery", orderBy, orderDirection],
@@ -55,8 +56,6 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
             ) {
               id
               name
-              createAtTimestamp
-              createAtBlockNumber
               ddl
               concertId
               completeDraw
@@ -68,6 +67,13 @@ export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
               organizer {
                 id
               }
+              nftMetadata {
+      address
+      concertName
+      description
+      image
+      name
+    }
             }
           }
         `
@@ -97,20 +103,25 @@ export const useLotteryList = (
               skip: $skip
             ) {
               id
-              name
-              createAtTimestamp
-              createAtBlockNumber
-              ddl
-              concertId
-              completeDraw
-              price
-              remainingTicketCount
-              ticketCount
-              ticketType
-              url
-              organizer {
-                id
-              }
+    name
+    concertId
+    ddl
+    completeDraw
+    price
+    remainingTicketCount
+    ticketCount
+    ticketType
+    url
+    nftMetadata {
+      address
+      concertName
+      description
+      image
+      name
+    }
+    organizer {
+      id
+    }
             }
           }
         `,
@@ -177,6 +188,44 @@ export const useSearchLottery = (
     refetchOnWindowFocus: false,
   });
 };
+export const useLotteryInfo = (id: string) => {
+  return useQuery({
+    queryKey: ["lotteryInfo", id],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query LotteryInfo($id: ID!) {
+            lottery(id: $id) {
+              nftMetadata {
+                address
+                concertName
+                description
+                image
+                name
+              }
+              organizer {
+                id
+              }
+              price
+              remainingTicketCount
+              ticketCount
+              completeDraw
+              name
+              ddl
+            }
+          }
+        `,
+        { id: queryKey[1] }
+      );
+      return data.lottery as LotteryItemProps;
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!id,
+  });
+};
+export const useUserCreateLottery = () => {};
 export const useNFTListings = (orderBy: string, orderDirection: string) => {
   return useQuery({
     queryKey: ["nftLists", orderBy, orderDirection],
@@ -204,4 +253,3 @@ export const useNFTListings = (orderBy: string, orderDirection: string) => {
     },
   });
 };
-export const useCreateLottery = () => {};

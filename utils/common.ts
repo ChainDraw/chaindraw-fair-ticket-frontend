@@ -42,7 +42,7 @@ export const getCountdown = (targetTime: number) => {
         ? dayjs(targetTime * 1000)
         : dayjs(targetTime);
     const diffInMs = target.diff(now);
-    console.log(diffInMs);
+
     if (diffInMs <= 0) return null; // 如果时间已经过去，返回 null
     const diff = dayjs.duration(diffInMs);
     const days = diff.days();

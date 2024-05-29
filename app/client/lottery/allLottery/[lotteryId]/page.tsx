@@ -17,6 +17,9 @@ import toast from "react-hot-toast";
 import { Address, formatEther, parseEther } from "viem";
 import { useAccount, useConnect, useEstimateGas } from "wagmi";
 import CountdownComponent from "../../components/countdowm/CountDown";
+import { useLotteryInfo } from "@/services/api";
+import { formatAddress } from "@/utils/common";
+
 const data = {
   concert_id: "123456",
   concert_name: "Example Concert",
@@ -42,20 +45,22 @@ const data = {
 };
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { lotteryId } = params;
-  const { address } = useAccount();
   // 合约地址
   const contractAddress = lotteryId as Address;
   const {
     handleDeposit,
     handleRefound,
     handleStartLottery,
-    price,
     isWinner,
     isJoin,
     isEnded,
     ddl,
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
+  const { data: lotteryInfo } = useLotteryInfo(lotteryId);
+  const image =
+    "https://gateway.pinata.cloud/ipfs/" +
+    lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -65,19 +70,19 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
               Creator:
               <div className="shrink-0 flex items-center gap-x-2 text-left sm:ml-4 mt-1 sm:mt-0">
                 <Avatar>
-                  <AvatarImage src={data?.concert_img} />
+                  <AvatarImage src="/images/test8.png" />
                   <AvatarFallback>ENS</AvatarFallback>
                 </Avatar>
 
-                <span className="font-medium text-sm text-white">
-                  STEM City Chicago
+                <span className="font-medium text-sm text-white md:text-xl">
+                  {formatAddress(lotteryInfo?.organizer.id)}
                 </span>
               </div>
             </span>
             <hr className="mb-5 md:mb-10 opacity-40 bg-brand-black" />
             <div className=" text-white">
               <h1 className="text-2xl md:text-3xl mb-2 md:mb-5 font-bold">
-                {data.concert_name}
+                {lotteryInfo?.nftMetadata?.concertName}
               </h1>
               <div className="mb-2 md:hidden relative">
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
@@ -87,15 +92,12 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     height={30}
                     className="w-full"
                     priority
-                    src={data?.concert_img}
+                    src={image}
                   />
                 </div>
               </div>
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Eveniet voluptatum dolores quasi. Magnam consequatur impedit
-                natus voluptatem id placeat ducimus nihil quidem. Fugiat hic
-                itaque accusamus sed perferendis, temporibus nihil.
+                {lotteryInfo && lotteryInfo.nftMetadata.description}
               </p>
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -163,7 +165,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
               <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
               <span className="flex items-center space-x-2 mb-2.5">
                 <p className="text-3xl md:text-5xl font-bold">
-                  {price?.toString()}
+                  {lotteryInfo?.price}
                   <span className="text-blue mr-1"> Wei</span>
                 </p>
               </span>

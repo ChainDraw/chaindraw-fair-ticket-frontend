@@ -16,6 +16,9 @@ const nextConfig = {
       {
         hostname: "gateway.pinata.cloud",
       },
+      {
+        hostname: "ipfs.io",
+      },
     ],
   },
 };
