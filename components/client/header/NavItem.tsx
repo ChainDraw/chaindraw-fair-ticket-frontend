@@ -8,7 +8,6 @@ interface Props {
   link: string;
   title: string;
 }
-
 const NavItem = (props: Props) => {
   const pathName = usePathname();
   return (

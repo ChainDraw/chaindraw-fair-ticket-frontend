@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 // 这些路径需要登录认证
-const protectedRoutes = ['/events'];
+const protectedRoutes = ["/events"];
 
 export function middleware(request: NextRequest) {
   const cookieStore = cookies();
@@ -11,17 +11,18 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
+  const token = cookieStore.get("siwe-quickstart")?.value;
 
   const url = request.nextUrl.clone();
-  url.pathname = '/client';
+  url.pathname = "/client";
 
   if (isProtectedRoute) {
     // 检查 token（从cookie中获取token）
     console.log(cookieStore.getAll());
-    const token = cookieStore.get('siwe-quickstart')?.value;
+    const token = cookieStore.get("siwe-quickstart")?.value;
 
     console.log(
-      '============================token============================',
+      "============================token============================",
       token
     );
 
@@ -36,5 +37,5 @@ export function middleware(request: NextRequest) {
 
 // Routes Middleware should not run on
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

@@ -42,6 +42,7 @@ const connectors = !isClient
       { appName: "Ticket", projectId: projectId }
     )
   : [];
+
 export const config = createConfig({
   chains: supportChains,
   connectors,
@@ -50,6 +51,6 @@ export const config = createConfig({
     storage: cookieStorage,
   }),
   transports: {
-    [bscTestnet.id]: http(process.env.BSC_RPC),
+    [bscTestnet.id]: http(),
   },
 });

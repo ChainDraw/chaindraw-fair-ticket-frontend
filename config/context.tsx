@@ -15,9 +15,11 @@ import {
   fetchUserInfo,
   fetchVerifySignature,
 } from "@/services/api";
+
 const queryClient = new QueryClient();
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { authStatus, setAuthStatus } = useAuthStore();
+
   useEffect(() => {
     const fetch = async () => {
       try {
@@ -84,7 +86,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <RainbowKitAuthenticationProvider adapter={authAdapter} status={authStatus}>
-      <RainbowKitProvider>{children}</RainbowKitProvider>
+      <RainbowKitProvider locale="en-US">{children}</RainbowKitProvider>
     </RainbowKitAuthenticationProvider>
   );
 };

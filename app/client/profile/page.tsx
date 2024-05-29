@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Copy } from "lucide-react";
@@ -8,6 +8,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import EventItem from "@/components/client/eventsItem/EventItem";
 import LatestLotteryItem from "../lottery/components/LatestLottery/LatestLotteryItem";
+import useAuthStore from "@/stores/authStore";
+import { redirect } from "next/navigation";
 
 interface Item {
   id: number;
@@ -39,8 +41,12 @@ const fetchItems = async ({
 };
 
 const Page: React.FC = () => {
-  const [filter, setFilter] = useState<Filter[number]>(Filter.Collected);
+  const { authStatus } = useAuthStore();
+  if (authStatus !== "authenticated") {
+    redirect("/client");
+  }
 
+  const [filter, setFilter] = useState<Filter[number]>(Filter.Collected);
   const {
     data,
     fetchNextPage,
