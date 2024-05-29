@@ -4,7 +4,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Address, parseEther, parseUnits } from "viem";
 import { useAccount, useSimulateContract, useWalletClient } from "wagmi";
 import {
-  lotteryAbi,
   useReadLotteryCompleteDraw,
   useReadLotteryDdl,
   useReadLotteryDeposits,

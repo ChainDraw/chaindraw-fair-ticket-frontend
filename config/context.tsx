@@ -86,7 +86,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <RainbowKitAuthenticationProvider adapter={authAdapter} status={authStatus}>
-      <RainbowKitProvider>{children}</RainbowKitProvider>
+      <RainbowKitProvider locale="en-US">{children}</RainbowKitProvider>
     </RainbowKitAuthenticationProvider>
   );
 };

@@ -43,20 +43,8 @@ const data = {
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { lotteryId } = params;
   const { address } = useAccount();
-  // const fetchLotteries = async (id: string) => {
-  //   const { data } = await axios.post("/api/lottery", {
-  //     id,
-  //   });
-  //   return data;
-  // };
-
-  // const { data } = useQuery({
-  //   queryKey: ["lottery", lotteryId],
-  //   queryFn: () => fetchLotteries(lotteryId),
-  //   enabled: !!lotteryId,
-  // });
   // 合约地址
-  const contractAddress = "0x0978C76a1a5675dC1502564a91d27FD662312A78";
+  const contractAddress = lotteryId as Address;
   const {
     handleDeposit,
     handleRefound,
@@ -167,7 +155,10 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 src={data?.concert_img}
               />
             </div>
-
+            {/* pass math casino topple velvet world gift core prevent modify soap
+            sail */}
+            {/* absorb receive embody clerk reunion rely kiss athlete either bronze
+            desk chuckle */}
             <div className="hidden md:flex items-center justify-between py-14">
               <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
               <span className="flex items-center space-x-2 mb-2.5">
@@ -177,7 +168,6 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 </p>
               </span>
             </div>
-
             {authStatus === "authenticated" ? (
               <div>
                 {isJoin?.toString() === "0" ? (
@@ -208,7 +198,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 ) : isEnded ? (
                   <Button
                     className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => handleDeposit()}
+                    onClick={() => handleStartLottery()}
                   >
                     Already Ended
                   </Button>

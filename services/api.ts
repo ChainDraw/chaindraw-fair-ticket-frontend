@@ -177,4 +177,31 @@ export const useSearchLottery = (
     refetchOnWindowFocus: false,
   });
 };
+export const useNFTListings = (orderBy: string, orderDirection: string) => {
+  return useQuery({
+    queryKey: ["nftLists", orderBy, orderDirection],
+    queryFn: () => {
+      const data = request(
+        BASE_API_DEV,
+        gql`
+          query NFTLists {
+            nfts(
+              where: {
+                owner_: { id: "0xd2bdf4f1f8f667d91809594cbbdcc7b23a160656" }
+              }
+            ) {
+              price
+              seller {
+                id
+              }
+              lotteryAddress
+              tokenId
+              tokenURI
+            }
+          }
+        `
+      );
+    },
+  });
+};
 export const useCreateLottery = () => {};
