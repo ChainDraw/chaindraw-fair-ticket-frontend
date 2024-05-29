@@ -33,15 +33,28 @@ export const CustomConnectButton = () => {
 
   // 登出
   const logout = async () => {
-    const res = await fetch("/api/logout", {
-      method: "DELETE",
-    }).then((res) => res.json());
-    if (res.success) {
-      toast({
-        description: res.msg,
+    try {
+      const res = await fetch("/api/logout", {
+        method: "DELETE",
       });
-      disconnect();
-      router.push("/client");
+      const data = await res.json();
+      if (data.success) {
+        toast({
+          description: data.msg,
+        });
+        disconnect();
+        router.push("/client");
+      } else {
+        toast({
+          description: data.msg,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        description: "登出失败，请稍后再试",
+        variant: "destructive",
+      });
     }
   };
 
