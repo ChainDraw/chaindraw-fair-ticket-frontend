@@ -11,18 +11,11 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-
-const DrawerDemo = ({price}) => {
-
-
+const DrawerDemo = ({ price }) => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button
-          className="w-36  bg-sky-500 hover:bg-sky-600 "
-        >
-          SELL
-        </Button>
+        <Button className="w-36  bg-sky-500 hover:bg-sky-600 ">SELL</Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
@@ -55,4 +48,3 @@ const DrawerDemo = ({price}) => {
 };
 
 export default DrawerDemo;
-

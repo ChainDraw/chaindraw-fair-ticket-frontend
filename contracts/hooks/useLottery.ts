@@ -9,6 +9,7 @@ import {
   useReadLotteryDeposits,
   useReadLotteryIsWinner,
   useReadLotteryPrice,
+  useWriteLotteryApprove,
   useWriteLotteryDeposit,
   useWriteLotteryRefund,
   useWriteLotteryStartLottery,

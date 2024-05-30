@@ -64,6 +64,7 @@ export interface NFT {
     image: string;
     name: string;
   };
+  id: string;
 }
 export interface CreateLottery {
   createAtTimestamp: string;

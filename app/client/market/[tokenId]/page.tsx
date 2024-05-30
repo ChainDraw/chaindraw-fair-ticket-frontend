@@ -1,99 +1,121 @@
-'use client';
-import React from 'react';
-import Link from 'next/link';
-import { useAccount, useWriteContract } from 'wagmi';
-import { abi } from '@/contracts/abis/erc721';
-
-const NFTDropPage = () => {
-  const collection = {
-    nftCollectionName: 'nftCollectionName',
-    price: '0.01',
-    tokenId: '3282',
-    description: 'description',
-    title: 'title',
-    seller: '99999999999999999',
+"use client";
+import React from "react";
+import { useAccount } from "wagmi";
+import Image from "next/image";
+import { useNftInfo } from "@/services/api";
+import { formatImage, formatNFTId } from "@/utils/common";
+import { useMarketBuy } from "@/contracts/hooks/useMarket";
+import useAuthStore from "@/stores/authStore";
+import { toast } from "@/components/ui/use-toast";
+import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
+import { Address } from "viem";
+interface Props {
+  params: {
+    tokenId: string;
   };
-
-  // Auth
-  const { address } = useAccount();
-  const contractConfig = {
-    address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
-    abi,
-  };
-  const { writeContract: buyTicket, isPending: isPurchaseLoading } =
-    useWriteContract();
+}
+const NFTDropPage = (props: Props) => {
+  const { data } = useNftInfo("0x756a751e460be7e6d4fe136e259e540fcff6cdf7-0");
+  const { handleBuy, isPending, isSuccess } = useMarketBuy();
+  const { authStatus } = useAuthStore();
+  const image = formatImage(data?.nftMetadata);
   return (
-    <div className="flex h-screen flex-col lg:grid lg:grid-cols-10">
-      {/* left */}
-      <div className="bg-gradient-to-br from-cyan-800 to-rose-500 lg:col-span-4">
-        <div className="flex flex-col items-center justify-center py-2 lg:min-h-screen">
-          <div className="rounded-xl bg-gradient-to-br from-yellow-400 to-purple-600 p-2">
-            <img
-              className="w-44 round-xl object-cover lg:h-96 lg:w-72"
-              src="https://seizon-prod.s3.us-east-1.amazonaws.com/tokens/3282.png"
-              alt=""
-            />
-          </div>
-          <div className="space-y-6 p-5 text-center">
-            <h1 className="text-4xl font-bold text-white">
-              {collection.nftCollectionName}
-            </h1>
-            <h2 className="text-xl text-gray-300">{collection.description}</h2>
+    <main className=" relative">
+      <MaxWidthWrapper className="flex w-full h-full min-h-screen flex-col md:grid md:grid-cols-[40%_60%]  overflow-hidden px-0 md:px-0">
+        {/* left */}
+        <div className="w-full h-full pt-10 md:pt-20 bg-gradient-to-br from-cyan-800 to-rose-500">
+          <div className="flex flex-col items-center justify-center py-2 h-full">
+            <div className="relative rounded-xl bg-gradient-to-br from-yellow-400 to-purple-600 p-2 ">
+              <div className="round-xl overflow-hidden w-full h-full">
+                <Image
+                  className=" w-full h-full object-cover "
+                  width={200}
+                  height={400}
+                  src={image}
+                  alt=""
+                />
+              </div>
+            </div>
+            <div className="space-y-6 p-5 text-center">
+              <h1 className="text-4xl font-bold text-white">
+                {data?.nftMetadata.concertName}
+              </h1>
+              <h2 className="text-xl text-gray-300">
+                {data?.nftMetadata.description}
+              </h2>
+            </div>
           </div>
         </div>
-      </div>
-      {/* right */}
-      <div className="flex flex-1 flex-col p-12 py-20 lg:col-span-6">
-        {/* Header */}
-        <header className="flex item-center justify-between">
-          <Link href={'/'}>
-            <h1 className="w-52 cursor-pointer text-xl font-extralight sm:w-80">
-              The{' '}
-              <span className="font-extrabold underline decoration-pink-600/50">
-                ChainDraw
-              </span>{' '}
-              NFT Market Place
-            </h1>
-          </Link>
-        </header>
-        <hr className="my-2 border" />
-        {address && (
-          <p>
-            You&apos;sre logged in with wallet {address.substring(0, 5)}...
-            {address.substring(address.length - 5)}
-          </p>
-        )}
+        {/* right */}
+        <div className="w-full flex flex-col md:items-center pt-10 md:pt-20  px-12 md:px-20 text-orange-500 bg-white">
+          {/* Header */}
+          <div className=" w-full">
+            <header className="flex item-center justify-between md:pt-10">
+              <div>
+                <h1 className="text-2xl font-bold italic">Ticket Info :</h1>
+              </div>
+            </header>
+            <hr className="my-2 border" />
+            <div className="pb-2 md:pb-4">
+              <h1 className="pb-1 text-">ConcertName:</h1>
+              <p className="px-2 text-black">{data?.nftMetadata.concertName}</p>
+            </div>
+            <div className="pb-2 md:pb-4">
+              <h1 className="pb-1">Description:</h1>
+              <p className="px-2 text-black">{data?.nftMetadata.description}</p>
+            </div>
+            <div className="pb-2 md:pb-4">
+              <h1>Seller:</h1>
+              <p className="px-2 text-black">{data?.seller.id}</p>
+            </div>
+            <div className="pb-2 md:pb-4">
+              <h1>Location:</h1>
+              <p className="px-2 text-black">{data?.nftMetadata.address}</p>
+            </div>
+            <div className="pb-2 md:pb-4">
+              <h1>Price:</h1>
+              <p className="px-2 text-black">{data?.price} Wei</p>
+            </div>
+          </div>
+          <div className="mt-10 flex flex-col items-center max-w-md">
+            <div className=" bg-black flex justify-center items-center p-4  rounded-xl bg-gradient-to-br from-green-400 to-blue-500">
+              <Image
+                className="w-full h-full border border-black p-2 rounded-xl"
+                src={image}
+                width={200}
+                height={400}
+                alt=""
+              />
+            </div>
+          </div>
+          {/* Mint Button */}
+          <button
+            className="mt-10 font-bold bg-red-600 rounded-full h-16 w-[50%] text-white"
+            onClick={() => {
+              if (!data) return;
+              if (authStatus !== "authenticated") {
+                toast({
+                  description: "Please Connect wallet",
+                  variant: "destructive",
+                });
+                return;
+              }
 
-        {/* content */}
-        <div className="mt-10 flex flex-1 flex-col items-center space-y-6 lg:space-y-0 lg:justify-center">
-          <img
-            className="w-80 object-cover pb-10 lg:h-40"
-            src="https://seizon-prod.s3.us-east-1.amazonaws.com/tokens/3282.png"
-            alt=""
-          />
-          <h1 className="text-3xl font-bold lg:text-5xl lg:font-extrabold">
-            {collection.title}
-          </h1>
-          <p className="pt-2 text-xl text-green-500">
-            seller: {collection.seller}
-          </p>
+              const { address, tokenId } = formatNFTId(props.params.tokenId);
+              handleBuy(address as Address, tokenId, data.price);
+            }}
+          >
+            {isPending ? (
+              "Loading..."
+            ) : isSuccess ? (
+              <div>Success </div>
+            ) : (
+              <div>Buy and pay {data?.price} Wei </div>
+            )}
+          </button>
         </div>
-        {/* Mint Button */}
-        <button
-          className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white"
-          onClick={() =>
-            buyTicket({
-              ...contractConfig,
-              functionName: 'buyTicket',
-              args: [collection.tokenId],
-            })
-          }
-        >
-          {isPurchaseLoading ? 'Loading...' : 'Purchase'} ( {collection.price}{' '}
-          ETH )
-        </button>
-      </div>
-    </div>
+      </MaxWidthWrapper>
+    </main>
   );
 };
 

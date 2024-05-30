@@ -20,29 +20,6 @@ import CountdownComponent from "../../components/countdowm/CountDown";
 import { useLotteryInfo } from "@/services/api";
 import { formatAddress } from "@/utils/common";
 
-const data = {
-  concert_id: "123456",
-  concert_name: "Example Concert",
-  concert_img: "/images/test8.png",
-  concert_date: "2024-05-15",
-  lottery_start_date: "2024-05-06",
-  lottery_end_date: "2024-05-10",
-  concert_status: 0,
-  ticket_types: [
-    {
-      ticket_type: "123",
-      type_name: "VIP",
-      price: "100",
-      max_quantity_per_wallet: 2,
-    },
-    {
-      ticket_type: "456",
-      type_name: "Regular",
-      price: "50",
-      max_quantity_per_wallet: 4,
-    },
-  ],
-};
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { lotteryId } = params;
   // 合约地址
@@ -154,7 +131,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 height={200}
                 priority
                 className="w-full"
-                src={data?.concert_img}
+                src={image}
               />
             </div>
             {/* pass math casino topple velvet world gift core prevent modify soap

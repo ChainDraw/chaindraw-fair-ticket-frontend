@@ -1,18 +1,21 @@
 import { useUserNfts } from "@/services/api";
 import { NFT } from "@/types";
-import { formatAddress } from "@/utils/common";
+import { formatAddress, formatImage } from "@/utils/common";
+import { paths } from "@/utils/paths";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { Address } from "viem";
 type Props = {
   address: string;
 };
-const NFTItem = (props: NFT) => {
-  const image =
-    "https://gateway.pinata.cloud/ipfs/" +
-    props.nftMetadata.image.split("ipfs://")[1];
+export const NFTItem = (props: NFT) => {
+  const image = formatImage(props.nftMetadata);
   return (
-    <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">
+    <Link
+      href={paths.client.ticketInfo(props.id)}
+      className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden "
+    >
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
@@ -43,7 +46,7 @@ const NFTItem = (props: NFT) => {
           </div>
         </article>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -270,63 +270,6 @@ export const useUserCreateLottery = (userAddress: string) => {
     refetchOnWindowFocus: false,
   });
 };
-export const useNFTListings = (orderBy: string, orderDirection: string) => {
-  return useQuery({
-    queryKey: ["nftLists", orderBy, orderDirection],
-    queryFn: () => {
-      const data = request(
-        BASE_API_DEV,
-        gql`
-          query NFTLists {
-            nfts(
-              where: {
-                owner_: { id: "0xd2bdf4f1f8f667d91809594cbbdcc7b23a160656" }
-              }
-            ) {
-              price
-              seller {
-                id
-              }
-              lotteryAddress
-              tokenId
-              tokenURI
-            }
-          }
-        `
-      );
-    },
-  });
-};
-export const useUserNfts = (userAddress: string) => {
-  return useQuery({
-    queryKey: ["UserNfts", userAddress],
-    queryFn: async ({ queryKey }) => {
-      if (!queryKey[1]) return;
-      const data: any = await request(
-        BASE_API_DEV,
-        gql`
-          query UserNfts($userAddress: ID!) {
-            participant(id: $userAddress) {
-              nfts {
-                price
-                nftMetadata {
-                  address
-                  concertName
-                  description
-                  image
-                  name
-                }
-              }
-            }
-          }
-        `,
-        { userAddress: userAddress }
-      );
-      return data.participant.nfts;
-    },
-    refetchOnWindowFocus: false,
-  });
-};
 export const useUserLottery = (userAddress: string) => {
   return useQuery({
     queryKey: ["UserLottery", userAddress],
@@ -365,6 +308,107 @@ export const useUserLottery = (userAddress: string) => {
         { userAddress: userAddress }
       );
       return data.participant.lotteries as CreateLottery[];
+    },
+    refetchOnWindowFocus: false,
+  });
+};
+// NFT 相关
+export const useNFTListings = (orderBy: string, orderDirection: string) => {
+  return useQuery({
+    queryKey: ["nftLists", orderBy, orderDirection],
+    queryFn: async () => {
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query NFTLists {
+            nfts(
+              where: {
+                owner_: { id: "0xd2bdf4f1f8f667d91809594cbbdcc7b23a160656" }
+              }
+            ) {
+              price
+              seller {
+                id
+              }
+              tokenId
+              tokenURI
+              nftMetadata {
+                address
+                concertName
+                description
+                image
+                name
+              }
+              id
+            }
+          }
+        `
+      );
+      return data.nfts;
+    },
+    refetchOnWindowFocus: false,
+  });
+};
+export const useUserNfts = (userAddress: string) => {
+  return useQuery({
+    queryKey: ["UserNfts", userAddress],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query UserNfts($userAddress: ID!) {
+            participant(id: $userAddress) {
+              nfts {
+                price
+                nftMetadata {
+                  address
+                  concertName
+                  description
+                  image
+                  name
+                }
+              }
+            }
+          }
+        `,
+        { userAddress: userAddress }
+      );
+      return data.participant.nfts;
+    },
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useNftInfo = (id: string) => {
+  return useQuery({
+    queryKey: ["NftInfo", id],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query NftInfo($id: ID!) {
+            nft(id: $id) {
+              price
+              seller {
+                id
+              }
+              tokenId
+              tokenURI
+              nftMetadata {
+                address
+                concertName
+                description
+                image
+                name
+              }
+            }
+          }
+        `,
+        { id: id }
+      );
+      return data.nft as NFT & { seller: { id: string } };
     },
     refetchOnWindowFocus: false,
   });

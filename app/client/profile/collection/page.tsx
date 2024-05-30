@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import SubmitDrawer from "./components/SubmitDrawer.tsx";
+import { useMarketList } from "@/contracts/hooks/useMarket.js";
 
 export default function CollectionPage() {
+  const { handleList, isSuccess, isPending } = useMarketList();
   const collection = {
     title: "Ape",
     price: 0.00001,
