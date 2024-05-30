@@ -44,6 +44,11 @@ export default function ReviewDialog({ concert_id }: { concert_id: string }) {
         description: data.msg,
       });
       router.push('/events');
+    } else {
+      toast({
+        description: data.msg,
+        variant: 'destructive',
+      });
     }
   };
 
