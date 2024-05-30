@@ -108,7 +108,7 @@ export const columns: ColumnDef<EventBasics>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          活动开始时间
+          活动入场时间
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -119,6 +119,24 @@ export const columns: ColumnDef<EventBasics>[] = [
       return startTime
         ? format(new Date(startTime), 'yyyy-MM-dd HH:mm:ss')
         : '';
+    },
+  },
+  {
+    accessorKey: 'concert_end_date',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          活动结束时间
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const endTime = row.original.concert_end_date;
+      return endTime ? format(new Date(endTime), 'yyyy-MM-dd HH:mm:ss') : '';
     },
   },
   {
