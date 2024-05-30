@@ -32,9 +32,9 @@ import { toast } from '@/components/ui/use-toast';
 import { handleError } from '@/utils/errors';
 
 const formSchema = z.object({
-  lottery_start_date: z.date({
-    required_error: '请选择抽奖开始时间',
-  }),
+  // lottery_start_date: z.date({
+  //   required_error: '请选择抽奖开始时间',
+  // }),
   lottery_end_date: z.date({
     required_error: '请选择抽奖截止时间',
   }),
@@ -51,7 +51,7 @@ export default function PromotionsForm() {
   const { updateStep, goBack, data, mode } = useCreateEvent();
 
   const {
-    lottery_start_date,
+    // lottery_start_date,
     lottery_end_date,
     concert_img_preview,
     concert_img,
@@ -127,7 +127,7 @@ export default function PromotionsForm() {
   const form1 = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      lottery_start_date: lottery_start_date ?? undefined,
+      // lottery_start_date: lottery_start_date ?? undefined,
       lottery_end_date: lottery_end_date ?? undefined,
       concert_img_preview: concert_img_preview ?? undefined,
     },
@@ -158,17 +158,19 @@ export default function PromotionsForm() {
   // 表单数据回显
   useEffect(() => {
     if (data.step2) {
-      form1.setValue('lottery_start_date', data.step2.lottery_start_date);
+      // form1.setValue('lottery_start_date', data.step2.lottery_start_date);
       form1.setValue('lottery_end_date', data.step2.lottery_end_date);
       form1.setValue('concert_img_preview', data.step2.concert_img_preview);
     }
   }, [data.step2, form1]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { lottery_start_date, lottery_end_date } = values;
-    const isOrderCorrect =
-      compareDates(lottery_start_date, lottery_end_date) === -1;
-    if (isPastDate(lottery_start_date)) {
+    // const { lottery_start_date, lottery_end_date } = values;
+    const { lottery_end_date } = values;
+    // const isOrderCorrect =
+    //   compareDates(lottery_start_date, lottery_end_date) === -1;
+    // if (isPastDate(lottery_start_date)) {
+    if (isPastDate(lottery_end_date)) {
       toast({
         title: '时间错误',
         description: '不能选择过去的时间',
@@ -176,14 +178,14 @@ export default function PromotionsForm() {
       });
       return;
     }
-    if (!isOrderCorrect) {
-      toast({
-        title: '时间顺序错误',
-        description: '请检查抽奖时间顺序',
-        variant: 'destructive',
-      });
-      return;
-    }
+    // if (!isOrderCorrect) {
+    //   toast({
+    //     title: '时间顺序错误',
+    //     description: '请检查抽奖时间顺序',
+    //     variant: 'destructive',
+    //   });
+    //   return;
+    // }
 
     if (hasUploaded) {
       updateStep(2, { ...values, concert_img: ipfsHash });
@@ -200,7 +202,7 @@ export default function PromotionsForm() {
     <Form {...form1}>
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         <div className="w-full flex justify-between items-center space-x-4">
-          <div className="flex-1">
+          {/* <div className="flex-1">
             <FormField
               disabled={disabled}
               control={form1.control}
@@ -248,7 +250,7 @@ export default function PromotionsForm() {
                 </FormItem>
               )}
             />
-          </div>
+          </div> */}
           <div className="flex-1">
             <FormField
               disabled={disabled}
