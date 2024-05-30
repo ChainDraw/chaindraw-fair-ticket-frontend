@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn, isPastDate } from '@/lib/utils';
+import { cn, compareDates, isPastDate } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -35,7 +35,10 @@ const formSchema = z.object({
   address: z.string().min(1, { message: '请输入活动地点' }),
   remark: z.string().min(1, { message: '请输入活动描述' }),
   concert_date: z.date({
-    required_error: '请选择活动日期',
+    required_error: '请选择活动入场时间',
+  }),
+  concert_end_date: z.date({
+    required_error: '请选择活动结束时间',
   }),
 });
 
@@ -47,7 +50,8 @@ export default function BasicsForm() {
     [mode]
   );
 
-  const { concert_name, address, remark, concert_date } = data.step1;
+  const { concert_name, address, remark, concert_date, concert_end_date } =
+    data.step1;
 
   const { toast } = useToast();
 
@@ -58,6 +62,7 @@ export default function BasicsForm() {
       address: address ?? '',
       remark: remark ?? '',
       concert_date: concert_date ?? undefined,
+      concert_end_date: concert_end_date ?? undefined,
     },
   });
 
@@ -69,12 +74,22 @@ export default function BasicsForm() {
         address: data.step1.address ?? '',
         remark: data.step1.remark ?? '',
         concert_date: data.step1.concert_date ?? undefined,
+        concert_end_date: data.step1.concert_end_date ?? undefined,
       });
     }
   }, [data.step1, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const { concert_date } = values;
+    const { concert_date, concert_end_date } = values;
+    const isOrderCorrect = compareDates(concert_date, concert_end_date) === -1;
+    if (!isOrderCorrect) {
+      toast({
+        title: '时间错误',
+        description: '请检查开始时间是否早于结束时间',
+        variant: 'destructive',
+      });
+      return;
+    }
     if (isPastDate(concert_date)) {
       toast({
         title: '时间错误',
@@ -138,7 +153,7 @@ export default function BasicsForm() {
           name="concert_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>入场时间</FormLabel>
+              <FormLabel className="mr-2">入场时间</FormLabel>
               <Popover>
                 <FormControl>
                   <PopoverTrigger asChild>
@@ -154,6 +169,53 @@ export default function BasicsForm() {
                         format(field.value, 'PPP HH:mm:ss')
                       ) : (
                         <span>入场时间</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                </FormControl>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    disabled={disabled}
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <DateTimePicker
+                      disabled={disabled}
+                      setDate={field.onChange}
+                      date={field.value}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          disabled={disabled}
+          control={form1.control}
+          name="concert_end_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="mr-2">结束时间</FormLabel>
+              <Popover>
+                <FormControl>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        'w-[280px] justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? (
+                        format(field.value, 'PPP HH:mm:ss')
+                      ) : (
+                        <span>结束时间</span>
                       )}
                     </Button>
                   </PopoverTrigger>
