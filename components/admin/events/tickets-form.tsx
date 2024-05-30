@@ -531,7 +531,9 @@ export default function TicketsForm() {
         {disabled && (
           <>
             <Button onClick={goBack}>上一步</Button>
-            {mode === 'review' && <ReviewDialog />}
+            {mode === 'review' && (
+              <ReviewDialog concert_id={data.step1.concert_id} />
+            )}
           </>
         )}
       </div>
