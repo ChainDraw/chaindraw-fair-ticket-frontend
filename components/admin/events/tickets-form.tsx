@@ -63,11 +63,11 @@ export default function TicketsForm() {
     useCreateEvent();
   const {
     max_quantity_per_wallet,
+    type_name,
     num,
     price,
-    type_name,
-    ticket_img_preview,
     trade,
+    ticket_img_preview,
   } = data.step3;
 
   const disabled = useMemo(
@@ -273,6 +273,7 @@ export default function TicketsForm() {
                   '新增门票 ' + (index + 1)}
               </CollapsibleTrigger>
               <Button
+                disabled={disabled}
                 type="button"
                 onClick={(e) => handleRemove(e, index, field.id)}
               >
@@ -383,7 +384,7 @@ export default function TicketsForm() {
                           ) : (
                             <Button
                               onClick={(e) => uploadToIPFS(e, value, field)}
-                              disabled={hasUploadedMap[field.id]}
+                              disabled={hasUploadedMap[field.id] || disabled}
                             >
                               {hasUploadedMap[field.id] ? '已上传' : '上 传'}
                             </Button>

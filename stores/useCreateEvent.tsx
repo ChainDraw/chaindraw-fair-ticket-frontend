@@ -212,6 +212,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     concert_img,
     // lottery_start_date,
     lottery_end_date,
+    ticket_types,
   } = data.result[0];
 
   // 活动基础信息
@@ -227,31 +228,45 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 模拟的抽奖信息
   const promotion: EventPromotion = {
     // lottery_start_date: lottery_start_date ?? new Date('2024-05-01T00:00:00Z'),
-    lottery_end_date: lottery_end_date ?? new Date('2024-05-31T23:59:59Z'),
+    lottery_end_date: lottery_end_date
+      ? new Date(lottery_end_date)
+      : new Date('2024-05-01T00:00:00Z'),
     concert_img,
   };
 
   // 需要把图片转换为 blob 格式
-  const response = await fetch('https://picsum.photos/200/300');
-  const blob = await response.blob();
-  const response2 = await fetch('https://picsum.photos/300/200');
-  const blob2 = await response2.blob();
+  // const response = await fetch('https://picsum.photos/200/300');
+  // const blob = await response.blob();
+  // const response2 = await fetch('https://picsum.photos/300/200');
+  // const blob2 = await response2.blob();
+
+  const tickets = ticket_types.map((ticket: EventTicket) => {
+    return {
+      type_name: ticket.type_name,
+      max_quantity_per_wallet: ticket.max_quantity_per_wallet,
+      ticket_type: ticket.ticket_type,
+      price: ticket.price,
+      num: ticket.num,
+      ticket_img: ticket.ticket_img,
+      trade: ticket.trade,
+    };
+  });
 
   // 模拟的门票信息
-  const ticket: EventTicket = {
-    type_name: 'General Admission',
-    price: 50,
-    max_quantity_per_wallet: 4,
-    num: 1000,
-    ticket_img: 'https://picsum.photos/200/300',
-    trade: true,
-  };
+  // const ticket: EventTicket = {
+  //   type_name: 'General Admission',
+  //   price: 50,
+  //   max_quantity_per_wallet: 4,
+  //   num: 1000,
+  //   ticket_img: 'https://picsum.photos/200/300',
+  //   trade: true,
+  // };
 
   // 返回模拟的数据
   return {
     step1: event,
     step2: promotion,
-    step3: ticket,
+    step3: tickets,
   };
 }
 
