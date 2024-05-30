@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 import {
@@ -50,6 +50,9 @@ const ticketSchema = z.object({
     .refine((file) => file.size < MAX_FILE_SIZE, {
       message: '图片大小不能超过 5MB',
     }),
+  ticket_img: z.string().min(1, {
+    message: '门票未上传',
+  }),
   trade: z.boolean().optional(),
 });
 
@@ -61,14 +64,22 @@ const formSchema = z.object({
 export default function TicketsForm() {
   const { submitData, goBack, data, updateFinalStep, mode, reset } =
     useCreateEvent();
-  const {
-    max_quantity_per_wallet,
-    type_name,
-    num,
-    price,
-    trade,
-    ticket_img_preview,
-  } = data.step3;
+  // console.log('data.step3', data.step3);
+  // const {
+  //   max_quantity_per_wallet,
+  //   type_name,
+  //   num,
+  //   price,
+  //   trade,
+  //   ticket_img_preview,
+  // } = data.step3[0] || {
+  //   max_quantity_per_wallet: 0,
+  //   type_name: '',
+  //   num: 0,
+  //   price: 0,
+  //   trade: false,
+  //   ticket_img_preview: undefined,
+  // };
 
   const disabled = useMemo(
     () => mode === 'readonly' || mode === 'review',
@@ -178,12 +189,13 @@ export default function TicketsForm() {
     defaultValues: {
       tickets: [
         {
-          max_quantity_per_wallet: max_quantity_per_wallet ?? 0,
-          num: num ?? 0,
-          price: price ?? 0,
-          type_name: type_name ?? '',
-          ticket_img_preview: ticket_img_preview ?? undefined,
-          trade: trade ?? false,
+          max_quantity_per_wallet: 0,
+          num: 0,
+          price: 0,
+          type_name: '',
+          ticket_img_preview: undefined,
+          trade: false,
+          ticket_img: undefined,
         },
       ],
     },
@@ -194,6 +206,38 @@ export default function TicketsForm() {
     control: form1.control,
     name: 'tickets',
   });
+
+  useEffect(() => {
+    if (data.step3.length) {
+      const sortedStep3 = [...data.step3].sort(
+        (a, b) => a.create_at - b.create_at
+      );
+
+      form1.reset({
+        tickets: sortedStep3.map((ticket) => ({
+          max_quantity_per_wallet: ticket.max_quantity_per_wallet,
+          type_name: ticket.type_name,
+          num: ticket.num,
+          price: ticket.price,
+          trade: ticket.trade,
+          ticket_img: ticket.ticket_img,
+        })),
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const hashes: { [key: string]: any } = {};
+    const uploadedMap: { [key: string]: any } = {};
+    fields.forEach((item) => {
+      if (item.ticket_img) {
+        hashes[item.id] = item.ticket_img;
+        uploadedMap[item.id] = true;
+      }
+    });
+    setIpfsHashes(hashes);
+    setHasUploadedMap(uploadedMap);
+  }, [fields]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // 遍历图片上传情况
@@ -367,7 +411,7 @@ export default function TicketsForm() {
                             className="bg-black text-white p-2 cursor-pointer rounded "
                             htmlFor={`upload-btn-${index}`}
                           >
-                            选择图片
+                            {selectedImages[index] ? '已选图片' : '选择图片'}
                           </label>
                           <Input
                             id={`upload-btn-${index}`}
@@ -405,6 +449,10 @@ export default function TicketsForm() {
                                 alt="Image from IPFS"
                               />
                             </div>
+                            <p className="text-center">
+                              {selectedImages[index] &&
+                                selectedImages[index].name}
+                            </p>
                             <a
                               href={`https://gateway.pinata.cloud/ipfs/${ipfsHashes[field.id]}`}
                               target="_blank"
