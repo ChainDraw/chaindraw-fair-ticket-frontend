@@ -13,14 +13,14 @@ interface FormStepsState {
   data: {
     step1: StepData;
     step2: StepData;
-    step3: StepData;
+    step3: StepData[];
   };
   currentStep: number;
   progress: number;
   mode: EventMode;
   updateMode: (mode: EventMode) => void;
   updateStep: (step: number, formData?: StepData) => void;
-  updateFinalStep: (formData: StepData) => void;
+  updateFinalStep: (formData: StepData[]) => void;
   submitData: () => Promise<any>; // 假设后端响应可以是任何类型
   getCurrentFormName: () => string;
   goBack: () => void;
@@ -45,7 +45,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   data: {
     step1: {},
     step2: {},
-    step3: {},
+    step3: [],
   },
   currentStep: 1,
   progress: stepMap[1],
@@ -57,7 +57,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
         data: {
           step1: {},
           step2: {},
-          step3: {},
+          step3: [],
         },
         currentStep: 1,
         progress: stepMap[1],
@@ -122,7 +122,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
   },
   reset: () => {
     set({
-      data: { step1: {}, step2: {}, step3: {} },
+      data: { step1: {}, step2: {}, step3: [] },
       currentStep: 1,
       progress: stepMap[1],
     });
@@ -132,7 +132,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
     const { mode } = get();
     if (mode === 'create') {
       set({
-        data: { step1: {}, step2: {}, step3: {} },
+        data: { step1: {}, step2: {}, step3: [] },
         currentStep: 1,
         progress: stepMap[1],
       });
@@ -152,7 +152,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
 function transformData(data: any) {
   const step1 = data.step1 || {};
   const step2 = data.step2 || {};
-  const step3 = data.step3 || {};
+  const step3 = data.step3 || [];
 
   const tickets = (step3 || []).map((ticket: any) => ({
     max_quantity_per_wallet: parseInt(ticket.max_quantity_per_wallet, 10),
@@ -166,12 +166,13 @@ function transformData(data: any) {
   return {
     address: step1.address || '',
     concert_date: step1.concert_date || '',
+    concert_end_date: step1.concert_end_date || '',
     concert_img: step2.concert_img || '',
     concert_name: step1.concert_name || '',
     // concert_status: 0,
     lottery_end_date: step2.lottery_end_date || '',
     // lottery_start_date: step2.lottery_start_date || '',
-    remark: '',
+    remark: step1.remark || '',
     // review_status: 0,
     tickets: tickets,
   };
@@ -194,6 +195,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   const {
     concert_name,
     concert_date,
+    concert_end_date,
     address,
     remark,
     review_status,
@@ -209,6 +211,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     concert_name,
     address: address ?? '',
     concert_date: new Date(concert_date),
+    concert_end_date: new Date(concert_end_date),
     remark: remark ?? '',
     review_status: review_status ?? 1,
   };
@@ -216,9 +219,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 模拟的抽奖信息
   const promotion: EventPromotion = {
     // lottery_start_date: lottery_start_date ?? new Date('2024-05-01T00:00:00Z'),
-    lottery_end_date: lottery_end_date
-      ? new Date(lottery_end_date)
-      : new Date('2024-05-01T00:00:00Z'),
+    lottery_end_date: new Date(lottery_end_date),
     concert_img,
   };
 
@@ -231,6 +232,7 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
       num: ticket.num,
       ticket_img: ticket.ticket_img,
       trade: ticket.trade,
+      create_at: ticket.create_at,
     };
   });
 
