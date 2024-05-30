@@ -95,7 +95,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
 
     try {
       const response = await fetch(
-        'https://www.biturd.com/api/v1/concert/commit',
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/commit`,
         {
           method: 'POST',
           headers: {
@@ -181,7 +181,7 @@ function transformData(data: any) {
 // 模拟后端获取表单数据函数
 async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   const res = await fetch(
-    `https://www.biturd.com/api/v1/concert/concert_list?ids=${id}`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/concert_list?ids=${id}`
   );
   if (!res.ok) {
     throw new Error('Failed to fetch event data');
