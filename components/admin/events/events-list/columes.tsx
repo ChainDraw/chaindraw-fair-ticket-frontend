@@ -140,7 +140,8 @@ const DropdownMenuItemCancel = ({
 
 // 发布
 const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  // const router = useRouter();
   const { writeContractAsync } = useWriteContract();
   const { address } = useAccount();
 
@@ -151,6 +152,40 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       alert('Please install MetaMask!');
       return;
     }
+
+    // 发布成功后调用
+    const onSuccess = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/publish`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              concert_id: rowOriginal.concert_id,
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          if (res.status === 500) {
+            console.log('Server error: 500');
+            throw new Error('Server error: 500');
+          } else {
+            throw new Error(`Unexpected status code: ${res.status}`);
+          }
+        }
+
+        const data = await res.json();
+        toast({
+          description: '发布成功',
+        });
+      } catch (error) {
+        handleError(error);
+      }
+    };
 
     const { concert_id, concert_name, ticket_types, concert_end_date } =
       rowOriginal;
@@ -177,25 +212,25 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
         ],
       })
         .then((res) => {
+          setOpen(false);
           console.log('res', res);
           if (res) {
-            router.push('/events');
+            onSuccess();
           }
         })
         .catch((err) => {
-          {
-            toast({
-              title: '发布失败',
-              description: err.message,
-              variant: 'destructive',
-            });
-          }
+          setOpen(false);
+          toast({
+            title: '发布失败',
+            description: err.message,
+            variant: 'destructive',
+          });
         });
     });
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-8">发 布</Button>
       </DialogTrigger>
