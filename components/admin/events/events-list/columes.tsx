@@ -57,6 +57,7 @@ const DropdownMenuItemComponent = ({
   return <DropdownMenuItem onClick={handleClick}>{label}</DropdownMenuItem>;
 };
 
+// 取消
 const DropdownMenuItemCancel = ({
   rowOriginal,
 }: {
@@ -66,7 +67,7 @@ const DropdownMenuItemCancel = ({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="destructive" className="h-8">
-          取消
+          取 消
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -88,6 +89,31 @@ const DropdownMenuItemCancel = ({
         <DialogFooter>
           <Button onClick={() => console.log('确认', rowOriginal.concert_id)}>
             确认
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// 发布
+const DropdownMenuItemPublish = ({
+  rowOriginal,
+}: {
+  rowOriginal: EventBasics;
+}) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="h-8">发 布</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>确认要发布活动吗？</DialogTitle>
+        </DialogHeader>
+        <DialogFooter>
+          <Button onClick={() => console.log('确认', rowOriginal.concert_id)}>
+            确 认
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -210,6 +236,9 @@ export const columns: ColumnDef<EventBasics>[] = [
                 mode="review"
                 rowOriginal={rowOriginal}
               />
+            )}
+            {review_status === 1 && (
+              <DropdownMenuItemPublish rowOriginal={rowOriginal} />
             )}
             {concert_status === 0 && (
               <DropdownMenuItemCancel rowOriginal={rowOriginal} />
