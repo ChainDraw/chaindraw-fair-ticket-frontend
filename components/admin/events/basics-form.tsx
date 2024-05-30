@@ -64,22 +64,14 @@ export default function BasicsForm() {
   // 监听 data.step1 更新 form1
   useEffect(() => {
     if (data.step1) {
-      // 只有当新值与当前表单值不同时才设置表单值
-      if (data.step1.concert_name !== form1.getValues('concert_name')) {
-        form1.setValue('concert_name', data.step1.concert_name ?? '');
-      }
-      if (data.step1.address !== form1.getValues('address')) {
-        form1.setValue('address', data.step1.address ?? '');
-      }
-      if (data.step1.address !== form1.getValues('remark')) {
-        form1.setValue('remark', data.step1.remark ?? '');
-      }
-      if (data.step1.entry_time !== form1.getValues('concert_date')) {
-        form1.setValue('concert_date', data.step1.concert_date ?? undefined);
-      }
-      console.log('step1-data', data.step1);
+      form1.reset({
+        concert_name: data.step1.concert_name ?? '',
+        address: data.step1.address ?? '',
+        remark: data.step1.remark ?? '',
+        concert_date: data.step1.concert_date ?? undefined,
+      });
     }
-  }, [data.step1]);
+  }, [data.step1, form1]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { concert_date } = values;

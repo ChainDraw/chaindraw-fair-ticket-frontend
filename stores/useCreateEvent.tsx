@@ -170,7 +170,7 @@ function transformData(data: any) {
     concert_name: step1.concert_name || '',
     // concert_status: 0,
     lottery_end_date: step2.lottery_end_date || '',
-    lottery_start_date: step2.lottery_start_date || '',
+    // lottery_start_date: step2.lottery_start_date || '',
     remark: '',
     // review_status: 0,
     tickets: tickets,
@@ -191,24 +191,44 @@ async function submitFormData(data: any): Promise<any> {
 
 // 模拟后端获取表单数据函数
 async function fetchEventData(id: string): Promise<FormStepsState['data']> {
-  // 模拟的活动基础信息
+  const res = await fetch(
+    `https://www.biturd.com/api/v1/concert/concert_list?ids=${id}`
+  );
+  if (!res.ok) {
+    throw new Error('Failed to fetch event data');
+  }
+  const data = await res.json();
+  if (!data) {
+    throw new Error('Failed to fetch event data');
+  }
+
+  console.log('data', data);
+  const {
+    concert_name,
+    concert_date,
+    address,
+    remark,
+    review_status,
+    concert_img,
+    // lottery_start_date,
+    lottery_end_date,
+  } = data.result[0];
+
+  // 活动基础信息
   const event: EventBasics = {
     concert_id: id,
-    concert_name: 'Example Event',
-    address: '123 Main St, City, Country',
-    concert_date: new Date('2024-06-01T10:00:00Z'),
-    // start_time: new Date('2024-06-01T10:00:00Z'),
-    // end_time: new Date('2024-06-01T18:00:00Z'),
-    // entry_time: new Date('2024-06-01T09:00:00Z'),
-    remark: 'This is an example event.',
-    review_status: 1,
+    concert_name,
+    address: address ?? '123 Main St, City, Country',
+    concert_date: new Date(concert_date),
+    remark: remark ?? 'This is an example event.',
+    review_status: review_status ?? 1,
   };
 
   // 模拟的抽奖信息
   const promotion: EventPromotion = {
-    lottery_start_date: new Date('2024-05-01T00:00:00Z'),
-    lottery_end_date: new Date('2024-05-31T23:59:59Z'),
-    concert_img: '',
+    // lottery_start_date: lottery_start_date ?? new Date('2024-05-01T00:00:00Z'),
+    lottery_end_date: lottery_end_date ?? new Date('2024-05-31T23:59:59Z'),
+    concert_img,
   };
 
   // 需要把图片转换为 blob 格式
@@ -230,8 +250,8 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   // 返回模拟的数据
   return {
     step1: event,
-    step2: { ...promotion, concert_img: blob },
-    step3: { ...ticket, ticket_img: blob2 },
+    step2: promotion,
+    step3: ticket,
   };
 }
 
