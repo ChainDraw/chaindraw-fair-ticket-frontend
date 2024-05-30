@@ -138,7 +138,7 @@ const useCreateEvent = create<FormStepsState>((set, get) => ({
       });
     } else {
       const data = await fetchEventData(id);
-      console.log('初始化数据', data);
+
       set({
         data,
         currentStep: 1,
@@ -177,18 +177,6 @@ function transformData(data: any) {
   };
 }
 
-// 模拟后端提交表单函数
-async function submitFormData(data: any): Promise<any> {
-  const response = await fetch('https://www.biturd.com/api/v1/concert/commit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-  return response.json();
-}
-
 // 模拟后端获取表单数据函数
 async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   const res = await fetch(
@@ -219,9 +207,9 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
   const event: EventBasics = {
     concert_id: id,
     concert_name,
-    address: address ?? '123 Main St, City, Country',
+    address: address ?? '',
     concert_date: new Date(concert_date),
-    remark: remark ?? 'This is an example event.',
+    remark: remark ?? '',
     review_status: review_status ?? 1,
   };
 
@@ -234,12 +222,6 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
     concert_img,
   };
 
-  // 需要把图片转换为 blob 格式
-  // const response = await fetch('https://picsum.photos/200/300');
-  // const blob = await response.blob();
-  // const response2 = await fetch('https://picsum.photos/300/200');
-  // const blob2 = await response2.blob();
-
   const tickets = ticket_types.map((ticket: EventTicket) => {
     return {
       type_name: ticket.type_name,
@@ -251,16 +233,6 @@ async function fetchEventData(id: string): Promise<FormStepsState['data']> {
       trade: ticket.trade,
     };
   });
-
-  // 模拟的门票信息
-  // const ticket: EventTicket = {
-  //   type_name: 'General Admission',
-  //   price: 50,
-  //   max_quantity_per_wallet: 4,
-  //   num: 1000,
-  //   ticket_img: 'https://picsum.photos/200/300',
-  //   trade: true,
-  // };
 
   // 返回模拟的数据
   return {

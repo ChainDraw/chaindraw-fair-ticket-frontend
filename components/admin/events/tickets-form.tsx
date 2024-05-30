@@ -396,6 +396,15 @@ export default function TicketsForm() {
                               Image uploaded to IPFS with hash:{' '}
                               {ipfsHashes[field.id]}
                             </p>
+                            <div className="flex-center h-[auto]">
+                              <Image
+                                width={280}
+                                height={0}
+                                className="w-1/2 max-w-[280px] h-auto"
+                                src={`https://gateway.pinata.cloud/ipfs/${ipfsHashes[field.id]}`}
+                                alt="Image from IPFS"
+                              />
+                            </div>
                             <a
                               href={`https://gateway.pinata.cloud/ipfs/${ipfsHashes[field.id]}`}
                               target="_blank"
@@ -405,7 +414,7 @@ export default function TicketsForm() {
                             </a>
                           </div>
                         )}
-                        {selectedImages[index] && (
+                        {/* {selectedImages[index] && (
                           <div className="flex-center h-[auto]">
                             <Image
                               width="0"
@@ -415,7 +424,7 @@ export default function TicketsForm() {
                               alt="Selected"
                             />
                           </div>
-                        )}
+                        )} */}
                       </>
                     </FormControl>
                     <FormMessage />

@@ -339,6 +339,15 @@ export default function PromotionsForm() {
                   {ipfsHash && (
                     <div className="text-center">
                       <p>Image uploaded to IPFS with hash: {ipfsHash}</p>
+                      <div className="flex-center h-[auto]">
+                        <Image
+                          width={280}
+                          height={0}
+                          className="w-1/2 max-w-[280px] h-auto"
+                          src={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
+                          alt="Image from IPFS"
+                        />
+                      </div>
                       <a
                         href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
                         target="_blank"
@@ -348,7 +357,7 @@ export default function PromotionsForm() {
                       </a>
                     </div>
                   )}
-                  {selectedImage && (
+                  {/* {selectedImage && (
                     <div className="flex-center h-[auto]">
                       <Image
                         width="0"
@@ -358,7 +367,7 @@ export default function PromotionsForm() {
                         alt="Selected"
                       />
                     </div>
-                  )}
+                  )} */}
                 </>
               </FormControl>
               <FormDescription />
