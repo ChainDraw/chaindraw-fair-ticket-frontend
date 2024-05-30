@@ -1,6 +1,7 @@
 // src/api.ts
 
 import { LotteryItemProps } from "@/app/client/lottery/components/LatestLottery/LatestLotteryItem";
+import { CreateLottery, NFT } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { gql, request } from "graphql-request";
@@ -38,6 +39,7 @@ export const fetchVerifySignature = async (message: any, signature: string) => {
   });
   return response.data;
 };
+
 // Graphql
 const BASE_API_DEV =
   "https://api.studio.thegraph.com/query/70917/chaindraw-metadata/version/latest";
@@ -225,7 +227,49 @@ export const useLotteryInfo = (id: string) => {
     enabled: !!id,
   });
 };
-export const useUserCreateLottery = () => {};
+// 地址要小写
+export const useUserCreateLottery = (userAddress: string) => {
+  return useQuery({
+    queryKey: ["UserCreateLottery", userAddress],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query UserCreateLottery($userAddress: ID!) {
+            participant(id: $userAddress) {
+              createLotteries {
+                id
+                name
+                concertId
+                ddl
+                completeDraw
+                price
+                remainingTicketCount
+                ticketCount
+                ticketType
+                url
+                nftMetadata {
+                  address
+                  concertName
+                  description
+                  image
+                  name
+                }
+                organizer {
+                  id
+                }
+              }
+            }
+          }
+        `,
+        { userAddress: userAddress }
+      );
+      return data.participant.createLotteries as CreateLottery[];
+    },
+    refetchOnWindowFocus: false,
+  });
+};
 export const useNFTListings = (orderBy: string, orderDirection: string) => {
   return useQuery({
     queryKey: ["nftLists", orderBy, orderDirection],
@@ -251,5 +295,77 @@ export const useNFTListings = (orderBy: string, orderDirection: string) => {
         `
       );
     },
+  });
+};
+export const useUserNfts = (userAddress: string) => {
+  return useQuery({
+    queryKey: ["UserNfts", userAddress],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query UserNfts($userAddress: ID!) {
+            participant(id: $userAddress) {
+              nfts {
+                price
+                nftMetadata {
+                  address
+                  concertName
+                  description
+                  image
+                  name
+                }
+              }
+            }
+          }
+        `,
+        { userAddress: userAddress }
+      );
+      return data.participant.nfts;
+    },
+    refetchOnWindowFocus: false,
+  });
+};
+export const useUserLottery = (userAddress: string) => {
+  return useQuery({
+    queryKey: ["UserLottery", userAddress],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const data: any = await request(
+        BASE_API_DEV,
+        gql`
+          query useUserLottery($userAddress: ID!) {
+            participant(id: $userAddress) {
+              lotteries {
+                id
+                name
+                concertId
+                ddl
+                completeDraw
+                price
+                remainingTicketCount
+                ticketCount
+                ticketType
+                url
+                nftMetadata {
+                  address
+                  concertName
+                  description
+                  image
+                  name
+                }
+                organizer {
+                  id
+                }
+              }
+            }
+          }
+        `,
+        { userAddress: userAddress }
+      );
+      return data.participant.lotteries as CreateLottery[];
+    },
+    refetchOnWindowFocus: false,
   });
 };
