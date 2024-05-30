@@ -173,7 +173,8 @@ export const columns: ColumnDef<EventBasics>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const rowOriginal = row.original;
-      const status = parseInt(row.getValue('review_status'));
+      const review_status = parseInt(row.getValue('review_status'));
+      const concert_status = parseInt(row.getValue('concert_status'));
 
       return (
         <DropdownMenu>
@@ -203,14 +204,16 @@ export const columns: ColumnDef<EventBasics>[] = [
               mode="edit"
               rowOriginal={rowOriginal}
             /> */}
-            {status === 0 && (
+            {review_status === 0 && (
               <DropdownMenuItemComponent
                 label="审核"
                 mode="review"
                 rowOriginal={rowOriginal}
               />
             )}
-            <DropdownMenuItemCancel rowOriginal={rowOriginal} />
+            {concert_status === 0 && (
+              <DropdownMenuItemCancel rowOriginal={rowOriginal} />
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
