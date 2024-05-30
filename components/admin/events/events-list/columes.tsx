@@ -24,10 +24,13 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { EventBasics } from '@/types';
+import type { EventBasics, EventTicket } from '@/types';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
+
+import { useAccount, useWriteContract } from 'wagmi';
+import { abi } from '@/contracts/abis/LotteryEscrowFactory';
 
 const DropdownMenuItemComponent = ({
   label,
@@ -97,11 +100,46 @@ const DropdownMenuItemCancel = ({
 };
 
 // 发布
-const DropdownMenuItemPublish = ({
-  rowOriginal,
-}: {
-  rowOriginal: EventBasics;
-}) => {
+const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
+  const { writeContract } = useWriteContract();
+  const { address } = useAccount();
+
+  console.log('address', address);
+
+  const onPublish = async () => {
+    if (!window.ethereum) {
+      alert('Please install MetaMask!');
+      return;
+    }
+
+    const { concert_id, concert_name, ticket_types, concert_end_date } =
+      rowOriginal;
+
+    ticket_types.forEach((ticket: any) => {
+      const { ticket_type, type_name, price, ticket_img, num } = ticket;
+      const ddl = new Date(concert_end_date).getTime();
+
+      const response = writeContract({
+        abi,
+        address: '0x65721D91f26c5DD6EA14e7cb6Fd4Db3D8f4f8870', // 地址
+        functionName: 'createEscrow',
+        args: [
+          address!,
+          concert_id,
+          ticket_type,
+          type_name,
+          concert_name,
+          price,
+          ticket_img,
+          num,
+          ddl as unknown as bigint,
+        ],
+      });
+
+      console.log('Contract call response:', response);
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -112,9 +150,7 @@ const DropdownMenuItemPublish = ({
           <DialogTitle>确认要发布活动吗？</DialogTitle>
         </DialogHeader>
         <DialogFooter>
-          <Button onClick={() => console.log('确认', rowOriginal.concert_id)}>
-            确 认
-          </Button>
+          <Button onClick={() => onPublish()}>确 认</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -199,6 +235,8 @@ export const columns: ColumnDef<EventBasics>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const rowOriginal = row.original;
+      console.log('rowOriginal', rowOriginal);
+
       const review_status = parseInt(row.getValue('review_status'));
       const concert_status = parseInt(row.getValue('concert_status'));
 
