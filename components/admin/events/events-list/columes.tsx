@@ -31,6 +31,7 @@ import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
 
 import { useAccount, useWriteContract } from 'wagmi';
 import { abi } from '@/contracts/abis/LotteryEscrowFactory';
+import { toast } from '@/components/ui/use-toast';
 
 const DropdownMenuItemComponent = ({
   label,
@@ -101,7 +102,8 @@ const DropdownMenuItemCancel = ({
 
 // 发布
 const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
-  const { writeContract, writeContractAsync } = useWriteContract();
+  const router = useRouter();
+  const { writeContractAsync } = useWriteContract();
   const { address } = useAccount();
 
   console.log('address', address);
@@ -119,7 +121,8 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       const { ticket_type, type_name, price, ticket_img, num } = ticket;
       const ddl = new Date(concert_end_date).getTime();
 
-      const response = writeContractAsync({
+      // 写入合约
+      writeContractAsync({
         abi,
         address: '0x65721D91f26c5DD6EA14e7cb6Fd4Db3D8f4f8870', // 地址
         functionName: 'createEscrow',
@@ -130,21 +133,26 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
           type_name,
           concert_name,
           price,
-          'ipfs://QmTZMCsQVWLUFazkvqfL3enLceFR2roN9ku63i7RCmLnhT',
+          'ipfs://' + ticket_img,
           num,
           ddl as unknown as bigint,
         ],
       })
         .then((res) => {
           console.log('res', res);
+          if (res) {
+            router.push('/events');
+          }
         })
         .catch((err) => {
           {
-            console.log('err', err);
+            toast({
+              title: '发布失败',
+              description: err.message,
+              variant: 'destructive',
+            });
           }
         });
-
-      console.log('Contract call response:', response);
     });
   };
 
