@@ -72,6 +72,7 @@ export default function PromotionsForm() {
   // 图片变化时
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>, fn: any) => {
     const file = e.target.files?.[0];
+
     if (!file) {
       setIpfsHash('');
       setHasUploaded(false);
@@ -84,6 +85,8 @@ export default function PromotionsForm() {
     fn(file);
     setSelectedImage(file);
     form1.setValue('concert_img_preview', file!); // 使用 setValue 更新表单的 concert_img_preview 字段
+
+    console.log('Selected file:', file);
   };
 
   // 上传到IPFS
@@ -315,7 +318,7 @@ export default function PromotionsForm() {
                       className="bg-black text-white p-2 cursor-pointer rounded "
                       htmlFor="upload-btn"
                     >
-                      选择图片
+                      {selectedImage ? '已选图片' : '选择图片'}
                     </label>
                     <Input
                       id="upload-btn"
@@ -348,6 +351,9 @@ export default function PromotionsForm() {
                           alt="Image from IPFS"
                         />
                       </div>
+                      <p className="text-center">
+                        {selectedImage && selectedImage.name}
+                      </p>
                       <a
                         href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
                         target="_blank"
