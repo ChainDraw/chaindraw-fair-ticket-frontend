@@ -1,23 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   webpack: (config) => {
-    config.externals.push("pino-pretty", "lokijs", "encoding");
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
     return config;
   },
   images: {
     remotePatterns: [
       {
-        hostname: "picsum.photos",
+        hostname: 'picsum.photos',
       },
       {
-        hostname: "images.seatlabnft.com",
+        hostname: 'images.seatlabnft.com',
       },
       {
-        hostname: "gateway.pinata.cloud",
+        hostname: 'gateway.pinata.cloud',
       },
       {
-        hostname: "ipfs.io",
+        hostname: 'ipfs.io',
       },
     ],
   },
