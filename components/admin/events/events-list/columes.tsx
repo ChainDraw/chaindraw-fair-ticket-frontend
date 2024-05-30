@@ -101,7 +101,7 @@ const DropdownMenuItemCancel = ({
 
 // 发布
 const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
-  const { writeContract } = useWriteContract();
+  const { writeContract, writeContractAsync } = useWriteContract();
   const { address } = useAccount();
 
   console.log('address', address);
@@ -119,7 +119,7 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       const { ticket_type, type_name, price, ticket_img, num } = ticket;
       const ddl = new Date(concert_end_date).getTime();
 
-      const response = writeContract({
+      const response = writeContractAsync({
         abi,
         address: '0x65721D91f26c5DD6EA14e7cb6Fd4Db3D8f4f8870', // 地址
         functionName: 'createEscrow',
@@ -130,11 +130,19 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
           type_name,
           concert_name,
           price,
-          ticket_img,
+          'ipfs://QmTZMCsQVWLUFazkvqfL3enLceFR2roN9ku63i7RCmLnhT',
           num,
           ddl as unknown as bigint,
         ],
-      });
+      })
+        .then((res) => {
+          console.log('res', res);
+        })
+        .catch((err) => {
+          {
+            console.log('err', err);
+          }
+        });
 
       console.log('Contract call response:', response);
     });
