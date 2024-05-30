@@ -514,6 +514,7 @@ export default function TicketsForm() {
                   price: 0,
                   type_name: '',
                   ticket_img_preview: undefined!,
+                  ticket_img: undefined!,
                   trade: false,
                 });
               }}
