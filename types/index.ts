@@ -1,34 +1,3 @@
-// 基础信息
-export interface EventBasics0 {
-  id: string;
-  name: string;
-  address: string;
-  start_time: Date;
-  end_time: Date;
-  entry_time: Date;
-  description: string;
-  status: number;
-}
-
-// 抽奖信息
-export interface EventPromotion0 {
-  lottery_start_date: Date;
-  lottery_end_date: Date;
-  description: string;
-  cover: string;
-}
-
-// 门票信息
-export interface EventTicket0 {
-  name: string;
-  description: string;
-  price: number;
-  max_per_wallet: number;
-  ticket_max_num: number;
-  cover: string;
-  allow_transfer: boolean;
-}
-
 export interface EventBasics {
   concert_id: string;
   concert_name: string;
@@ -40,7 +9,7 @@ export interface EventBasics {
 }
 
 export interface EventPromotion {
-  lottery_start_date: Date;
+  // lottery_start_date?: Date;
   lottery_end_date: Date;
   concert_img: string;
 }
