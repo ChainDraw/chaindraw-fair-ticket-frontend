@@ -24,7 +24,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { EventBasics, EventTicket } from '@/types';
+import type { EventBasics } from '@/types';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
@@ -32,6 +32,8 @@ import useCreateEvent, { EventMode } from '@/stores/useCreateEvent';
 import { useAccount, useWriteContract } from 'wagmi';
 import { abi } from '@/contracts/abis/LotteryEscrowFactory';
 import { toast } from '@/components/ui/use-toast';
+import { handleError } from '@/utils/errors';
+import { useState } from 'react';
 
 const DropdownMenuItemComponent = ({
   label,
@@ -67,8 +69,44 @@ const DropdownMenuItemCancel = ({
 }: {
   rowOriginal: EventBasics;
 }) => {
+  const [reason, setReason] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const onCancel = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/cancel`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            concert_id: rowOriginal.concert_id,
+            cancel_reason: reason,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        if (res.status === 500) {
+          console.log('Server error: 500');
+          throw new Error('Server error: 500');
+        } else {
+          throw new Error(`Unexpected status code: ${res.status}`);
+        }
+      }
+
+      const data = await res.json();
+      setOpen(false);
+      console.log('data', data);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="destructive" className="h-8">
           取 消
@@ -84,16 +122,16 @@ const DropdownMenuItemCancel = ({
               取消理由
             </Label>
             <Textarea
+              value={reason}
               placeholder="请输入取消理由～"
               id="cancel-reason"
               className="col-span-3"
+              onChange={(e) => setReason(e.target.value)}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={() => console.log('确认', rowOriginal.concert_id)}>
-            确认
-          </Button>
+          <Button onClick={() => onCancel()}>确认</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
