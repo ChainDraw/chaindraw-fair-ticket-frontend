@@ -1,23 +1,26 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
-import SubmitDrawer from "./components/SubmitDrawer.tsx";
+import { Button } from '@/components/ui/button';
+import React from 'react';
+import SubmitDrawer from './components/SubmitDrawer.tsx';
 
 export default function CollectionPage() {
   const collection = {
-    title: "Ape",
-    price: 0.00001,
-    description: "description",
+    title: 'Ape',
+    price: '1',
+    tokenId: '0',
+    lotteryAddress: '0x756A751E460BE7E6D4fe136e259e540FCFF6cdF7',
+    status: 'unsold',
+    description: 'description',
     club: {
-      name: "Mutant Ape Yacht Club",
+      name: 'Mutant Ape Yacht Club',
       description:
-        "The MUTANT APE YACHT CLUB is a collection of up to 20,000 Mutant Apes that can only be created by exposing an existing Bored Ape to a vial of MUTANT SERUM or by minting a Mutant Ape in the public sale.",
+        'The MUTANT APE YACHT CLUB is a collection of up to 20,000 Mutant Apes that can only be created by exposing an existing Bored Ape to a vial of MUTANT SERUM or by minting a Mutant Ape in the public sale.',
     },
   };
 
   return (
     <div className=" min-h-screen flex flex-col md:py-20  2xl:px-0 bg-black text-white">
       <div className="flex items-center justify-end h-14 px-4 mx-10 bg-slate-800 rounded">
-        <SubmitDrawer price={collection.price} />
+        <SubmitDrawer collection={collection} />
       </div>
 
       <div className=" flex  items-start m-10 bor">
