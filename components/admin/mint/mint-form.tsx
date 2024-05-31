@@ -59,10 +59,7 @@ export default function MintForm() {
   };
 
   const { isConnected, address } = useAccount();
-  const contractConfig = {
-    address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
-    abi,
-  };
+
   const {
     data: hash,
     writeContract: mint,
@@ -75,7 +72,11 @@ export default function MintForm() {
     console.log('address', address);
     const { quantity, ...data } = values;
     for (let i = 0; i < quantity; i++) {
-      await mint({ ...contractConfig, functionName: 'mint' });
+      await mint({
+        abi,
+        address: '0x86fbbb1254c39602a7b067d5ae7e5c2bdfd61a30',
+        functionName: 'mint',
+      });
       console.log(`Minting NFT ${i + 1}/${quantity}...`);
     }
     console.log('All NFTs minted successfully.');
