@@ -5,25 +5,20 @@ import { Button } from "@/components/ui/button";
 import { useLottery } from "@/contracts/hooks/useLottery";
 import useAuthStore from "@/stores/authStore";
 import { paths } from "@/utils/paths";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ethers } from "ethers";
-import abi from "../../../../../contracts/abis/LotteryEscrow.json";
-// import { useQuery } from "@tanstack/react-query";
-// import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useCallback } from "react";
-import toast from "react-hot-toast";
-import { Address, formatEther, parseEther } from "viem";
-import { useAccount, useConnect, useEstimateGas } from "wagmi";
+import React from "react";
+
 import CountdownComponent from "../../components/countdowm/CountDown";
 import { useLotteryInfo } from "@/services/api";
 import { formatAddress } from "@/utils/common";
+import { Address } from "viem";
 
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { lotteryId } = params;
   // 合约地址
   const contractAddress = lotteryId as Address;
+
   const {
     handleDeposit,
     handleRefound,
@@ -156,7 +151,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             )}
             {isJoin &&
             !isEnded &&
-            Number(lotteryInfo?.ddl) < Date.now() &&
+            Number(lotteryInfo?.ddl) * 1000 < Date.now() &&
             lotteryInfo?.participants.length > 0 ? (
               <Button
                 onClick={async () => await handleStartLottery()}

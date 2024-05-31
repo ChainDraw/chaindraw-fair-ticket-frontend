@@ -89,7 +89,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
       </div>
 
       {/* {props.concert_status === 0 &&<Button variant="destructive">Has Not Started</Button> } */}
-      {Date.now() > Number(props.ddl) ? (
+      {Date.now() > Number(props.ddl) * 1000 ? (
         <Link
           href={paths.client.lotteryInfo(props.id)}
           className="text-center py-2 border-t border-white"
