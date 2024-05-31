@@ -410,7 +410,7 @@ export const columns: ColumnDef<EventBasics>[] = [
                 rowOriginal={rowOriginal}
               />
             )}
-            {review_status === 1 && concert_status !== 3 && (
+            {review_status === 1 && concert_status === 0 && (
               <DropdownMenuItemPublish rowOriginal={rowOriginal} />
             )}
             {concert_status === 0 && (
