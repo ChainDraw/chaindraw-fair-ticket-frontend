@@ -40,7 +40,7 @@ export default function MintForm() {
       price: 1,
       session: '',
       quantity: 1,
-      date: null,
+      date: undefined,
     },
   });
   const priceOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
