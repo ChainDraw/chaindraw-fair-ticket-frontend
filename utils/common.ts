@@ -54,3 +54,13 @@ export const getCountdown = (targetTime: number) => {
     console.log(error);
   }
 };
+export const formatImage = (nftMetadata: any) => {
+  const image =
+    "https://gateway.pinata.cloud/ipfs/" +
+    nftMetadata?.image?.split("ipfs://")[1];
+  return image as string;
+};
+export const formatNFTId = (id: string) => {
+  const [address, tokenId] = id?.split("-");
+  return { address, tokenId } as { address: Address; tokenId: string };
+};

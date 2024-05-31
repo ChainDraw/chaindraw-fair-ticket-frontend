@@ -15,7 +15,8 @@ const Footer = (props: Props) => {
   React.useEffect(() => {
     if (
       path !== paths.client.profile &&
-      !path.startsWith(paths.client.allLottery)
+      !path.startsWith(paths.client.allLottery) &&
+      !path.startsWith(paths.client.market)
     ) {
       setShowFooter(true);
     }

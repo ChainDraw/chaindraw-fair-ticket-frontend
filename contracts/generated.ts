@@ -712,6 +712,232 @@ export const lotteryAbi = [
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Market
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const marketAbi = [
+  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  { type: 'receive', stateMutability: 'payable' },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'lotteryAddress', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'buyNFT',
+    outputs: [],
+    stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'lotteryAddress', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'delistNFT',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'factoryAddress',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'lotteryAddress', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+      { name: 'price', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'listNFT',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'listings',
+    outputs: [
+      { name: 'seller', internalType: 'address', type: 'address' },
+      { name: 'lotteryAddress', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+      { name: 'price', internalType: 'uint256', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'operator', internalType: 'address', type: 'address' },
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+      { name: 'data', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'onERC721Received',
+    outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'owner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_factoryAddress', internalType: 'address', type: 'address' },
+    ],
+    name: 'setFactoryAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'seller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'lotteryAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+    ],
+    name: 'NFTDelisted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'seller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'lotteryAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'price',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'NFTListed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'buyer',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'lotteryAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'price',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'NFTSold',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'OwnershipTransferred',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
+    name: 'OwnableInvalidOwner',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'OwnableUnauthorizedAccount',
+  },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+] as const
+
+export const marketAddress =
+  '0xD2BDf4F1F8f667d91809594cbbdCc7b23a160656' as const
+
+export const marketConfig = { address: marketAddress, abi: marketAbi } as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1265,4 +1491,236 @@ export const useWatchLotteryTransferEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
     abi: lotteryAbi,
     eventName: 'Transfer',
+  })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link marketAbi}__
+ */
+export const useReadMarket = /*#__PURE__*/ createUseReadContract({
+  abi: marketAbi,
+  address: marketAddress,
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"factoryAddress"`
+ */
+export const useReadMarketFactoryAddress = /*#__PURE__*/ createUseReadContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'factoryAddress',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"listings"`
+ */
+export const useReadMarketListings = /*#__PURE__*/ createUseReadContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'listings',
+})
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"owner"`
+ */
+export const useReadMarketOwner = /*#__PURE__*/ createUseReadContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'owner',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__
+ */
+export const useWriteMarket = /*#__PURE__*/ createUseWriteContract({
+  abi: marketAbi,
+  address: marketAddress,
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"buyNFT"`
+ */
+export const useWriteMarketBuyNft = /*#__PURE__*/ createUseWriteContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'buyNFT',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"delistNFT"`
+ */
+export const useWriteMarketDelistNft = /*#__PURE__*/ createUseWriteContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'delistNFT',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"listNFT"`
+ */
+export const useWriteMarketListNft = /*#__PURE__*/ createUseWriteContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'listNFT',
+})
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"onERC721Received"`
+ */
+export const useWriteMarketOnErc721Received =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'onERC721Received',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"renounceOwnership"`
+ */
+export const useWriteMarketRenounceOwnership =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'renounceOwnership',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"setFactoryAddress"`
+ */
+export const useWriteMarketSetFactoryAddress =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'setFactoryAddress',
+  })
+
+/**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"transferOwnership"`
+ */
+export const useWriteMarketTransferOwnership =
+  /*#__PURE__*/ createUseWriteContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'transferOwnership',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__
+ */
+export const useSimulateMarket = /*#__PURE__*/ createUseSimulateContract({
+  abi: marketAbi,
+  address: marketAddress,
+})
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"buyNFT"`
+ */
+export const useSimulateMarketBuyNft = /*#__PURE__*/ createUseSimulateContract({
+  abi: marketAbi,
+  address: marketAddress,
+  functionName: 'buyNFT',
+})
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"delistNFT"`
+ */
+export const useSimulateMarketDelistNft =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'delistNFT',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"listNFT"`
+ */
+export const useSimulateMarketListNft = /*#__PURE__*/ createUseSimulateContract(
+  { abi: marketAbi, address: marketAddress, functionName: 'listNFT' },
+)
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"onERC721Received"`
+ */
+export const useSimulateMarketOnErc721Received =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'onERC721Received',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"renounceOwnership"`
+ */
+export const useSimulateMarketRenounceOwnership =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'renounceOwnership',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"setFactoryAddress"`
+ */
+export const useSimulateMarketSetFactoryAddress =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'setFactoryAddress',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link marketAbi}__ and `functionName` set to `"transferOwnership"`
+ */
+export const useSimulateMarketTransferOwnership =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: marketAbi,
+    address: marketAddress,
+    functionName: 'transferOwnership',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link marketAbi}__
+ */
+export const useWatchMarketEvent = /*#__PURE__*/ createUseWatchContractEvent({
+  abi: marketAbi,
+  address: marketAddress,
+})
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link marketAbi}__ and `eventName` set to `"NFTDelisted"`
+ */
+export const useWatchMarketNftDelistedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: marketAbi,
+    address: marketAddress,
+    eventName: 'NFTDelisted',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link marketAbi}__ and `eventName` set to `"NFTListed"`
+ */
+export const useWatchMarketNftListedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: marketAbi,
+    address: marketAddress,
+    eventName: 'NFTListed',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link marketAbi}__ and `eventName` set to `"NFTSold"`
+ */
+export const useWatchMarketNftSoldEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: marketAbi,
+    address: marketAddress,
+    eventName: 'NFTSold',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link marketAbi}__ and `eventName` set to `"OwnershipTransferred"`
+ */
+export const useWatchMarketOwnershipTransferredEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: marketAbi,
+    address: marketAddress,
+    eventName: 'OwnershipTransferred',
   })
