@@ -40,7 +40,7 @@ export default function MintForm() {
       price: 1,
       session: '',
       quantity: 1,
-      date: null,
+      date: undefined,
     },
   });
   const priceOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,8 +75,8 @@ export default function MintForm() {
     console.log('address', address);
     const { quantity, ...data } = values;
     for (let i = 0; i < quantity; i++) {
-      await mint({ ...contractConfig, functionName: 'mint' });
-      console.log(`Minting NFT ${i + 1}/${quantity}...`);
+      // mint({ ...contractConfig, functionName: 'mint' });
+      // console.log(`Minting NFT ${i + 1}/${quantity}...`);
     }
     console.log('All NFTs minted successfully.');
   }

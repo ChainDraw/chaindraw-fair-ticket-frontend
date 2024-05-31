@@ -1,15 +1,15 @@
-"use client";
-import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
+'use client';
+import MaxWidthWrapper from '@/components/client/MaxWidthWrapper';
 
-import { Input } from "@/components/ui/input";
+import { Input } from '@/components/ui/input';
 
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import axios from "axios";
-import debounce from "lodash.debounce";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
-import LatestLotteryItem from "../components/LatestLottery/LatestLotteryItem";
-import { useLotteryList, useSearchLottery } from "@/services/api";
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import axios from 'axios';
+import debounce from 'lodash.debounce';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import LatestLotteryItem from '../components/LatestLottery/LatestLotteryItem';
+import { useLotteryList, useSearchLottery } from '@/services/api';
 
 type Props = {};
 
@@ -17,14 +17,31 @@ const AllLottery = (props: Props) => {
   const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
-  const { data, error, isFetching } = searchValue
-    ? useSearchLottery(
-        "createAtTimestamp",
-        "desc",
-        currentPage * 10,
-        searchValue
-      )
-    : useLotteryList("createAtTimestamp", "desc", currentPage * 10);
+  // const { data, error, isFetching } = searchValue
+  //   ? useSearchLottery(
+  //       "createAtTimestamp",
+  //       "desc",
+  //       currentPage * 10,
+  //       searchValue
+  //     )
+  //   : useLotteryList("createAtTimestamp", "desc", currentPage * 10);
+
+  // Call both hooks
+  const searchHook = useSearchLottery(
+    'createAtTimestamp',
+    'desc',
+    currentPage * 10,
+    searchValue
+  );
+  const listHook = useLotteryList(
+    'createAtTimestamp',
+    'desc',
+    currentPage * 10
+  );
+
+  // Destructure data, error, isFetching based on searchValue
+  const { data, error, isFetching } = searchValue ? searchHook : listHook;
+
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };

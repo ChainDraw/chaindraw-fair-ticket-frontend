@@ -81,13 +81,13 @@ const NFTDropPage = () => {
         {/* Mint Button */}
         <button
           className="mt-10 font-bold bg-red-600 rounded-full h-16 w-full text-white"
-          onClick={() =>
-            buyTicket({
-              ...contractConfig,
-              functionName: 'buyTicket',
-              args: [collection.tokenId],
-            })
-          }
+          // onClick={() =>
+          //   buyTicket({
+          //     ...contractConfig,
+          //     functionName: 'buyTicket',
+          //     args: [collection.tokenId],
+          //   })
+          // }
         >
           {isPurchaseLoading ? 'Loading...' : 'Purchase'} ( {collection.price}{' '}
           ETH )

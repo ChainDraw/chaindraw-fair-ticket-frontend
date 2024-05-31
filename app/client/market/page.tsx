@@ -40,7 +40,7 @@ function fetchNFTList() {
 }
 
 export default async function Home() {
-  const collections = await fetchNFTList();
+  const collections: any[] = (await fetchNFTList()) as any[];
   console.log('collections', collections);
   return (
     <div className="mx-auto max-w-7xl min-h-screen flex flex-col py-20 px-10 2xl:px-0">

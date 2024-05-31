@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -9,20 +9,13 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from '@/components/ui/drawer';
 
-
-const DrawerDemo = ({price}) => {
-
-
+const DrawerDemo = ({ price }: { price: any }) => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button
-          className="w-36  bg-sky-500 hover:bg-sky-600 "
-        >
-          SELL
-        </Button>
+        <Button className="w-36  bg-sky-500 hover:bg-sky-600 ">SELL</Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
@@ -55,4 +48,3 @@ const DrawerDemo = ({price}) => {
 };
 
 export default DrawerDemo;
-
