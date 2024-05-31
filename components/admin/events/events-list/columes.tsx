@@ -145,47 +145,54 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
   const { writeContractAsync } = useWriteContract();
   const { address } = useAccount();
 
-  console.log('address', address);
+  // 发布成功后调用
+  const onSuccess = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/publish`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            concert_id: rowOriginal.concert_id,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        if (res.status === 500) {
+          console.log('Server error: 500');
+          throw new Error('Server error: 500');
+        } else {
+          throw new Error(`Unexpected status code: ${res.status}`);
+        }
+      }
+      toast({
+        description: '发布成功',
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   const onPublish = async () => {
     if (!window.ethereum) {
-      alert('Please install MetaMask!');
+      toast({
+        description: '请先安装钱包',
+        variant: 'destructive',
+      });
       return;
     }
 
-    // 发布成功后调用
-    const onSuccess = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/concert/publish`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              concert_id: rowOriginal.concert_id,
-            }),
-          }
-        );
-
-        if (!res.ok) {
-          if (res.status === 500) {
-            console.log('Server error: 500');
-            throw new Error('Server error: 500');
-          } else {
-            throw new Error(`Unexpected status code: ${res.status}`);
-          }
-        }
-
-        const data = await res.json();
-        toast({
-          description: '发布成功',
-        });
-      } catch (error) {
-        handleError(error);
-      }
-    };
+    if (!address) {
+      toast({
+        description: '请先连接钱包',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     const { concert_id, concert_name, ticket_types, concert_end_date } =
       rowOriginal;
@@ -213,7 +220,6 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       })
         .then((res) => {
           setOpen(false);
-          console.log('res', res);
           if (res) {
             onSuccess();
           }
@@ -359,13 +365,13 @@ export const columns: ColumnDef<EventBasics>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>操作</DropdownMenuLabel>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() =>
                 navigator.clipboard.writeText(rowOriginal.concert_id)
               }
             >
               复制活动ID
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <DropdownMenuItemComponent
               label="查看"
@@ -377,14 +383,14 @@ export const columns: ColumnDef<EventBasics>[] = [
               mode="edit"
               rowOriginal={rowOriginal}
             /> */}
-            {review_status === 0 && (
+            {review_status === 0 && concert_status === 0 && (
               <DropdownMenuItemComponent
                 label="审核"
                 mode="review"
                 rowOriginal={rowOriginal}
               />
             )}
-            {review_status === 1 && (
+            {review_status === 1 && concert_status !== 3 && (
               <DropdownMenuItemPublish rowOriginal={rowOriginal} />
             )}
             {concert_status === 0 && (
