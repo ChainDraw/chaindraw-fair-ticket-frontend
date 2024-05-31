@@ -25,6 +25,7 @@ export interface LotteryItemProps {
   organizer: {
     id: Address;
   };
+  participants: any;
   name: string;
   nftMetadata: {
     address: string;

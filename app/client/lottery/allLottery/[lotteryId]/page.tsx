@@ -31,10 +31,10 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
     isWinner,
     isJoin,
     isEnded,
-    ddl,
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
+
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
     lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
@@ -82,48 +82,10 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 natus voluptatem id placeat ducimus nihil quidem. Fugiat hic
                 itaque accusamus sed perferendis, temporibus nihil.
               </p>
-
-              {/* mobile */}
-              {/* <div className="md:hidden">
-                {false && (
-                  <Button
-                    className="w-full md:hidden bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => handleDeposit()}
-                  >
-                    Buy
-                  </Button>
-                )}
-                <div>
-                  {false ? (
-                    <div>
-                      <h1 className="text-4xl mb-4 text-orange-500 italic">
-                        You are the winner :
-                      </h1>
-                      <p className="mb-4">
-                        The reward has been sent to your wallet address
-                      </p>
-                      <Link
-                        className=" w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 py-2 text-center rounded-lg px-4"
-                        href={paths.client.profile}
-                      >
-                        Check your repository -&gt;
-                      </Link>
-                    </div>
-                  ) : (
-                    <Button
-                      className=" w-full "
-                      variant="destructive"
-                      onClick={() => handleRefound()}
-                    >
-                      Refund
-                    </Button>
-                  )}
-                </div>
-              </div> */}
             </div>
           </div>
           <div className="hidden md:block md:w-2/5">
-            <CountdownComponent targetTime={Number(ddl)} />
+            <CountdownComponent targetTime={Number(lotteryInfo?.ddl)} />
             <div className="w-full h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
               <Image
                 alt="Lottery Image"
@@ -134,10 +96,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 src={image}
               />
             </div>
-            {/* pass math casino topple velvet world gift core prevent modify soap
-            sail */}
-            {/* absorb receive embody clerk reunion rely kiss athlete either bronze
-            desk chuckle */}
+
             <div className="hidden md:flex items-center justify-between py-14">
               <h2 className="text-xl mb-2.5 font-bold">Price:</h2>
               <span className="flex items-center space-x-2 mb-2.5">
@@ -149,7 +108,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             </div>
             {authStatus === "authenticated" ? (
               <div>
-                {isJoin?.toString() === "0" ? (
+                {isJoin?.toString() !== "0" ? (
                   isWinner ? (
                     <div>
                       <h1 className="text-4xl mb-4 text-orange-500 italic">
@@ -169,22 +128,22 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     <Button
                       className="hidden md:block w-full "
                       variant="destructive"
-                      onClick={() => handleRefound()}
+                      onClick={async () => await handleRefound()}
                     >
                       Not Winner - Click Refund
                     </Button>
                   )
-                ) : isEnded ? (
+                ) : Number(lotteryInfo?.ddl) < Date.now() ? (
                   <Button
-                    className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => handleStartLottery()}
+                    className="hidden md:block w-full "
+                    variant="destructive"
                   >
-                    Already Ended
+                    Already Ended && Not Join
                   </Button>
                 ) : (
                   <Button
                     className="hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
-                    onClick={() => handleDeposit()}
+                    onClick={async () => await handleDeposit()}
                   >
                     Join
                   </Button>
@@ -195,6 +154,17 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 Please Connect Wallet
               </Button>
             )}
+            {isJoin &&
+            !isEnded &&
+            Number(lotteryInfo?.ddl) < Date.now() &&
+            lotteryInfo?.participants.length > 0 ? (
+              <Button
+                onClick={async () => await handleStartLottery()}
+                className="mt-4 hidden md:block w-full bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400"
+              >
+                opening
+              </Button>
+            ) : null}
           </div>
         </div>
       </MaxWidthWrapper>

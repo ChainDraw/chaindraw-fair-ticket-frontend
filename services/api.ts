@@ -216,6 +216,9 @@ export const useLotteryInfo = (id: string) => {
               completeDraw
               name
               ddl
+              participants {
+                id
+              }
             }
           }
         `,
