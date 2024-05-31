@@ -204,7 +204,7 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       // 写入合约
       writeContractAsync({
         abi,
-        address: '0x65721D91f26c5DD6EA14e7cb6Fd4Db3D8f4f8870', // 地址
+        address: '0x7C9621B1B60A2dFb22Bd427cA429066015Ed0EFF', // 地址
         functionName: 'createEscrow',
         args: [
           address!,
