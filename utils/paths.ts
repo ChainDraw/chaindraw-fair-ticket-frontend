@@ -12,6 +12,11 @@ export const paths = {
     ticketInfo: (id: string) => {
       return `/client/market/${id}`;
     },
+    sellNft: (id: string) => {
+      {
+        return `/client/profile/sellnft/${id}`;
+      }
+    },
   },
   admin: {
     events: "/events", // 后台活动列表

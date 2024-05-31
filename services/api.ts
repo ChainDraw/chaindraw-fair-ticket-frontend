@@ -360,6 +360,7 @@ export const useUserNfts = (userAddress: string) => {
           query UserNfts($userAddress: ID!) {
             participant(id: $userAddress) {
               nfts {
+                id
                 price
                 nftMetadata {
                   address

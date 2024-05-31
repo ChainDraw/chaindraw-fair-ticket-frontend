@@ -29,33 +29,3 @@ export const useMarketBuy = () => {
 
   return { handleBuy, isPending, isSuccess };
 };
-export const useMarketList = () => {
-  const {
-    writeContractAsync: list,
-    isPending,
-    isSuccess,
-  } = useWriteMarketListNft();
-  const handleList = async (
-    lotteryAddress: Address,
-    tokenId: string,
-    price: string
-  ) => {
-    const { writeContractAsync: approve, isError } = useWriteLotteryApprove();
-    try {
-      await approve({
-        address: lotteryAddress,
-        args: [marketAddress, BigInt(tokenId)],
-      });
-      if (isError) {
-        console.log("handleList", "error");
-        return;
-      }
-      const data = await list({
-        args: [lotteryAddress, BigInt(tokenId), BigInt(price)],
-      });
-    } catch (error) {
-      console.log("handleList", error);
-    }
-  };
-  return { handleList, isPending, isSuccess };
-};

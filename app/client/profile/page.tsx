@@ -89,7 +89,7 @@ const Page: React.FC = () => {
           </div>
           <hr className="text-gray-600 mt-6 mb-4" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center text-white">
+          <div className="px-12 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center text-white">
             {filter === "Collected" && <NFTS address={userAddress!} />}
             {filter === "Create" && <Create address={userAddress!} />}
             {filter === "Lottery" && <JoinLottery address={userAddress!} />}

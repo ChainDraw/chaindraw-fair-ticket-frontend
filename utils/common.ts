@@ -61,7 +61,6 @@ export const formatImage = (nftMetadata: any) => {
   return image as string;
 };
 export const formatNFTId = (id: string) => {
-  console.log(id);
   const [address, tokenId] = id?.split("-");
-  return { address, tokenId };
+  return { address, tokenId } as { address: Address; tokenId: string };
 };

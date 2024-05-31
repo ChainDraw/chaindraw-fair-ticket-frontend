@@ -16,7 +16,7 @@ interface Props {
 }
 const NFTDropPage = (props: Props) => {
   const { data } = useNftInfo("0x756a751e460be7e6d4fe136e259e540fcff6cdf7-0");
-  const { handleBuy, isPending, isSuccess } = useMarketBuy();
+  const { handleBuy } = useMarketBuy();
   const { authStatus } = useAuthStore();
   const image = formatImage(data?.nftMetadata);
   return (
@@ -105,13 +105,7 @@ const NFTDropPage = (props: Props) => {
               handleBuy(address as Address, tokenId, data.price);
             }}
           >
-            {isPending ? (
-              "Loading..."
-            ) : isSuccess ? (
-              <div>Success </div>
-            ) : (
-              <div>Buy and pay {data?.price} Wei </div>
-            )}
+            <div>Buy and pay {data?.price} Wei </div>
           </button>
         </div>
       </MaxWidthWrapper>
