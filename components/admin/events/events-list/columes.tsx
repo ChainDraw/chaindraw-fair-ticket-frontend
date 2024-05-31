@@ -194,12 +194,18 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       return;
     }
 
-    const { concert_id, concert_name, ticket_types, concert_end_date } =
-      rowOriginal;
+    const {
+      concert_id,
+      concert_name,
+      ticket_types,
+      concert_end_date,
+      lottery_end_date,
+    } = rowOriginal;
 
     ticket_types.forEach((ticket: any) => {
       const { ticket_type, type_name, price, ticket_img, num } = ticket;
-      const ddl = new Date(concert_end_date).getTime();
+      const ddl = new Date(lottery_end_date).getTime();
+      const concertEndDate = new Date(concert_end_date).getTime();
 
       // 写入合约
       writeContractAsync({
@@ -216,6 +222,7 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
           'ipfs://' + ticket_img,
           num,
           ddl as unknown as bigint,
+          concertEndDate as unknown as bigint,
         ],
       })
         .then((res) => {
