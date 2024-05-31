@@ -291,17 +291,37 @@ export const columns: ColumnDef<EventBasics>[] = [
     },
   },
   {
+    accessorKey: 'lottery_end_date',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          抽取截止时间
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const endTime = row.original.concert_end_date;
+      return endTime ? format(new Date(endTime), 'yyyy-MM-dd HH:mm:ss') : '';
+    },
+  },
+  {
     accessorKey: 'concert_status',
     header: () => <div className="text-center">演唱会状态</div>,
     cell: ({ row }) => {
       const status = parseInt(row.getValue('concert_status'));
-      // "concert_status": 0, // 0: 未开始 1：已过期 2、已取消
+      // "concert_status": 0, // 0: 未开始 1：已过期 2、已取消 3、抽取中
       if (status === 0) {
         return <div className="text-center">未开始</div>;
       } else if (status === 1) {
         return <div className="text-center text-red-500">已过期</div>;
       } else if (status === 2) {
         return <div className="text-center text-yellow-500">已取消</div>;
+      } else if (status === 3) {
+        return <div className="text-center text-blue-500">抽取中</div>;
       }
     },
   },
