@@ -194,6 +194,19 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       return;
     }
 
+    const approvedAdresses =
+      process.env.NEXT_PUBLIC_REVIEW_ADDRESSES?.split(',');
+
+    if (approvedAdresses?.includes(address)) {
+      setOpen(true);
+    } else {
+      toast({
+        description: '您没有权限发布该活动',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const {
       concert_id,
       concert_name,
