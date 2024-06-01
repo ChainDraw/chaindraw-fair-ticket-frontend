@@ -24,10 +24,12 @@ import {
   useWriteLotteryApprove,
   useWriteMarketListNft,
 } from "@/contracts/generated";
+import { getNetwork } from "@/contracts/hooks/useNetwork";
 type Props = {
   address: string;
 };
 type FormData = z.infer<typeof formSchema>;
+const { market } = getNetwork(97);
 const formSchema = z.object({
   price: z
     .string()
@@ -44,7 +46,7 @@ export const NFTItem = (props: NFT) => {
     useWriteMarketListNft();
   const { writeContractAsync: approve, isError } = useWriteLotteryApprove();
   const { data: isApprove } = useReadLotteryGetApproved({
-    address: address,
+    address: market,
     args: [BigInt(tokenId)],
   });
 

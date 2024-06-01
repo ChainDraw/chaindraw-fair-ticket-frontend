@@ -31,11 +31,6 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
   console.log(Number(lotteryInfo?.ddl));
   console.log(Date.now());
-  // const image =
-  // "https://gateway.pinata.cloud/ipfs/" +
-  // "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
-  // lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
-
   const image = formatImage(lotteryInfo?.nftMetadata);
 
   return (
