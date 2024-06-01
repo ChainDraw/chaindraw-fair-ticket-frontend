@@ -42,7 +42,7 @@ export const fetchVerifySignature = async (message: any, signature: string) => {
 
 // Graphql
 const BASE_API_DEV =
-  "https://api.studio.thegraph.com/query/70917/chaindraw-metadata/version/latest";
+  "https://api.studio.thegraph.com/query/76402/chaindraw/version/latest";
 export const useExhibitLottery = (orderBy: string, orderDirection: string) => {
   return useQuery({
     queryKey: ["ExhibitLottery", orderBy, orderDirection],

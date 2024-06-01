@@ -1,9 +1,9 @@
-import { useUserNfts } from '@/services/api';
-import { NFT } from '@/types';
-import { formatImage, formatNFTId } from '@/utils/common';
-import Image from 'next/image';
-import React from 'react';
-import { Button } from '@/components/ui/button';
+import { useUserNfts } from "@/services/api";
+import { NFT } from "@/types";
+import { formatImage, formatNFTId } from "@/utils/common";
+import Image from "next/image";
+import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,18 +12,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   marketAddress,
   useReadLotteryGetApproved,
   useWriteLotteryApprove,
   useWriteMarketListNft,
-} from '@/contracts/generated';
+} from "@/contracts/generated";
 type Props = {
   address: string;
 };
@@ -31,9 +31,9 @@ type FormData = z.infer<typeof formSchema>;
 const formSchema = z.object({
   price: z
     .string()
-    .regex(/^\d+$/, { message: 'Price must be a valid number' })
+    .regex(/^\d+$/, { message: "Price must be a valid number" })
     .refine((val) => BigInt(val) > 0, {
-      message: 'Price must be greater than 0',
+      message: "Price must be greater than 0",
     }),
 });
 export const NFTItem = (props: NFT) => {
@@ -72,14 +72,14 @@ export const NFTItem = (props: NFT) => {
           src={image}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          style={{ objectFit: "cover", objectPosition: "center" }}
           alt="lottery"
           className="transform duration-300 group-hover:scale-110"
         />
       </div>
       <div className="py-2">
         <h1 className="text-white font-semibold text-lg px-2">
-          {props.nftMetadata.concertName}
+          {props.nftMetadata?.concertName && "陈奕迅"}
         </h1>
         <article className="px-4">
           <div className="flex justify-between">
@@ -91,7 +91,7 @@ export const NFTItem = (props: NFT) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata.address}</div>
+            <div>{props.nftMetadata?.address && "上海"}</div>
           </div>
         </article>
       </div>
@@ -119,7 +119,7 @@ export const NFTItem = (props: NFT) => {
                 </Label>
                 <Input
                   id="name"
-                  defaultValue={props.nftMetadata.concertName}
+                  defaultValue={props.nftMetadata?.concertName && "陈奕迅"}
                   className="col-span-3"
                   disabled
                 />
@@ -132,7 +132,7 @@ export const NFTItem = (props: NFT) => {
                   id="price"
                   placeholder="xxxx WEI"
                   className="col-span-3"
-                  {...sellForm.register('price')}
+                  {...sellForm.register("price")}
                 />
                 {sellForm.formState.errors.price && (
                   <p className="col-span-4 text-red-500">

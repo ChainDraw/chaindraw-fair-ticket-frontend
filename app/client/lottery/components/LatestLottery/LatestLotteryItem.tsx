@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatAddress } from "@/utils/common";
+import { formatAddress, formatImage } from "@/utils/common";
 import { paths } from "@/utils/paths";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,9 +38,12 @@ export interface LotteryItemProps {
 
 const LatestLotteryItem = (props: LotteryItemProps) => {
   //gateway.pinata.cloud/ipfs/QmdRkCmHrZuA5XetmSfLgmVSe5ms2MS7HonC4LuXieRR4b
-  const image =
-    "https://gateway.pinata.cloud/ipfs/" +
-    props.nftMetadata.image.split("ipfs://")[1];
+  // const image =
+  //   "https://gateway.pinata.cloud/ipfs/" +
+  //   "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // props.nftMetadata?.image.split("ipfs://")[1];
+  const image = formatImage(props.nftMetadata);
+  console.log(image);
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">
       <div className="relative h-64 overflow-hidden group">
@@ -57,7 +60,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
       <div className="py-2">
         {/* <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1> */}
         <h1 className="text-white font-semibold text-lg px-2">
-          {props.nftMetadata.concertName}
+          {props.nftMetadata?.concertName && "陈奕迅"}
         </h1>
         <article className="px-4">
           <div className="flex justify-between">
@@ -79,7 +82,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata.address}</div>
+            <div>{props.nftMetadata?.address && "上海"}</div>
           </div>
           <div className="flex justify-between">
             <span>organizer</span>

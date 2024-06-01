@@ -11,7 +11,7 @@ import React from "react";
 
 import CountdownComponent from "../../components/countdowm/CountDown";
 import { useLotteryInfo } from "@/services/api";
-import { formatAddress } from "@/utils/common";
+import { formatAddress, formatImage } from "@/utils/common";
 import { Address } from "viem";
 
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
@@ -29,10 +29,14 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
+  console.log(Number(lotteryInfo?.ddl));
+  console.log(Date.now());
+  // const image =
+  // "https://gateway.pinata.cloud/ipfs/" +
+  // "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
 
-  const image =
-    "https://gateway.pinata.cloud/ipfs/" +
-    lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
+  const image = formatImage(lotteryInfo?.nftMetadata);
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -54,7 +58,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             <hr className="mb-5 md:mb-10 opacity-40 bg-brand-black" />
             <div className=" text-white">
               <h1 className="text-2xl md:text-3xl mb-2 md:mb-5 font-bold">
-                {lotteryInfo?.nftMetadata?.concertName}
+                {lotteryInfo?.name && "陈奕迅"}
               </h1>
               <div className="mb-2 md:hidden relative">
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
@@ -68,9 +72,9 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                   />
                 </div>
               </div>
-              <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
+              {/* <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 {lotteryInfo && lotteryInfo.nftMetadata.description}
-              </p>
+              </p> */}
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Eveniet voluptatum dolores quasi. Magnam consequatur impedit
@@ -119,6 +123,14 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                         Check your repository -&gt;
                       </Link>
                     </div>
+                  ) : !isEnded && Date.now() < Number(lotteryInfo?.ddl) ? (
+                    <Button
+                      className="hidden md:block w-full "
+                      variant="destructive"
+                      onClick={async () => await handleRefound()}
+                    >
+                      未到截至时间
+                    </Button>
                   ) : (
                     <Button
                       className="hidden md:block w-full "
@@ -151,7 +163,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             )}
             {isJoin &&
             !isEnded &&
-            Number(lotteryInfo?.ddl) * 1000 < Date.now() &&
+            Number(lotteryInfo?.ddl) < Date.now() &&
             lotteryInfo?.participants.length > 0 ? (
               <Button
                 onClick={async () => await handleStartLottery()}

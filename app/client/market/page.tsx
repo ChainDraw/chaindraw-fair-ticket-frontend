@@ -1,42 +1,4 @@
 "use client";
-// function fetchNFTList() {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve([
-//         {
-//           previewImage: {
-//             asset: [
-//               {
-//                 _ref: "image-ee298e2fb78803f3226dcde22f1f2a8d69f56fad-600x600-png",
-//                 _type: "reference",
-//               },
-//             ],
-//           },
-//           _id: "fbe3cc63-b47b-4a0c-8622-06f3c2d668fb",
-//           title: "The Ape | NFT Drop",
-//           nftCollectionName: "Apes",
-//           slug: { current: "ape" },
-//           creator: {
-//             _id: "366eb843-855f-419d-9b62-5ad8b9265567",
-//             name: "Cris",
-//             address: "0x37A2E873Ff37BAec54D75D68446FF5EB195D6859",
-//             slug: [{ current: "cris" }],
-//           },
-//           ContractAddress: "0xdf2f3aD8d81915192E3646CC3F28F6347aCCEbF0",
-//           description: "description",
-//           mainImage: {
-//             asset: [
-//               {
-//                 _ref: "image-a8b470ce656d91c45b9cd8a86e0b39ccb7dcee61-2951x2430-webp",
-//                 _type: "reference",
-//               },
-//             ],
-//           },
-//         },
-//       ]);
-//     }, 1000);
-//   });
-// }
 
 import MaxWidthWrapper from "@/components/client/MaxWidthWrapper";
 
