@@ -40,7 +40,8 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
   //gateway.pinata.cloud/ipfs/QmdRkCmHrZuA5XetmSfLgmVSe5ms2MS7HonC4LuXieRR4b
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
-    props.nftMetadata?.image.split("ipfs://")[1];
+    "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // props.nftMetadata?.image.split("ipfs://")[1];
   console.log(image);
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">

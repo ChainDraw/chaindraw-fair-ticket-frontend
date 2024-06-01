@@ -57,7 +57,8 @@ export const getCountdown = (targetTime: number) => {
 export const formatImage = (nftMetadata: any) => {
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
-    nftMetadata?.image?.split("ipfs://")[1];
+    "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // nftMetadata?.image?.split("ipfs://")[1];
   return image as string;
 };
 export const formatNFTId = (id: string) => {

@@ -32,7 +32,8 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
 
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
-    lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
+    "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -54,7 +55,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             <hr className="mb-5 md:mb-10 opacity-40 bg-brand-black" />
             <div className=" text-white">
               <h1 className="text-2xl md:text-3xl mb-2 md:mb-5 font-bold">
-                {lotteryInfo?.nftMetadata?.concertName}
+                {lotteryInfo?.name && "陈奕迅"}
               </h1>
               <div className="mb-2 md:hidden relative">
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
@@ -68,9 +69,9 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                   />
                 </div>
               </div>
-              <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
+              {/* <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 {lotteryInfo && lotteryInfo.nftMetadata.description}
-              </p>
+              </p> */}
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Eveniet voluptatum dolores quasi. Magnam consequatur impedit
