@@ -55,9 +55,11 @@ export const getCountdown = (targetTime: number) => {
   }
 };
 export const formatImage = (nftMetadata: any) => {
+  if (!nftMetadata) {
+    return "https://gateway.pinata.cloud/ipfs/Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  }
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
-    // "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
     nftMetadata?.image?.split("ipfs://")[1];
   return image as string;
 };

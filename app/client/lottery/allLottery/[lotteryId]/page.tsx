@@ -37,6 +37,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   // lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
 
   const image = formatImage(lotteryInfo?.nftMetadata);
+
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -58,7 +59,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             <hr className="mb-5 md:mb-10 opacity-40 bg-brand-black" />
             <div className=" text-white">
               <h1 className="text-2xl md:text-3xl mb-2 md:mb-5 font-bold">
-                {lotteryInfo?.name && "陈奕迅"}
+                {lotteryInfo?.name || "陈奕迅"}
               </h1>
               <div className="mb-2 md:hidden relative">
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">
@@ -123,7 +124,8 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                         Check your repository -&gt;
                       </Link>
                     </div>
-                  ) : !isEnded && Date.now() < Number(lotteryInfo?.ddl) ? (
+                  ) : !isEnded &&
+                    Date.now() < Number(lotteryInfo?.ddl) * 1000 ? (
                     <Button
                       className="hidden md:block w-full "
                       variant="destructive"
@@ -140,7 +142,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                       Not Winner - Click Refund
                     </Button>
                   )
-                ) : Number(lotteryInfo?.ddl) < Date.now() ? (
+                ) : Number(lotteryInfo?.ddl) * 1000 < Date.now() ? (
                   <Button
                     className="hidden md:block w-full "
                     variant="destructive"
