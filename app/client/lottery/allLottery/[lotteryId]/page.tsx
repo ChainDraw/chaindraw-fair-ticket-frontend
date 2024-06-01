@@ -29,7 +29,8 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
-
+  console.log(Number(lotteryInfo?.ddl));
+  console.log(Date.now());
   const image =
     "https://gateway.pinata.cloud/ipfs/" +
     "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
@@ -120,6 +121,14 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                         Check your repository -&gt;
                       </Link>
                     </div>
+                  ) : !isEnded && Date.now() < Number(lotteryInfo?.ddl) ? (
+                    <Button
+                      className="hidden md:block w-full "
+                      variant="destructive"
+                      onClick={async () => await handleRefound()}
+                    >
+                      未到截至时间
+                    </Button>
                   ) : (
                     <Button
                       className="hidden md:block w-full "
@@ -152,7 +161,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             )}
             {isJoin &&
             !isEnded &&
-            Number(lotteryInfo?.ddl) * 1000 < Date.now() &&
+            Number(lotteryInfo?.ddl) < Date.now() &&
             lotteryInfo?.participants.length > 0 ? (
               <Button
                 onClick={async () => await handleStartLottery()}
