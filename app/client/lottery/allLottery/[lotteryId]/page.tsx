@@ -11,7 +11,7 @@ import React from "react";
 
 import CountdownComponent from "../../components/countdowm/CountDown";
 import { useLotteryInfo } from "@/services/api";
-import { formatAddress } from "@/utils/common";
+import { formatAddress, formatImage } from "@/utils/common";
 import { Address } from "viem";
 
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
@@ -31,10 +31,12 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
   console.log(Number(lotteryInfo?.ddl));
   console.log(Date.now());
-  const image =
-    "https://gateway.pinata.cloud/ipfs/" +
-    "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
+  // const image =
+  // "https://gateway.pinata.cloud/ipfs/" +
+  // "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
   // lotteryInfo?.nftMetadata?.image?.split("ipfs://")[1];
+
+  const image = formatImage(lotteryInfo?.nftMetadata);
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
