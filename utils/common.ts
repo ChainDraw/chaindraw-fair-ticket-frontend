@@ -3,6 +3,7 @@ import numbro from "numbro";
 import BigNumber from "bignumber.js";
 import duration from "dayjs/plugin/duration";
 import { Address, formatEther, parseEther } from "viem";
+import axios from "axios";
 dayjs.extend(duration);
 export const formatAddress = (address?: Address) => {
   return address
@@ -66,4 +67,35 @@ export const formatImage = (nftMetadata: any) => {
 export const formatNFTId = (id: string) => {
   const [address, tokenId] = id?.split("-");
   return { address, tokenId } as { address: Address; tokenId: string };
+};
+export const formatTokenURI = async (data: string) => {
+  if (!data) return;
+  console.log(data);
+  const hash = data.split("ipfs://")[1];
+  try {
+    // 替换 ipfs:// 前缀为实际的 IPFS 网关 URL
+    const ipfsGateway = "https://gateway.pinata.cloud/ipfs/";
+    const tokenURI = `${ipfsGateway}${hash}`;
+
+    // 从 IPFS 获取数据
+    const response = await axios.get(tokenURI);
+    const data = response.data;
+
+    // 确保数据包含必要的属性
+    if (!data.name || !data.description || !data.image || !data.attributes) {
+      throw new Error("Invalid tokenURI data format");
+    }
+    const image =
+      "https://gateway.pinata.cloud/ipfs/" + data.image.split("ipfs://")[1];
+    // 返回解析后的数据对象
+    return {
+      name: data.name,
+      description: data.description,
+      image: image,
+      attributes: data.attributes,
+    };
+  } catch (error) {
+    console.error("Error fetching tokenURI data:", error);
+    throw error;
+  }
 };

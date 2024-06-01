@@ -216,6 +216,7 @@ export const useLotteryInfo = (id: string) => {
               completeDraw
               name
               ddl
+              url
               participants {
                 id
               }
@@ -418,5 +419,20 @@ export const useNftInfo = (id: string) => {
       return data.nft as NFT & { seller: { id: string } };
     },
     refetchOnWindowFocus: false,
+  });
+};
+export const useNFTTokenURI = (uri: string) => {
+  return useQuery({
+    queryKey: ["useNFTTokenURI", uri],
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1]) return;
+      const hash = queryKey[1].split("ipfs://")[1];
+      const ipfsGateway = "https://gateway.pinata.cloud/ipfs/";
+      const tokenURI = `${ipfsGateway}${hash}`;
+      const result = await axios.get(tokenURI);
+      return result;
+    },
+    refetchOnWindowFocus: false,
+    enabled: !!uri,
   });
 };

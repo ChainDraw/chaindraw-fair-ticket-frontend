@@ -54,7 +54,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
             <hr className="mb-5 md:mb-10 opacity-40 bg-brand-black" />
             <div className=" text-white">
               <h1 className="text-2xl md:text-3xl mb-2 md:mb-5 font-bold">
-                {lotteryInfo?.name || "陈奕迅"}
+                {lotteryInfo?.name}
               </h1>
               <div className="mb-2 md:hidden relative">
                 <div className="h-64 flex flex-col justify-center bg-dark-panel rounded-3xl overflow-hidden relative">

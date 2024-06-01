@@ -1,8 +1,8 @@
-import { useUserNfts } from "@/services/api";
+import { useLotteryInfo, useNFTTokenURI, useUserNfts } from "@/services/api";
 import { NFT } from "@/types";
-import { formatImage, formatNFTId } from "@/utils/common";
+import { formatImage, formatNFTId, formatTokenURI } from "@/utils/common";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,8 +19,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  marketAddress,
-  useReadLotteryGetApproved,
   useWriteLotteryApprove,
   useWriteMarketListNft,
 } from "@/contracts/generated";
@@ -41,28 +39,41 @@ const formSchema = z.object({
     }),
 });
 export const NFTItem = (props: NFT) => {
+  const [metadata, setMetadata] = useState<any>({
+    name: "",
+    description: "",
+    image: "",
+    attributes: { concert_name: "", address: "" },
+  });
   const { address, tokenId } = formatNFTId(props.id);
-  const image = formatImage(props.nftMetadata);
+  const { data } = useLotteryInfo(address);
+
+  useEffect(() => {
+    const fetchTokenURI = async () => {
+      if (data && data.url) {
+        try {
+          const response = await formatTokenURI(data.url);
+          setMetadata(response);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+
+    fetchTokenURI();
+  }, [data]);
   const { writeContractAsync: list, error: listError } =
     useWriteMarketListNft();
-  const {
-    writeContractAsync: approve,
-    isError,
-    isSuccess,
-  } = useWriteLotteryApprove();
-  const { data: isApprove } = useReadLotteryGetApproved({
-    address: address,
-    args: [BigInt(tokenId)],
-  });
+  const { writeContractAsync: approve } = useWriteLotteryApprove();
   const sellForm = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
   const onSubmit = async (values: FormData) => {
-    await approve({
+    const data = await approve({
       address: address,
       args: [market, BigInt(tokenId)],
     });
-
+    console.log(data);
     await list({
       args: [address, BigInt(tokenId), BigInt(values.price)],
     });
@@ -73,7 +84,7 @@ export const NFTItem = (props: NFT) => {
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
-          src={image}
+          src={metadata.image}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
@@ -82,9 +93,7 @@ export const NFTItem = (props: NFT) => {
         />
       </div>
       <div className="py-2">
-        <h1 className="text-white font-semibold text-lg px-2">
-          {props.nftMetadata?.concertName || "陈奕迅"}
-        </h1>
+        <h1 className="text-white font-semibold text-lg px-2">{data?.name}</h1>
         <article className="px-4">
           <div className="flex justify-between">
             <span>Price</span>
@@ -95,7 +104,7 @@ export const NFTItem = (props: NFT) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata?.address || "上海"}</div>
+            <div>{metadata.attributes.address}</div>
           </div>
         </article>
       </div>
@@ -135,7 +144,7 @@ export const NFTItem = (props: NFT) => {
                   </Label>
                   <Input
                     id="name"
-                    defaultValue={props.nftMetadata?.concertName || "陈奕迅"}
+                    defaultValue={data?.name}
                     className="col-span-3"
                     disabled
                   />

@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import Image from "next/image";
-import { useNftInfo } from "@/services/api";
-import { formatImage, formatNFTId } from "@/utils/common";
+import { useLotteryInfo, useNftInfo } from "@/services/api";
+import { formatImage, formatNFTId, formatTokenURI } from "@/utils/common";
 import { useMarketBuy } from "@/contracts/hooks/useMarket";
 import useAuthStore from "@/stores/authStore";
 import { toast } from "@/components/ui/use-toast";
@@ -15,10 +15,32 @@ interface Props {
   };
 }
 const NFTDropPage = (props: Props) => {
-  const { data } = useNftInfo(props.params.tokenId);
+  const { data: nftData } = useNftInfo(props.params.tokenId);
+  console.log(nftData);
   const { handleBuy } = useMarketBuy();
   const { authStatus } = useAuthStore();
-  const image = formatImage(data?.nftMetadata);
+  const [metadata, setMetadata] = useState<any>({
+    name: "",
+    description: "",
+    image: "",
+    attributes: { concert_name: "", address: "" },
+  });
+  const { address } = formatNFTId(props.params.tokenId);
+  const { data } = useLotteryInfo(address);
+  useEffect(() => {
+    const fetchTokenURI = async () => {
+      if (data && data.url) {
+        try {
+          const response = await formatTokenURI(data.url);
+          setMetadata(response);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+    fetchTokenURI();
+  }, [data]);
+  console.log(metadata);
   return (
     <main className=" relative">
       <MaxWidthWrapper className="flex w-full h-full min-h-screen flex-col md:grid md:grid-cols-[40%_60%]  overflow-hidden px-0 md:px-0">
@@ -31,18 +53,16 @@ const NFTDropPage = (props: Props) => {
                   className=" w-full h-full object-cover "
                   width={200}
                   height={400}
-                  src={image}
+                  src={metadata.image}
                   alt=""
                 />
               </div>
             </div>
             <div className="space-y-6 p-5 text-center">
               <h1 className="text-4xl font-bold text-white">
-                {data?.nftMetadata?.concertName || "陈奕迅"}
+                {metadata.attributes.concert_name}
               </h1>
-              <h2 className="text-xl text-gray-300">
-                {data?.nftMetadata?.description || "陈奕迅"}
-              </h2>
+              <h2 className="text-xl text-gray-300">{metadata.description}</h2>
             </div>
           </div>
         </div>
@@ -59,24 +79,20 @@ const NFTDropPage = (props: Props) => {
             <div className="pb-2 md:pb-4">
               <h1 className="pb-1 text-">ConcertName:</h1>
               <p className="px-2 text-black">
-                {data?.nftMetadata?.concertName || "陈奕迅"}
+                {metadata.attributes.concert_name}
               </p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1 className="pb-1">Description:</h1>
-              <p className="px-2 text-black">
-                {data?.nftMetadata?.description || "陈奕迅"}
-              </p>
+              <p className="px-2 text-black">{metadata.description}</p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Seller:</h1>
-              <p className="px-2 text-black">{data?.seller.id}</p>
+              <p className="px-2 text-black">{nftData?.seller.id}</p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Location:</h1>
-              <p className="px-2 text-black">
-                {data?.nftMetadata?.address || "上海"}
-              </p>
+              <p className="px-2 text-black">{metadata.attributes.address}</p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Price:</h1>
@@ -87,7 +103,7 @@ const NFTDropPage = (props: Props) => {
             <div className=" bg-black flex justify-center items-center p-4  rounded-xl bg-gradient-to-br from-green-400 to-blue-500">
               <Image
                 className="w-full h-full border border-black p-2 rounded-xl"
-                src={image}
+                src={metadata.image}
                 width={200}
                 height={400}
                 alt=""

@@ -1,10 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatAddress, formatImage } from "@/utils/common";
+import {
+  formatAddress,
+  formatImage,
+  formatNFTId,
+  formatTokenURI,
+} from "@/utils/common";
 import { paths } from "@/utils/paths";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Address } from "viem";
 
 interface TicketType {
@@ -37,21 +42,31 @@ export interface LotteryItemProps {
 }
 
 const LatestLotteryItem = (props: LotteryItemProps) => {
-  //gateway.pinata.cloud/ipfs/QmdRkCmHrZuA5XetmSfLgmVSe5ms2MS7HonC4LuXieRR4b
-  // const image =
-  //   "https://gateway.pinata.cloud/ipfs/" +
-  //   "Qmeuer3mRpnrhE3yA84UHzthPEFs3ovT53TqaMPhqmfkHz";
-  // props.nftMetadata?.image.split("ipfs://")[1];
-  const image = formatImage(
-    props.nftMetadata 
-  );
-  console.log(image);
+  const [metadata, setMetadata] = useState<any>({
+    name: "",
+    description: "",
+    image: "",
+    attributes: { concert_name: "", address: "" },
+  });
+
+  useEffect(() => {
+    const fetchTokenURI = async () => {
+      try {
+        const response = await formatTokenURI(props.url);
+        setMetadata(response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchTokenURI();
+  }, []);
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
-          src={image}
+          src={metadata.image}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
@@ -60,14 +75,11 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
         />
       </div>
       <div className="py-2">
-        {/* <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1> */}
-        <h1 className="text-white font-semibold text-lg px-2">
-          {props.name || "陈奕迅"}
-        </h1>
+        <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1>
         <article className="px-4">
           <div className="flex justify-between">
             <span>Type</span>
-            <div>{props.nftMetadata?.name || "Vip"}</div>
+            <div>{metadata.name}</div>
           </div>
           <div className="flex justify-between">
             <span>Price</span>
@@ -89,7 +101,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata?.address && "上海"}</div>
+            <div>{metadata.address}</div>
           </div>
           <div className="flex justify-between">
             <span>organizer</span>
@@ -114,12 +126,6 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           Join
         </Link>
       )}
-      {/* {props.concert_status === 1 && (
-        <Button variant="destructive">Expired</Button>
-      )} */}
-      {/* {props.concert_status === 2 && (
-        <Button variant="destructive">Has Not Started</Button>
-      )} */}
     </div>
   );
 };
