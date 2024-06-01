@@ -59,7 +59,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
       <div className="py-2">
         {/* <h1 className="text-white font-semibold text-lg px-2">{props.name}</h1> */}
         <h1 className="text-white font-semibold text-lg px-2">
-          {props.nftMetadata?.concertName}
+          {props.nftMetadata?.concertName && "陈奕迅"}
         </h1>
         <article className="px-4">
           <div className="flex justify-between">
@@ -81,7 +81,7 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata?.address}</div>
+            <div>{props.nftMetadata?.address && "上海"}</div>
           </div>
           <div className="flex justify-between">
             <span>organizer</span>
