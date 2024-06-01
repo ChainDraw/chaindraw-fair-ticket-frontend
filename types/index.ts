@@ -36,6 +36,9 @@ export interface NFT {
     name: string;
   };
   id: string;
+  owner: {
+    id: string;
+  };
 }
 export interface CreateLottery {
   createAtTimestamp: string;
