@@ -58,15 +58,15 @@ const LatestLotteryItem = (props: LotteryItemProps) => {
         console.log(err);
       }
     };
-
     fetchTokenURI();
   }, []);
+
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 text-white rounded-2xl overflow-hidden ">
       <div className="relative h-64 overflow-hidden group">
         <span className="w-full h-full bg-black bg-opacity-25 absolute top-0 z-10"></span>
         <Image
-          src={metadata.image}
+          src={metadata?.image}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: "cover", objectPosition: "center" }}

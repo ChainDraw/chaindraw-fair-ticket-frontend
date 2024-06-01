@@ -7,14 +7,21 @@ import useAuthStore from "@/stores/authStore";
 import { paths } from "@/utils/paths";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import CountdownComponent from "../../components/countdowm/CountDown";
 import { useLotteryInfo } from "@/services/api";
-import { formatAddress, formatImage } from "@/utils/common";
+import { formatAddress, formatImage, formatTokenURI } from "@/utils/common";
 import { Address } from "viem";
 
 const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
+  const [metadata, setMetadata] = useState<any>({
+    name: "",
+    description: "",
+    image: "",
+    attributes: { concert_name: "", address: "" },
+  });
+
   const { lotteryId } = params;
   // 合约地址
   const contractAddress = lotteryId as Address;
@@ -29,10 +36,20 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
   } = useLottery(contractAddress);
   const { authStatus } = useAuthStore();
   const { data: lotteryInfo } = useLotteryInfo(lotteryId);
-  console.log(Number(lotteryInfo?.ddl));
-  console.log(Date.now());
-  const image = formatImage(lotteryInfo?.nftMetadata);
 
+  useEffect(() => {
+    const fetchTokenURI = async () => {
+      if (lotteryInfo && lotteryInfo.url) {
+        try {
+          const response = await formatTokenURI(lotteryInfo.url);
+          setMetadata(response);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+    fetchTokenURI();
+  }, [lotteryInfo]);
   return (
     <main className="min-h-screen bg-black py-10 md:py-20 text-white">
       <MaxWidthWrapper>
@@ -64,13 +81,10 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                     height={30}
                     className="w-full"
                     priority
-                    src={image}
+                    src={metadata?.image}
                   />
                 </div>
               </div>
-              {/* <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
-                {lotteryInfo && lotteryInfo.nftMetadata.description}
-              </p> */}
               <p className="text-lg  mt-5 mb-5 md:mb-12 whitespace-pre-wrap">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                 Eveniet voluptatum dolores quasi. Magnam consequatur impedit
@@ -88,7 +102,7 @@ const LotteryInfo = ({ params }: { params: { lotteryId: string } }) => {
                 height={200}
                 priority
                 className="w-full"
-                src={image}
+                src={metadata?.image}
               />
             </div>
 
