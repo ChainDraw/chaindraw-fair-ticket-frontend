@@ -326,11 +326,14 @@ export const useNFTListings = (orderBy: string, orderDirection: string) => {
           query NFTLists {
             nfts(
               where: {
-                owner_: { id: "0xd2bdf4f1f8f667d91809594cbbdcc7b23a160656" }
+                owner_: { id: "0xbe9137770d8546a7494a94c87c88273f04571a48" }
               }
             ) {
               price
               seller {
+                id
+              }
+              owner {
                 id
               }
               tokenId

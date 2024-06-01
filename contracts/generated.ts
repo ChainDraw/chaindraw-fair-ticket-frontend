@@ -933,7 +933,7 @@ export const marketAbi = [
 ] as const
 
 export const marketAddress =
-  '0xefA0E99A60512cDDa5bEA302b40438A76b8b78E2' as const
+  '0xBE9137770D8546A7494a94c87C88273f04571a48' as const
 
 export const marketConfig = { address: marketAddress, abi: marketAbi } as const
 

@@ -7,11 +7,7 @@ import {
 } from "../generated";
 
 export const useMarketBuy = () => {
-  const {
-    writeContractAsync: buy,
-    isPending,
-    isSuccess,
-  } = useWriteMarketBuyNft();
+  const { writeContractAsync: buy } = useWriteMarketBuyNft();
   const handleBuy = async (
     lotteryAddress: Address,
     tokenId: string,
@@ -27,5 +23,5 @@ export const useMarketBuy = () => {
     }
   };
 
-  return { handleBuy, isPending, isSuccess };
+  return { handleBuy };
 };

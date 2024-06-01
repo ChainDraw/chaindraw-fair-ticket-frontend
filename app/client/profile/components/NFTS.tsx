@@ -25,6 +25,8 @@ import {
   useWriteMarketListNft,
 } from "@/contracts/generated";
 import { getNetwork } from "@/contracts/hooks/useNetwork";
+import Link from "next/link";
+import { paths } from "@/utils/paths";
 type Props = {
   address: string;
 };
@@ -40,27 +42,27 @@ const formSchema = z.object({
 });
 export const NFTItem = (props: NFT) => {
   const { address, tokenId } = formatNFTId(props.id);
-  console.log(address);
   const image = formatImage(props.nftMetadata);
   const { writeContractAsync: list, error: listError } =
     useWriteMarketListNft();
-  const { writeContractAsync: approve, isError } = useWriteLotteryApprove();
+  const {
+    writeContractAsync: approve,
+    isError,
+    isSuccess,
+  } = useWriteLotteryApprove();
   const { data: isApprove } = useReadLotteryGetApproved({
-    address: market,
+    address: address,
     args: [BigInt(tokenId)],
   });
-
   const sellForm = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
-
   const onSubmit = async (values: FormData) => {
-    if (isApprove && isApprove !== marketAddress) {
-      await approve({
-        address: address,
-        args: [marketAddress, BigInt(tokenId)],
-      });
-    }
+    await approve({
+      address: address,
+      args: [market, BigInt(tokenId)],
+    });
+
     await list({
       args: [address, BigInt(tokenId), BigInt(values.price)],
     });
@@ -81,7 +83,7 @@ export const NFTItem = (props: NFT) => {
       </div>
       <div className="py-2">
         <h1 className="text-white font-semibold text-lg px-2">
-          {props.nftMetadata?.concertName && "陈奕迅"}
+          {props.nftMetadata?.concertName || "陈奕迅"}
         </h1>
         <article className="px-4">
           <div className="flex justify-between">
@@ -93,62 +95,75 @@ export const NFTItem = (props: NFT) => {
           </div>
           <div className="flex justify-between">
             <span>Location</span>
-            <div>{props.nftMetadata?.address && "上海"}</div>
+            <div>{props.nftMetadata?.address || "上海"}</div>
           </div>
         </article>
       </div>
-      <Dialog>
-        <DialogTrigger asChild className="bg-transparent hover:bg-transparent">
-          <Button
-            variant="outline"
-            className="hover:text-orange-500 text-base font-bold"
+      {props.owner?.id ===
+      "0xBE9137770D8546A7494a94c87C88273f04571a48".toLocaleLowerCase() ? (
+        <Link
+          href={paths.client.ticketInfo(props.id)}
+          className="py-2 border-t border-white w-full flex justify-center items-center bg-transparent hover:text-orange-500 text-base font-bold"
+        >
+          Buy
+        </Link>
+      ) : (
+        <Dialog>
+          <DialogTrigger
+            asChild
+            className="bg-transparent hover:bg-transparent"
           >
-            Sell
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Sell Your Tick</DialogTitle>
-            <DialogDescription>
-              Set the price for your NFT. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={sellForm.handleSubmit(onSubmit)}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  NFT Name
-                </Label>
-                <Input
-                  id="name"
-                  defaultValue={props.nftMetadata?.concertName && "陈奕迅"}
-                  className="col-span-3"
-                  disabled
-                />
+            <Button
+              variant="outline"
+              className="hover:text-orange-500 text-base font-bold"
+            >
+              Sell
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Sell Your Tick</DialogTitle>
+              <DialogDescription>
+                Set the price for your NFT. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={sellForm.handleSubmit(onSubmit)}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    NFT Name
+                  </Label>
+                  <Input
+                    id="name"
+                    defaultValue={props.nftMetadata?.concertName || "陈奕迅"}
+                    className="col-span-3"
+                    disabled
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="price" className="text-right">
+                    Price (WEI)
+                  </Label>
+                  <Input
+                    id="price"
+                    placeholder="xxxx WEI"
+                    className="col-span-3"
+                    {...sellForm.register("price")}
+                  />
+                  {sellForm.formState.errors.price && (
+                    <p className="col-span-4 text-red-500">
+                      {sellForm.formState.errors.price.message?.toString()}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="price" className="text-right">
-                  Price (WEI)
-                </Label>
-                <Input
-                  id="price"
-                  placeholder="xxxx WEI"
-                  className="col-span-3"
-                  {...sellForm.register("price")}
-                />
-                {sellForm.formState.errors.price && (
-                  <p className="col-span-4 text-red-500">
-                    {sellForm.formState.errors.price.message?.toString()}
-                  </p>
-                )}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Sell NFT</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+              <DialogFooter>
+                <Button type="submit">Sell NFT</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

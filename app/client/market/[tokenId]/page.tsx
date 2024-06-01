@@ -15,7 +15,7 @@ interface Props {
   };
 }
 const NFTDropPage = (props: Props) => {
-  const { data } = useNftInfo("0x756a751e460be7e6d4fe136e259e540fcff6cdf7-0");
+  const { data } = useNftInfo(props.params.tokenId);
   const { handleBuy } = useMarketBuy();
   const { authStatus } = useAuthStore();
   const image = formatImage(data?.nftMetadata);
@@ -38,10 +38,10 @@ const NFTDropPage = (props: Props) => {
             </div>
             <div className="space-y-6 p-5 text-center">
               <h1 className="text-4xl font-bold text-white">
-                {data?.nftMetadata.concertName}
+                {data?.nftMetadata?.concertName || "陈奕迅"}
               </h1>
               <h2 className="text-xl text-gray-300">
-                {data?.nftMetadata.description}
+                {data?.nftMetadata?.description || "陈奕迅"}
               </h2>
             </div>
           </div>
@@ -58,11 +58,15 @@ const NFTDropPage = (props: Props) => {
             <hr className="my-2 border" />
             <div className="pb-2 md:pb-4">
               <h1 className="pb-1 text-">ConcertName:</h1>
-              <p className="px-2 text-black">{data?.nftMetadata.concertName}</p>
+              <p className="px-2 text-black">
+                {data?.nftMetadata?.concertName || "陈奕迅"}
+              </p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1 className="pb-1">Description:</h1>
-              <p className="px-2 text-black">{data?.nftMetadata.description}</p>
+              <p className="px-2 text-black">
+                {data?.nftMetadata?.description || "陈奕迅"}
+              </p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Seller:</h1>
@@ -70,7 +74,9 @@ const NFTDropPage = (props: Props) => {
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Location:</h1>
-              <p className="px-2 text-black">{data?.nftMetadata.address}</p>
+              <p className="px-2 text-black">
+                {data?.nftMetadata?.address || "上海"}
+              </p>
             </div>
             <div className="pb-2 md:pb-4">
               <h1>Price:</h1>
@@ -91,7 +97,7 @@ const NFTDropPage = (props: Props) => {
           {/* Mint Button */}
           <button
             className="mt-10 font-bold bg-red-600 rounded-full h-16 w-[50%] text-white"
-            onClick={() => {
+            onClick={async () => {
               if (!data) return;
               if (authStatus !== "authenticated") {
                 toast({
@@ -102,7 +108,8 @@ const NFTDropPage = (props: Props) => {
               }
 
               const { address, tokenId } = formatNFTId(props.params.tokenId);
-              handleBuy(address as Address, tokenId, data.price);
+              console.log(address, tokenId);
+              await handleBuy(address as Address, tokenId, data.price);
             }}
           >
             <div>Buy and pay {data?.price} Wei </div>
