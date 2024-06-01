@@ -111,7 +111,6 @@ export default function TicketsForm() {
       setSelectedImages((prevImages) => {
         const newImages = [...prevImages];
         newImages[index] = file;
-        console.log('newImages', newImages);
         return newImages;
       });
     }
@@ -151,7 +150,7 @@ export default function TicketsForm() {
     formData.append('file', image as File);
 
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/uploadFile', {
         method: 'POST',
         body: formData,
       });

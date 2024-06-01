@@ -103,7 +103,6 @@ export default function BasicsForm() {
 
   return (
     <Form {...form1}>
-      {mode}
       <form onSubmit={form1.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           disabled={disabled}

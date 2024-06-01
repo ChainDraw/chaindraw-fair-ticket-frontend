@@ -30,6 +30,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { DateTimePicker } from '@/components/ui/time-picker/date-time-picker';
 import { toast } from '@/components/ui/use-toast';
 import { handleError } from '@/utils/errors';
+import axios from 'axios';
 
 const formSchema = z.object({
   // lottery_start_date: z.date({
@@ -48,6 +49,7 @@ const formSchema = z.object({
 });
 
 export default function PromotionsForm() {
+  console.log('第二步...渲染...');
   const { updateStep, goBack, data, mode } = useCreateEvent();
 
   const {
@@ -56,10 +58,14 @@ export default function PromotionsForm() {
     concert_img_preview,
     concert_img,
   } = data.step2;
+
+  const { concert_name, address } = data.step1;
+
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined
   );
   const [ipfsHash, setIpfsHash] = useState('');
+  const [jsonCid, setJsonCid] = useState('');
   const [hasUploaded, setHasUploaded] = useState(false);
 
   const [uploading, setUploading] = useState(false);
@@ -74,12 +80,14 @@ export default function PromotionsForm() {
     const file = e.target.files?.[0];
 
     if (!file) {
+      setJsonCid('');
       setIpfsHash('');
       setHasUploaded(false);
       setUploading(false);
       setSelectedImage(undefined);
     }
 
+    setJsonCid('');
     setIpfsHash('');
     setHasUploaded(false);
     fn(file);
@@ -109,13 +117,33 @@ export default function PromotionsForm() {
     formData.append('file', selectedImage as File);
 
     try {
-      const response = await fetch('/api/upload', {
+      // 第一步、上传图片到IPFS
+      const response = await fetch('/api/uploadFile', {
         method: 'POST',
         body: formData,
       });
 
       const data = await response.json();
       setIpfsHash(data.ipfsHash);
+
+      const metadata = {
+        name: 'Concert Event',
+        description: 'This is an NFT image',
+        image: `ipfs://${data.ipfsHash}`,
+        attributes: {
+          concert_name,
+          address,
+        },
+      };
+
+      // 第二步、将图片的IPFS hash存储到合约中
+      const response2 = await fetch('/api/uploadJSON', {
+        method: 'POST',
+        body: JSON.stringify(metadata),
+      });
+
+      const data2 = await response2.json();
+      setJsonCid(data2.ipfsHash);
 
       setHasUploaded(true);
       setUploading(false);
@@ -137,21 +165,31 @@ export default function PromotionsForm() {
   });
 
   // 图片回显
-  useEffect(() => {
-    // 创建、编辑
-    if (concert_img_preview) {
-      setSelectedImage(concert_img_preview);
-    } else {
-      // 显示默认图片
-      setSelectedImage(undefined);
-    }
-  }, [concert_img_preview]);
+  // useEffect(() => {
+  //   // 创建、编辑
+  //   if (concert_img_preview) {
+  //     setSelectedImage(concert_img_preview);
+  //   } else {
+  //     // 显示默认图片
+  //     setSelectedImage(undefined);
+  //   }
+  // }, [concert_img_preview]);
+
+  const fetchImageCid = async () => {
+    const response = await axios.get(
+      `https://gateway.pinata.cloud/ipfs/${concert_img}`
+    );
+    const jsonData = await response.data;
+    setIpfsHash(jsonData.image.split('ipfs://')[1]);
+    setHasUploaded(true);
+  };
 
   // 演唱会
   useEffect(() => {
+    console.log('cid change', concert_img);
+    setJsonCid(concert_img);
     if (concert_img) {
-      setIpfsHash(concert_img);
-      setHasUploaded(true);
+      fetchImageCid();
     } else {
       setIpfsHash('');
       setHasUploaded(false);
@@ -181,6 +219,7 @@ export default function PromotionsForm() {
       });
       return;
     }
+
     // if (!isOrderCorrect) {
     //   toast({
     //     title: '时间顺序错误',
@@ -191,7 +230,8 @@ export default function PromotionsForm() {
     // }
 
     if (hasUploaded) {
-      updateStep(2, { ...values, concert_img: ipfsHash });
+      // updateStep(2, { ...values, concert_img: ipfsHash });
+      updateStep(2, { ...values, concert_img: jsonCid });
     } else {
       toast({
         title: '图片未上传',

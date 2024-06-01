@@ -177,6 +177,29 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
     }
   };
 
+  // 获取  cid
+  const fetchJSONCid = async (
+    imageCid: string,
+    { type_name, remark, concert_name, address }: { [key: string]: string }
+  ) => {
+    const metadata = {
+      name: type_name,
+      description: remark,
+      image: `ipfs://${imageCid}`,
+      attributes: {
+        concert_name,
+        address,
+      },
+    };
+
+    const response = await fetch('/api/uploadJSON', {
+      method: 'POST',
+      body: JSON.stringify(metadata),
+    });
+    const { ipfsHash } = await response.json();
+    return ipfsHash;
+  };
+
   const onPublish = async () => {
     if (!window.ethereum) {
       toast({
@@ -194,17 +217,45 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
       return;
     }
 
-    const { concert_id, concert_name, ticket_types, concert_end_date } =
-      rowOriginal;
+    const approvedAdresses =
+      process.env.NEXT_PUBLIC_REVIEW_ADDRESSES?.split(',');
 
-    ticket_types.forEach((ticket: any) => {
+    if (approvedAdresses?.includes(address)) {
+      setOpen(true);
+    } else {
+      toast({
+        description: '您没有权限发布该活动',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const {
+      remark,
+      address: concert_address,
+      concert_id,
+      concert_name,
+      ticket_types,
+      concert_end_date,
+      lottery_end_date,
+    } = rowOriginal;
+
+    ticket_types.forEach(async (ticket: any, index: number) => {
       const { ticket_type, type_name, price, ticket_img, num } = ticket;
-      const ddl = new Date(concert_end_date).getTime();
+      const ddl = new Date(lottery_end_date).getTime();
+      const concertEndDate = new Date(concert_end_date).getTime();
+
+      const cid = await fetchJSONCid(ticket_img, {
+        type_name,
+        remark,
+        concert_name,
+        address: concert_address,
+      });
 
       // 写入合约
       writeContractAsync({
         abi,
-        address: '0x7C9621B1B60A2dFb22Bd427cA429066015Ed0EFF', // 地址
+        address: '0x07d01c7c7b2d625aE1152DC9320D9f9E8f9d6e96', // 地址
         functionName: 'createEscrow',
         args: [
           address!,
@@ -213,15 +264,19 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
           type_name,
           concert_name,
           price,
-          'ipfs://' + ticket_img,
+          'ipfs://' + cid,
           num,
           ddl as unknown as bigint,
+          concertEndDate as unknown as bigint,
         ],
       })
         .then((res) => {
-          setOpen(false);
-          if (res) {
-            onSuccess();
+          // 当前为最后一个索引时 表示所有的门票都已发布 nft，发布成功
+          if (index === ticket_types.length - 1) {
+            setOpen(false);
+            if (res) {
+              onSuccess();
+            }
           }
         })
         .catch((err) => {
@@ -390,7 +445,7 @@ export const columns: ColumnDef<EventBasics>[] = [
                 rowOriginal={rowOriginal}
               />
             )}
-            {review_status === 1 && concert_status !== 3 && (
+            {review_status === 1 && concert_status === 0 && (
               <DropdownMenuItemPublish rowOriginal={rowOriginal} />
             )}
             {concert_status === 0 && (
