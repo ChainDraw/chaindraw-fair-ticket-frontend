@@ -242,8 +242,8 @@ const DropdownMenuItemPublish = ({ rowOriginal }: { rowOriginal: any }) => {
 
     ticket_types.forEach(async (ticket: any, index: number) => {
       const { ticket_type, type_name, price, ticket_img, num } = ticket;
-      const ddl = new Date(lottery_end_date).getTime();
-      const concertEndDate = new Date(concert_end_date).getTime();
+      const ddl = new Date(lottery_end_date).getTime() / 1000;
+      const concertEndDate = new Date(concert_end_date).getTime() / 1000;
 
       const cid = await fetchJSONCid(ticket_img, {
         type_name,
