@@ -34,7 +34,7 @@ export const CustomConnectButton = () => {
   // 登出
   const logout = async () => {
     try {
-      const res = await fetch("api/logout", {
+      const res = await fetch("/api/logout", {
         method: "DELETE",
       });
       const data = await res.json();
