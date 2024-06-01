@@ -18,7 +18,7 @@ const CountdownComponent = ({ targetTime }: { targetTime: number }) => {
     return () => clearInterval(interval);
   }, [targetTime]);
   return (
-    <div>
+    <div className="pb-4">
       {countdown ? (
         <div>
           <p>Deadline:</p>
